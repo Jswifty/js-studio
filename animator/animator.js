@@ -1,5 +1,5 @@
 /**
- *	Animator.js is an object class which registers rendering functions from objects and executes them 
+ *  Animator.js is an object class which registers rendering functions from objects and executes them 
  *  in a rate depended on the native window browser's requestAnimationFrame method.
  */ 
 
@@ -274,8 +274,8 @@ var Animator = function() {
 };
 
 /**  
- *	AnimatorListener.js is an interface object class which handles events triggered from Animator.
- *	Each instance is required to be added into a mouse object.
+ *  AnimatorListener.js is an interface object class which handles events triggered from Animator.
+ *  Each instance is required to be added into a mouse object.
  */ 
 var AnimatorListener = function () {
 
