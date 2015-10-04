@@ -1,8 +1,7 @@
 /**
- *  Animator.js is an object class which registers rendering functions from objects and executes them 
- *  in a rate depended on the native window browser's requestAnimationFrame method.
+ *  Animator is an object class which registers rendering functions from objects and executes them 
+ *  repeatedly in a rate depended on the native window browser's requestAnimationFrame method.
  */ 
-
 var Animator = function() {
 	
 	/* The rendering references is an map object consists of list of literal keys (renderIDs) mapped 
@@ -15,14 +14,14 @@ var Animator = function() {
 	/* The required frame rate of the animation in terms of frames per seconds, by default is 60 FPS. */
 	this.FPS = 60;
 	
-	/* The minimum frame rate available for animation, which is 10 FPS. */
+	/* The minimum frame rate available for animation, by default is 10 FPS. */
 	this.minFPS = 10;
+		
+	/* The maximum frame rate available for animation, by default is 60 FPS. */
+	this.maxFPS = 60;
 	
 	/* The maximum time difference allowed for animation, which is 0.1 second. */
 	this.maxTimeDiff = 1 / this.minFPS;
-	
-	/* The maximum frame rate available for animation, which is 60 FPS. */
-	this.maxFPS = 60;
 	
 	/* The minimum time difference allowed for animation, which is roughly 0.017 second. */
 	this.minTimeDiff = 1 / this.maxFPS;
@@ -41,6 +40,15 @@ var Animator = function() {
 	
 	/* The flag for determining whether the animations are paused. */
 	this.isPaused = false;
+	
+	/* The flag for determining whether the animations are allowed to exceed the FPS range. */
+	this.allowExceedFPSRange = false;
+	
+	/* The flag for determining whether the animations are to be time based,
+	 * which means each render is based on the time difference from the previous render.
+	 * If the animations are set not to be time-based, then the render function will always
+	 * have the standard FPS time difference as the parameter value. */
+	this.isTimeBased = true;
 	
 	/* The list of listeners this mouse is appended to. Each mouse event will trigger the corresponding method of each listeners. */
 	this.listeners = [];
@@ -77,8 +85,12 @@ var Animator = function() {
 	/** Set a specific frame rate for the animation. */
 	this.setFPS = function (newFPS) {
 		
-		/* Limit the FPS with the maximum FPS. */
-		this.FPS = (newFPS > this.maxFPS) ? this.maxFPS : (newFPS < this.minFPS) ? this.minFPS : newFPS;
+		this.FPS = newFPS;
+		
+		if (!this.allowExceedFPSRange) {
+			/* Limit the FPS with the maximum FPS. */
+			this.FPS = (this.FPS > this.maxFPS) ? this.maxFPS : (this.FPS < this.minFPS) ? this.minFPS : this.FPS;
+		}
 	};
 	
 	/** Start the animation loop. */
@@ -128,12 +140,19 @@ var Animator = function() {
 		this.previousAnimateTime = this.newAnimateTime;
 		this.newAnimateTime = Date.now();
 		
-		/* Calculate the time difference between the previous time-stamp in terms of seconds. */
-		var timeDiff = (this.newAnimateTime - this.previousAnimateTime) / 1000;
+		var timeDiff = 1 / this.FPS;
 		
-		/* Check if the time difference is too big, which could be caused by poor performance or a pause.
-		 * If so, then reset the time difference to prevent animation jump. */
-		timeDiff = (timeDiff > this.maxTimeDiff) ? this.maxTimeDiff : (timeDiff < this.minTimeDiff) ? this.minTimeDiff : timeDiff;
+		if (this.isTimeBased) {
+			
+			/* Calculate the time difference between the previous time-stamp in terms of seconds. */
+			timeDiff = (this.newAnimateTime - this.previousAnimateTime) / 1000;
+			
+			if (!this.allowExceedFPSRange) {
+				/* Check if the time difference is too big, which could be caused by poor performance or a pause.
+				 * If so, then reset the time difference to prevent animation jump. */
+				timeDiff = (timeDiff > this.maxTimeDiff) ? this.maxTimeDiff : (timeDiff < this.minTimeDiff) ? this.minTimeDiff : timeDiff;
+			}
+		}
 		
 		/* Execute all the registered rendering functions. */
 		for (var renderID in this.renderReferences) {
