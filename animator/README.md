@@ -6,30 +6,48 @@
 
 ## Usage
 ```javascript
-/* Setup the Animator. */
+/* Create an instance of an animator. */
 var animator = new Animator();
 
-...
+/* Create an object which has a render function. */
+var object = createRenderingObject();
 
-/* Create a Animator listener to adaptor events. */
-var animatorListener = new AnimatorListener();
-
-this.animatorListener.onAnimatorPause = function () {
-  console.log('animation paused!'); 
-}
-this.animatorListener.onAnimatorResume = function () {
-  console.log('animation resumed!'); 
-}
-
-/* Append the listener to the animator. */
-this.animator.addAnimatorListener(this.animatorListener);
-
-...
+/* Register the object and its render function to the animator. 
+ * It returns the render ID. Store it for future reference. */
+var renderID = animator.addRenderFunction(object, object.renderFunction());
 
 /* Start the animation. */
-this.animator.start();
+animator.start();
+
+...
+
+/* Pause the animation. */
+animator.pause();
+
+/* Remove the registry of the object from the animator using the render ID. */
+animator.removeRenderFunction(renderID);
 ```
 
 ## AnimatorListener
 <code>AnimatorListener</code> is an interface object class which handles events triggered from Animator.
 Each instance of <code>AnimatorListener</code> is required to be appended to an <code>Animator</code> object.
+
+## Usage
+```javascript
+/* Create an animator listener for listening to events from the animator. */
+var animatorListener = new AnimatorListener();
+
+animatorListener.onAnimatorPause = function () {
+
+  /* Do your stuff when the animation is paused. */
+  console.log('animation paused!'); 
+}
+animatorListener.onAnimatorResume = function () {
+
+  /* Do your stuff when the animation is resumed. */
+  console.log('animation resumed!'); 
+}
+
+/* Append the listener to the animator. */
+animator.addAnimatorListener(animatorListener);
+```
