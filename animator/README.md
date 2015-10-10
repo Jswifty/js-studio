@@ -53,5 +53,6 @@ animator.addAnimatorListener(animatorListener);
 
 ...
 
+/* Listener is no longer useful, remove it from the animator. */
 animator.removeAnimatorListener(animatorListener);
 ```
