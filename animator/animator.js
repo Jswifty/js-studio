@@ -210,23 +210,25 @@ var Animator = function() {
 	/** Add a animator listener to the animator. */
 	this.addAnimatorListener = function (animatorListener) {
 
-		/* Check if the input object is an instance of AnimatorListener. */
-		if (animatorListener.onAnimatorPause && animatorListener.onAnimatorResume) {
-			this.listeners.push(animatorListener);
+		/* Make sure the input object qualifies as an instance of AnimatorListener. */
+		if (!animatorListener.onAnimatorPause || typeof animatorListener.onAnimatorPause !== "function") {
+			animatorListener.onAnimatorPause = function() {};
 		}
+
+		if (!animatorListener.onAnimatorResume || typeof animatorListener.onAnimatorResume !== "function") {
+			animatorListener.onAnimatorResume = function() {};
+		}
+
+		this.listeners.push(animatorListener);
 	};
 	
 	/** Remove a animator listener from the animator. */
 	this.removeAnimatorListener = function (animatorListener) {
 
-		/* Check if the input object is an instance of AnimatorListener. */
-		if (animatorListener.onAnimatorPause && animatorListener.onAnimatorResume) {
-			
-			/* Attempt to find the index of the given listener and then remove it. */
-			for (var i = this.listeners.length - 1; i >= 0; i--) {
-				if (this.listeners[i] === animatorListener) {
-					this.listeners.splice(i, 1);
-				}
+		/* Attempt to find the index of the given listener and then remove it. */
+		for (var i = this.listeners.length - 1; i >= 0; i--) {
+			if (this.listeners[i] === animatorListener) {
+				this.listeners.splice(i, 1);
 			}
 		}
 	};
@@ -296,19 +298,21 @@ var Animator = function() {
  *	AnimatorListener.js is an interface object class which handles events triggered from Animator.
  *	Each instance is required to be added into an animator object.
  */ 
-var AnimatorListener = function () {
-
-	/** The following are all override methods which have commented examples. */
+var AnimatorListener = function (onAnimatorPause, onAnimatorResume) {
 
 	/** Perform action for pause event */
-	this.onAnimatorPause = function () {
-		// console.log("animator pause");
-	};
-		
+	if (onAnimatorPause && typeof onAnimatorPause === "function") {
+		this.onAnimatorPause = onAnimatorPause;
+	} else {
+		this.onAnimatorPause = function() {};
+	}
+
 	/** Perform action for resume event */
-	this.onAnimatorResume = function () {
-		// console.log("animator resume");
-	};
+	if (onAnimatorResume && typeof onAnimatorResume === "function") {
+		this.onAnimatorResume = onAnimatorResume;
+	} else {
+		this.onAnimatorResume = function() {};
+	}
 };
 
 /** GLOBAL INITIALISATION */

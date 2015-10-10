@@ -35,18 +35,18 @@ Each instance of <code>AnimatorListener</code> is required to be appended to an 
 ## Usage
 ```javascript
 /* Create an animator listener for listening to events from the animator. */
-var animatorListener = new AnimatorListener();
 
-animatorListener.onAnimatorPause = function () {
-
-  /* Do your stuff when the animation is paused. */
+/* Define your animation pause event handler. */
+function onAnimatorPause() {
   console.log('animation paused!'); 
 }
-animatorListener.onAnimatorResume = function () {
 
-  /* Do your stuff when the animation is resumed. */
+/* Define your animation resume event handler. */
+function onAnimatorResume() {
   console.log('animation resumed!'); 
 }
+
+var animatorListener = new AnimatorListener(onAnimatorPause, onAnimatorResume);
 
 /* Append the listener to the animator. */
 animator.addAnimatorListener(animatorListener);
