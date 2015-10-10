@@ -50,4 +50,8 @@ var animatorListener = new AnimatorListener(onAnimatorPause, onAnimatorResume);
 
 /* Append the listener to the animator. */
 animator.addAnimatorListener(animatorListener);
+
+...
+
+animator.removeAnimatorListener(animatorListener);
 ```
