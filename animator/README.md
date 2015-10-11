@@ -29,7 +29,7 @@ animator.removeRenderFunction(renderID);
 ```
 
 ## AnimatorListener
-<code>AnimatorListener</code> is an interface object class which handles events triggered from Animator.
+<code>AnimatorListener</code> is an interface which handles events triggered from Animator.
 Each instance of <code>AnimatorListener</code> is required to be appended to an <code>Animator</code> object.
 
 ## Usage

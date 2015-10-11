@@ -292,8 +292,8 @@ var Animator = function() {
 };
 
 /** 
- *	AnimatorListener.js is an interface object class which handles events triggered from Animator.
- *	Each instance is required to be added into an animator object.
+ *	AnimatorListener.js is an interface which handles events triggered from Animator.
+ *	Each instance of AnimatorListener is required to be added into an animator object.
  */
 var AnimatorListener = function (onAnimatorPause, onAnimatorResume) {
 
