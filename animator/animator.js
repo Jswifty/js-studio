@@ -4,6 +4,8 @@
  */ 
 var Animator = function() {
 	
+	var animator = this;
+
 	/* The rendering references is an map object consists of list of literal keys (renderIDs) mapped 
 	 * to an object and a corresponding rendering function. */
 	this.renderReferences = {};
@@ -52,13 +54,11 @@ var Animator = function() {
 	
 	/* The list of listeners this animator is appended to. Each animator event will trigger the corresponding method of each listeners. */
 	this.listeners = [];
-
-	var animator = this;
 	
 	/** Add a rendering function with the owner object which executes the function. Returns the rendering ID of this reference. 
 		Returns a renderID for future reference. */
 	this.addRenderFunction = function (renderingObject, renderingFunction) {
-	
+		
 		/* Create a new render ID for this object. */
 		var renderID = animator.generateRenderID();
 		
@@ -70,7 +70,7 @@ var Animator = function() {
 	
 	/** Remove the rendering reference by the given reference ID. */
 	this.removeRenderFunction = function (renderID) {
-	
+		
 		/* Check if the render ID does exist. */
 		if (renderID !== undefined && animator.renderReferences[renderID] !== undefined) {
 		
@@ -156,7 +156,7 @@ var Animator = function() {
 		
 		/* Execute all the registered rendering functions. */
 		for (var renderID in animator.renderReferences) {
-		
+			
 			var renderObject = animator.renderReferences[renderID].renderObject;
 			var renderFunction = animator.renderReferences[renderID].renderFunction;
 			
@@ -193,7 +193,7 @@ var Animator = function() {
 	this.resume = function () {
 		
 		if (animator.isPaused === true) {
-		
+			
 			animator.isPaused = false;
 			
 			animator.onResume();
@@ -254,7 +254,7 @@ var Animator = function() {
 	
 	/** Perform action for window change event, either hidden or show */
 	this.onWindowChange = function (isWindowHidden) {
-	
+		
 		if (isWindowHidden === true) {
 			animator.onWindowHidden();
 		} else if (isWindowHidden === false) {
@@ -291,10 +291,10 @@ var Animator = function() {
 	}
 };
 
-/**  
+/** 
  *	AnimatorListener.js is an interface object class which handles events triggered from Animator.
  *	Each instance is required to be added into an animator object.
- */ 
+ */
 var AnimatorListener = function (onAnimatorPause, onAnimatorResume) {
 
 	/** Perform action for pause event */
