@@ -1,10 +1,11 @@
 /**  
- *	Mouse.js is an object class which monitors mouse events triggered from the given DIV container.
- *  It also captures details of the input over time in terms of motion, location, etc.
+ *	Mouse.js is an object class which monitors mouse events triggered from the given div container.
+ *  It also captures details of the input over time in terms of location and motion.
  */ 
-
 var Mouse = function(divContainer) {
 	
+	var mouse = this;
+
 	/* Mouse Buttons */
 	this.LEFT_BUTTON = 1;
 	this.MIDDLE_BUTTON = 2;
@@ -18,7 +19,7 @@ var Mouse = function(divContainer) {
 	
 	/* The thread for calling the mouse stop event function. */
 	this.stoppingThread = null;
-		
+	
 	/* Previous update time-stamp of all mouse actions. */
 	this.lastUpdateTime = 0;
 	
@@ -42,7 +43,7 @@ var Mouse = function(divContainer) {
 	
 	/* The list of listeners this mouse is appended to. Each mouse event will trigger the corresponding method of each listeners. */
 	this.listeners = [];
-		
+	
 	/** Calculate the distance from the origin position to the destination position. */
 	this.getDistance = function (position1, position2) {
 		var distance = { x: position2.x - position1.x, y: position2.y - position1.y };
@@ -58,7 +59,7 @@ var Mouse = function(divContainer) {
 	this.getDirection = function (position1, position2) {
 		var distance = { x: position2.x - position1.x, y: position2.y - position1.y };
 		var distanceMag = Math.sqrt(distance.x * distance.x + distance.y * distance.y);
-		return this.getAngle(distance.x, distance.y, distanceMag);
+		return mouse.getAngle(distance.x, distance.y, distanceMag);
 	};
 	
 	/** Update the Position of the mouse. */
@@ -66,70 +67,70 @@ var Mouse = function(divContainer) {
 
 		/* Get the current time. */
 		var currentTime = Date.now();
-	
+		
 		/* Calculate the moved distance. */
-		this.movedDistance = this.position != null && newPosition != null ? this.getDistance(this.position, newPosition) : 0;
+		mouse.movedDistance = mouse.position != null && newPosition != null ? mouse.getDistance(mouse.position, newPosition) : 0;
 		
 		/* Calculate the moving speed from time difference and distance. */
-		var timeDiff = (currentTime - this.lastUpdateTime) / 1000;
-		this.movingSpeed = timeDiff > 0 ? this.movedDistance / timeDiff : 0;
+		var timeDiff = (currentTime - mouse.lastUpdateTime) / 1000;
+		mouse.movingSpeed = timeDiff > 0 ? mouse.movedDistance / timeDiff : 0;
 		
 		/* Update the mouse direction with the new position. */
-		this.direction = this.position != null && newPosition != null ? this.getDirection(this.position, newPosition) : 0;
+		mouse.direction = mouse.position != null && newPosition != null ? mouse.getDirection(mouse.position, newPosition) : 0;
 		
 		/* Update the mouse position. */
-		this.position = newPosition != null ? { x : newPosition.x, y : newPosition.y } : null;
+		mouse.position = newPosition != null ? { x : newPosition.x, y : newPosition.y } : null;
 		
 		/* Update the time-stamp. */
-		this.lastUpdateTime = currentTime;
+		mouse.lastUpdateTime = currentTime;
 	};
 	
 	/** Perform action for over event */
 	this.onMouseOver = function (event) {
-		for (var i = 0; i < this.listeners.length; i++) {
-			this.listeners[i].onMouseOver(event);
+		for (var i = 0; i < mouse.listeners.length; i++) {
+			mouse.listeners[i].onMouseOver(event);
 		}
 	};
-		
+	
 	/** Perform action for out event */
 	this.onMouseOut = function (event) {
-		for (var i = 0; i < this.listeners.length; i++) {
-			this.listeners[i].onMouseOut(event);
+		for (var i = 0; i < mouse.listeners.length; i++) {
+			mouse.listeners[i].onMouseOut(event);
 		}
 	};
-		
+	
 	/** Perform action for down event */
 	this.onMouseDown = function (event) {
-		for (var i = 0; i < this.listeners.length; i++) {
-			this.listeners[i].onMouseDown(event);
+		for (var i = 0; i < mouse.listeners.length; i++) {
+			mouse.listeners[i].onMouseDown(event);
 		}
 	};
 
 	/** Perform action for up event */
 	this.onMouseUp = function (event) {
-		for (var i = 0; i < this.listeners.length; i++) {
-			this.listeners[i].onMouseUp(event);
+		for (var i = 0; i < mouse.listeners.length; i++) {
+			mouse.listeners[i].onMouseUp(event);
 		}
 	};
 
 	/** Perform action for move event */
 	this.onMouseMove = function (event) {
-		for (var i = 0; i < this.listeners.length; i++) {
-			this.listeners[i].onMouseMove(event);
+		for (var i = 0; i < mouse.listeners.length; i++) {
+			mouse.listeners[i].onMouseMove(event);
 		}
 	};
-		
+	
 	/** Perform action for stop event */
 	this.onMouseStop = function (event) {
-		for (var i = 0; i < this.listeners.length; i++) {
-			this.listeners[i].onMouseStop(event);
+		for (var i = 0; i < mouse.listeners.length; i++) {
+			mouse.listeners[i].onMouseStop(event);
 		}
 	};
 
 	/** Perform action for click event */
 	this.onMouseClick = function (event) {
-		for (var i = 0; i < this.listeners.length; i++) {
-			this.listeners[i].onMouseClick(event);
+		for (var i = 0; i < mouse.listeners.length; i++) {
+			mouse.listeners[i].onMouseClick(event);
 		}
 	};
 
@@ -137,130 +138,127 @@ var Mouse = function(divContainer) {
 	this.overEventMethod = function (event) {
 
 		/* Put mouse as a reference in the event. */
-		event.mouse = this;
-	
+		event.mouse = mouse;
+		
 		/* Skip the default behaviours upon this event. */
-		if (this.preventDefault) {
+		if (mouse.preventDefault) {
 			event.preventDefault();
 		}
 		
 		/* Update the mouse position with a null position to refresh the statistics. */
-		this.updatePosition(null);
+		mouse.updatePosition(null);
 		
 		/* Perform action for over event */
-		this.onMouseOver(event);
+		mouse.onMouseOver(event);
 	};
 
 	/** When the Mouse moves out from the parent container. */
 	this.outEventMethod = function (event) {
 
 		/* Put mouse as a reference in the event. */
-		event.mouse = this;
-	
+		event.mouse = mouse;
+		
 		/* Skip the default behaviours upon this event. */
-		if (this.preventDefault) {
+		if (mouse.preventDefault) {
 			event.preventDefault();
 		}
 		
 		/* Update the mouse position with a null position to clear the statistics. */
-		this.updatePosition(null);
+		mouse.updatePosition(null);
 		
 		/* Perform action for out event */
-		this.onMouseOut(event);
+		mouse.onMouseOut(event);
 	};
 
 	/** When the Mouse is pressed. */
 	this.downEventMethod = function (event) {
 
 		/* Put mouse as a reference in the event. */
-		event.mouse = this;
-	
+		event.mouse = mouse;
+		
 		/* Skip the default behaviours upon this event. */
-		if (this.preventDefault) {
+		if (mouse.preventDefault) {
 			event.preventDefault();
 		}
 		
 		/* Update the mouse position. */
-		this.updatePosition({ x: event.pageX, y: event.pageY });
+		mouse.updatePosition({ x: event.pageX, y: event.pageY });
 		
 		/* Update the mouse down time-stamp. */
-		this.lastMouseDownTime = this.lastUpdateTime;
+		mouse.lastMouseDownTime = mouse.lastUpdateTime;
 		
 		/* Perform action for down event. */
-		this.onMouseDown(event);
+		mouse.onMouseDown(event);
 	};
 
 	/** When the Mouse's button is released. */
 	this.upEventMethod = function (event) {
 
 		/* Put mouse as a reference in the event. */
-		event.mouse = this;
-	
+		event.mouse = mouse;
+		
 		/* Skip the default behaviours upon this event. */
-		if (this.preventDefault) {
+		if (mouse.preventDefault) {
 			event.preventDefault();
 		}
 		
 		/* Update the mouse position. */
-		this.updatePosition({ x: event.pageX, y: event.pageY });
+		mouse.updatePosition({ x: event.pageX, y: event.pageY });
 		
-		if (this.lastUpdateTime - this.lastMouseDownTime <= this.CLICK_DELAY) {
-			this.clickEventMethod(event);
+		if (mouse.lastUpdateTime - mouse.lastMouseDownTime <= mouse.CLICK_DELAY) {
+			mouse.clickEventMethod(event);
 		}
 		
 		/* Perform action for up event. */
-		this.onMouseUp(event);
+		mouse.onMouseUp(event);
 	};
 
 	/** When the Mouse is moving. */
 	this.moveEventMethod = function (event) {
 		
 		/* Put mouse as a reference in the event. */
-		event.mouse = this;
+		event.mouse = mouse;
 		
 		/* Skip the default behaviours upon this event. */
-		if (this.preventDefault) {
+		if (mouse.preventDefault) {
 			event.preventDefault();
 		}
-
-		/* Update the time-stamp. */
-		this.lastUpdateTime = Date.now();
 		
 		/* Update the mouse position. */
-		this.updatePosition({ x: event.pageX, y: event.pageY });
+		mouse.updatePosition({ x: event.pageX, y: event.pageY });
 		
 		/* Re-initiate the stopping thread, calling the mouse stop in 0.05s. */
-		clearTimeout(this.stoppingThread);
-		this.stoppingThread = setTimeout(function() { event.mouse.stopEventMethod(event); }, 50);
+		clearTimeout(mouse.stoppingThread);
+		mouse.stoppingThread = setTimeout(function() { mouse.stopEventMethod(event); }, 50);
 		
 		/* Perform action for move event */
-		this.onMouseMove(event);
+		mouse.onMouseMove(event);
 	};
 	
 	/** When the Mouse has stop moving in the container. */
 	this.stopEventMethod = function (event) {
 
 		/* Put mouse as a reference in the event. */
-		event.mouse = this;
+		event.mouse = mouse;
 		
 		/* Update the mouse position. */
-		this.updatePosition({ x: event.pageX, y: event.pageY });
+		mouse.updatePosition({ x: event.pageX, y: event.pageY });
 		
 		/* Perform action for stop event */
-		this.onMouseStop(event);
+		mouse.onMouseStop(event);
 	};
 
 	/** When the Mouse clicks. */
 	this.clickEventMethod = function (event) {
 
 		/* Put mouse as a reference in the event. */
-		event.mouse = this;
+		event.mouse = mouse;
 		
 		/* Update the mouse position. */
-		this.updatePosition({ x: event.pageX, y: event.pageY });
+		mouse.updatePosition({ x: event.pageX, y: event.pageY });
 		
 		/* Perform action for stop event */
-		this.onMouseClick(event);
+		mouse.onMouseClick(event);
 	};
 
 	/** Add a mouse listener to the mouse. */
@@ -269,7 +267,7 @@ var Mouse = function(divContainer) {
 		/* Check if the input object is an instance of MouseListener. */
 		if (mouseListener.onMouseOver && mouseListener.onMouseOut && mouseListener.onMouseDown && mouseListener.onMouseUp && 
 			mouseListener.onMouseMove && mouseListener.onMouseStop && mouseListener.onMouseClick) {
-			this.listeners.push(mouseListener);
+			mouse.listeners.push(mouseListener);
 		}
 	};
 
@@ -281,9 +279,9 @@ var Mouse = function(divContainer) {
 			mouseListener.onMouseMove && mouseListener.onMouseStop && mouseListener.onMouseClick) {
 			
 			/* Attempt to find the index of the given listener and then remove it. */
-			for(var i = this.listeners.length - 1; i >= 0; i--) {
-				if(this.listeners[i] === mouseListener) {
-					this.listeners.splice(i, 1);
+			for(var i = mouse.listeners.length - 1; i >= 0; i--) {
+				if(mouse.listeners[i] === mouseListener) {
+					mouse.listeners.splice(i, 1);
 				}
 			}
 		}
@@ -293,66 +291,110 @@ var Mouse = function(divContainer) {
 	this.attachToElement = function (element) {
 	
 		/* Store a reference of the DOM element. */
-		this.listenElement = element;
-		
-		/* Store the current instance of the mouse adapter */
-		var mouse = this;
+		mouse.listenElement = element;
 		
 		/* Engage the essential mouse events to each corresponding handler. */
-		this.listenElement.addEventListener("mouseover", function(event) { mouse.overEventMethod(event); }, false);
-		this.listenElement.addEventListener("mouseout", function(event) { mouse.outEventMethod(event); }, false);
-		this.listenElement.addEventListener("mousedown", function(event) { mouse.downEventMethod(event); }, false);
-		this.listenElement.addEventListener("mouseup", function(event) { mouse.upEventMethod(event); }, false);
-		this.listenElement.addEventListener("mousemove", function(event) { mouse.moveEventMethod(event); }, false);
+		mouse.listenElement.addEventListener("mouseover", function(event) { mouse.overEventMethod(event); }, false);
+		mouse.listenElement.addEventListener("mouseout", function(event) { mouse.outEventMethod(event); }, false);
+		mouse.listenElement.addEventListener("mousedown", function(event) { mouse.downEventMethod(event); }, false);
+		mouse.listenElement.addEventListener("mouseup", function(event) { mouse.upEventMethod(event); }, false);
+		mouse.listenElement.addEventListener("mousemove", function(event) { mouse.moveEventMethod(event); }, false);
 	};
 
 	/** Disengage the mouse from DOM element and event functions from it. */
 	this.detachFromElement = function () {
-	
+		
 		/* Remove the reference of the DOM element. */
-		this.listenElement = null;
+		mouse.listenElement = null;
 
 		/* Disengage all the mouse events from each corresponding handler. */
-		this.listenElement.removeEventListener("mouseover", function(event) { mouse.overEventMethod(event); }, false);
-		this.listenElement.removeEventListener("mouseout", function(event) { mouse.outEventMethod(event); }, false);
-		this.listenElement.removeEventListener("mousedown", function(event) { mouse.downEventMethod(event); }, false);
-		this.listenElement.removeEventListener("mouseup", function(event) { mouse.upEventMethod(event); }, false);
-		this.listenElement.removeEventListener("mousemove", function(event) { mouse.moveEventMethod(event); }, false);
+		mouse.listenElement.removeEventListener("mouseover", function(event) { mouse.overEventMethod(event); }, false);
+		mouse.listenElement.removeEventListener("mouseout", function(event) { mouse.outEventMethod(event); }, false);
+		mouse.listenElement.removeEventListener("mousedown", function(event) { mouse.downEventMethod(event); }, false);
+		mouse.listenElement.removeEventListener("mouseup", function(event) { mouse.upEventMethod(event); }, false);
+		mouse.listenElement.removeEventListener("mousemove", function(event) { mouse.moveEventMethod(event); }, false);
 	};
 
-	/**** INITIALISATION ****/
 	/* Append the canvas to the DIV container. */
-	this.attachToElement(divContainer);
+	if (divContainer) {
+		this.attachToElement(divContainer);
+	}
 };
 
-/**  
- *	MouseListener.js is an interface object class which handles events triggered from Mouse.
+/**
+ *	MouseListener.js is an object class which handles events triggered from Mouse.
  *	Each instance is required to be added into a mouse object.
- */ 
+ */
 var MouseListener = function() {
 	
-	/** The following are all override methods which have commented examples. */
+	var mouseListener = this;
+
+	/**** The following are all methods for overriding handlers. ****/
 	
+	this.mouseOver = function (onMouseOver) {
+		if (onMouseOver && typeof onMouseOver === "function") {
+			mouseListener.onMouseOver = onMouseOver;
+		}
+	};
+	
+	this.mouseOut = function (onMouseOut) {
+		if (onMouseOut && typeof onMouseOut === "function") {
+			mouseListener.onMouseOut = onMouseOut;
+		}
+	};
+	
+	this.mouseDown = function (onMouseDown) {
+		if (onMouseDown && typeof onMouseDown === "function") {
+			mouseListener.onMouseDown = onMouseDown;
+		}
+	};
+
+	this.mouseUp = function (onMouseUp) {
+		if (onMouseUp && typeof onMouseUp === "function") {
+			mouseListener.onMouseUp = onMouseUp;
+		}
+	};
+
+	this.mouseMove = function (onMouseMove) {
+		if (onMouseMove && typeof onMouseMove === "function") {
+			mouseListener.onMouseMove = onMouseMove;
+		}
+	};
+	
+	this.mouseStop = function (onMouseStop) {
+		if (onMouseStop && typeof onMouseStop === "function") {
+			mouseListener.onMouseStop = onMouseStop;
+		}
+	};
+
+	this.mouseClick = function (onMouseClick) {
+		if (onMouseClick && typeof onMouseClick === "function") {
+			mouseListener.onMouseClick = onMouseClick;
+		}
+	};
+
+	/**** Handler methods ****/
+
 	/** Perform action for over event */
 	this.onMouseOver = function (event) {
 		// console.log("mouse in");
 	};
-		
+	
 	/** Perform action for out event */
 	this.onMouseOut = function (event) {
 		// console.log("mouse out");
 	};
-		
+	
 	/** Perform action for down event */
 	this.onMouseDown = function (event) {
 		switch (event.which) {
-			case this.LEFT_BUTTON:
+			case mouseListener.LEFT_BUTTON:
 				// console.log("mouse left button down ");
 				break;
-			case this.MIDDLE_BUTTON:
+			case mouseListener.MIDDLE_BUTTON:
 				// console.log("mouse middle button down ");
 				break;
-			case this.RIGHT_BUTTON:
+			case mouseListener.RIGHT_BUTTON:
 				// console.log("mouse right button down ");
 				break;
 			default:
@@ -363,13 +405,13 @@ var MouseListener = function() {
 	/** Perform action for up event */
 	this.onMouseUp = function (event) {
 		switch (event.which) {
-			case this.LEFT_BUTTON:
+			case mouseListener.LEFT_BUTTON:
 				// console.log("mouse left button up ");
 				break;
-			case this.MIDDLE_BUTTON:
+			case mouseListener.MIDDLE_BUTTON:
 				// console.log("mouse middle button up ");
 				break;
-			case this.RIGHT_BUTTON:
+			case mouseListener.RIGHT_BUTTON:
 				// console.log("mouse right button up ");
 				break;
 			default:
@@ -381,7 +423,7 @@ var MouseListener = function() {
 	this.onMouseMove = function (event) {
 		// console.log("mouse move" + (event.mouseMovingFast ? " fast" : ""));
 	};
-		
+	
 	/** Perform action for stop event */
 	this.onMouseStop = function (event) {
 		// console.log("mouse stop");
@@ -390,13 +432,13 @@ var MouseListener = function() {
 	/** Perform action for click event */
 	this.onMouseClick = function (event) {
 		switch (event.which) {
-			case this.LEFT_BUTTON:
+			case mouseListener.LEFT_BUTTON:
 				// console.log(" left click on " + this.position.x + ", " + this.position.y);
 				break;
-			case this.MIDDLE_BUTTON:
+			case mouseListener.MIDDLE_BUTTON:
 				// console.log(" middle click ");
 				break;
-			case this.RIGHT_BUTTON:
+			case mouseListener.RIGHT_BUTTON:
 				// console.log(" right click ");
 				break;
 			default:
