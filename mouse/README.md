@@ -17,7 +17,7 @@ var mouse = new Mouse(divContainer);
 
 ## Mouseistener
 <code>Mouseistener</code> is an object class which handles events triggered from <code>Mouse</code>.
- *	Each instance of <code>Mouseistener</code> is required to be added into a <code>Mouse</code> object.
+Each instance of <code>Mouseistener</code> is required to be added into a <code>Mouse</code> object.
 
 ## Usage
 ```javascript
