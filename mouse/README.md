@@ -25,8 +25,7 @@ Each instance of <code>Mouseistener</code> is required to be added into a <code>
 /* Create a mouse listener instance, with the div element as its container. */
 var mouseListener = new MouseListener();
 
-/**** There are 7 method that can be overrided: ****/
-
+/**** There are 7 methods that can be overwritten: ****/
 mouseListener.mouseOver (function () {
 	/* Do your stuff when mouse is over the div container. */
 });
