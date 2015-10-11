@@ -1,7 +1,7 @@
 /**  
  *	CanvasView.js is an object class which creates an instance of a HTML5 canvas
  *	under the given DIV container.
- *	It also initiates an animator, which it can pass renderFunctions through into it.
+ *	It also initiates an animator, in which it can pass rendering functions through into it.
  *
  *	Requires: Animator.js
  */ 
