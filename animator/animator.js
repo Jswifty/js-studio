@@ -50,18 +50,20 @@ var Animator = function() {
 	 * have the standard FPS time difference as the parameter value. */
 	this.isTimeBased = true;
 	
-	/* The list of listeners this mouse is appended to. Each mouse event will trigger the corresponding method of each listeners. */
+	/* The list of listeners this animator is appended to. Each animator event will trigger the corresponding method of each listeners. */
 	this.listeners = [];
+
+	var animator = this;
 	
 	/** Add a rendering function with the owner object which executes the function. Returns the rendering ID of this reference. 
 		Returns a renderID for future reference. */
 	this.addRenderFunction = function (renderingObject, renderingFunction) {
 	
 		/* Create a new render ID for this object. */
-		var renderID = this.generateRenderID();
+		var renderID = animator.generateRenderID();
 		
 		/* Create a new mapping reference of the rendering object and the rendering function. */
-		this.renderReferences[renderID] = { renderObject : renderingObject , renderFunction : renderingFunction };
+		animator.renderReferences[renderID] = { renderObject : renderingObject , renderFunction : renderingFunction };
 		
 		return renderID;
 	};
@@ -70,26 +72,26 @@ var Animator = function() {
 	this.removeRenderFunction = function (renderID) {
 	
 		/* Check if the render ID does exist. */
-		if (renderID !== undefined && this.renderReferences[renderID] !== undefined) {
+		if (renderID !== undefined && animator.renderReferences[renderID] !== undefined) {
 		
 			/* If so, then remove the reference of this render ID. */
-			delete this.renderReferences[renderID];
+			delete animator.renderReferences[renderID];
 		}
 	};
 	
 	/** Clear all rendering functions from all the objects. */
 	this.clearRenderFunctions = function () {
-		this.renderReferences = {};
+		animator.renderReferences = {};
 	};
 	
 	/** Set a specific frame rate for the animation. */
 	this.setFPS = function (newFPS) {
 		
-		this.FPS = newFPS;
+		animator.FPS = newFPS;
 		
-		if (!this.allowExceedFPSRange) {
+		if (!animator.allowExceedFPSRange) {
 			/* Limit the FPS with the maximum FPS. */
-			this.FPS = (this.FPS > this.maxFPS) ? this.maxFPS : (this.FPS < this.minFPS) ? this.minFPS : this.FPS;
+			animator.FPS = (animator.FPS > animator.maxFPS) ? animator.maxFPS : (animator.FPS < animator.minFPS) ? animator.minFPS : animator.FPS;
 		}
 	};
 	
@@ -99,28 +101,26 @@ var Animator = function() {
 		var timestamp = Date.now();
 		
 		/* Record the time-stamp of the starting animation. */
-		this.startTime = timestamp;
+		animator.startTime = timestamp;
 		
 		/* Record the previous animation time-stamp as the starting animation. */
-		this.previousAnimateTime = timestamp;
-		this.newAnimateTime = timestamp;
+		animator.previousAnimateTime = timestamp;
+		animator.newAnimateTime = timestamp;
 		
 		/* Start the animation loop. */
-		this.animate();
+		animator.animate();
 	};
 	
 	/** The iteration of the animation loop, each call depends on the animation frame of the browser. */
 	this.animate = function () {
 		
 		/* Check if the animations are paused or the frame rate is equal or below 0. */
-		if (!this.isPaused && this.FPS > 0) {
-			
-			var animator = this;
+		if (!animator.isPaused && animator.FPS > 0) {
 			
 			/* Set a time delay to compromise the desired FPS.
 			 * Since the requestAnimFrame callback method will cause a delay of roughly 4 milli seconds,
 			 * delay is reduced by that amount of time. */
-			var timeDelay = (1000 / this.FPS) - 4;
+			var timeDelay = (1000 / animator.FPS) - 4;
 			
 			setTimeout(function() {
 				/* Request for the animation frame.
@@ -137,28 +137,28 @@ var Animator = function() {
 	this.render = function () {
 	
 		/* Update the two time-stamps with the new time-stamp of the animation. */
-		this.previousAnimateTime = this.newAnimateTime;
-		this.newAnimateTime = Date.now();
+		animator.previousAnimateTime = animator.newAnimateTime;
+		animator.newAnimateTime = Date.now();
 		
-		var timeDiff = 1 / this.FPS;
+		var timeDiff = 1 / animator.FPS;
 		
-		if (this.isTimeBased) {
+		if (animator.isTimeBased) {
 			
 			/* Calculate the time difference between the previous time-stamp in terms of seconds. */
-			timeDiff = (this.newAnimateTime - this.previousAnimateTime) / 1000;
+			timeDiff = (animator.newAnimateTime - animator.previousAnimateTime) / 1000;
 			
-			if (!this.allowExceedFPSRange) {
+			if (!animator.allowExceedFPSRange) {
 				/* Check if the time difference is too big, which could be caused by poor performance or a pause.
 				 * If so, then reset the time difference to prevent animation jump. */
-				timeDiff = (timeDiff > this.maxTimeDiff) ? this.maxTimeDiff : (timeDiff < this.minTimeDiff) ? this.minTimeDiff : timeDiff;
+				timeDiff = (timeDiff > animator.maxTimeDiff) ? animator.maxTimeDiff : (timeDiff < animator.minTimeDiff) ? animator.minTimeDiff : timeDiff;
 			}
 		}
 		
 		/* Execute all the registered rendering functions. */
-		for (var renderID in this.renderReferences) {
+		for (var renderID in animator.renderReferences) {
 		
-			var renderObject = this.renderReferences[renderID].renderObject;
-			var renderFunction = this.renderReferences[renderID].renderFunction;
+			var renderObject = animator.renderReferences[renderID].renderObject;
+			var renderFunction = animator.renderReferences[renderID].renderFunction;
 			
 			renderFunction.call(renderObject, timeDiff);
 		}
@@ -166,44 +166,44 @@ var Animator = function() {
 	
 	/** Perform action for pause event */
 	this.onPause = function () {
-		for (var i = 0; i < this.listeners.length; i++) {
-			this.listeners[i].onAnimatorPause();
+		for (var i = 0; i < animator.listeners.length; i++) {
+			animator.listeners[i].onAnimatorPause();
 		}
 	};
 
 	/** Perform action for resume event */
 	this.onResume = function () {
-		for (var i = 0; i < this.listeners.length; i++) {
-			this.listeners[i].onAnimatorResume();
+		for (var i = 0; i < animator.listeners.length; i++) {
+			animator.listeners[i].onAnimatorResume();
 		}
 	};
 	
 	/** Pause the animation loop. */
 	this.pause = function () {
 		
-		if (this.isPaused === false) {
+		if (animator.isPaused === false) {
 		
-			this.isPaused = true;
+			animator.isPaused = true;
 			
-			this.onPause();
+			animator.onPause();
 		}
 	};
 	
 	/** Resume the animation loop. */
 	this.resume = function () {
 		
-		if (this.isPaused === true) {
+		if (animator.isPaused === true) {
 		
-			this.isPaused = false;
+			animator.isPaused = false;
 			
-			this.onResume();
+			animator.onResume();
 			
 			/* Record the previous animation time-stamp as the starting animation. */
-			this.previousAnimateTime = Date.now();
-			this.newAnimateTime = Date.now();
+			animator.previousAnimateTime = Date.now();
+			animator.newAnimateTime = Date.now();
 			
 			/* Re-initiate the animation loop. */
-			this.animate();
+			animator.animate();
 		}
 	};
 
@@ -219,16 +219,16 @@ var Animator = function() {
 			animatorListener.onAnimatorResume = function() {};
 		}
 
-		this.listeners.push(animatorListener);
+		animator.listeners.push(animatorListener);
 	};
 	
 	/** Remove a animator listener from the animator. */
 	this.removeAnimatorListener = function (animatorListener) {
 
 		/* Attempt to find the index of the given listener and then remove it. */
-		for (var i = this.listeners.length - 1; i >= 0; i--) {
-			if (this.listeners[i] === animatorListener) {
-				this.listeners.splice(i, 1);
+		for (var i = animator.listeners.length - 1; i >= 0; i--) {
+			if (animator.listeners[i] === animatorListener) {
+				animator.listeners.splice(i, 1);
 			}
 		}
 	};
@@ -236,34 +236,31 @@ var Animator = function() {
 	/** Generate a new rendering ID for an unregistered rendering object. */
 	this.generateRenderID = function () {
 		
-		var newID = "render_" + this.renderIDCount;
-		this.renderIDCount++;
+		var newID = "render_" + animator.renderIDCount;
+		animator.renderIDCount++;
 		
 		return newID;
 	};
 	
 	/** Perform action for window hidden event. */
 	this.onWindowHidden = function () {
-		this.pause();
+		animator.pause();
 	};
 
 	/** Perform action for window show event. */
 	this.onWindowShow = function () {
-		this.resume();
+		animator.resume();
 	};
 	
 	/** Perform action for window change event, either hidden or show */
 	this.onWindowChange = function (isWindowHidden) {
 	
 		if (isWindowHidden === true) {
-			this.onWindowHidden();
+			animator.onWindowHidden();
 		} else if (isWindowHidden === false) {
-			this.onWindowShow();
+			animator.onWindowShow();
 		}
 	};
-	
-	/**** INITIALISATION ****/
-	var animator = this;
 	
 	/** Adapt visibility change on the window for pausing and resuming. */
 	/* Chrome 13+. */
