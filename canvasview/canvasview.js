@@ -3,7 +3,7 @@
  *	under the given DIV container.
  *	It also initiates an animator, which it can pass renderFunctions through into it.
  *
- *	Required: Animator.js
+ *	Requires: Animator.js
  */ 
 
 var CanvasView = function (divContainer) {
