@@ -51,6 +51,12 @@ var Animator = function() {
 	 * If the animations are set not to be time-based, then the render function will always
 	 * have the standard FPS time difference as the parameter value. */
 	this.isTimeBased = true;
+
+	/* The flag for determining whether the animations should be paused when the browser window is hidden. */
+	this.pauseOnHidden = true;
+
+	/* The flag for determining whether the animations should be resume when the browser window is shown. */
+	this.resumeOnShown = true;
 	
 	/* The list of listeners this animator is appended to. Each animator event will trigger the corresponding method of each listeners. */
 	this.listeners = [];
@@ -244,12 +250,16 @@ var Animator = function() {
 	
 	/** Perform action for window hidden event. */
 	this.onWindowHidden = function () {
-		animator.pause();
+		if (animator.pauseOnHidden) {
+			animator.pause();
+		}
 	};
 
 	/** Perform action for window show event. */
 	this.onWindowShow = function () {
-		animator.resume();
+		if (animator.resumeOnShown) {
+			animator.resume();
+		}
 	};
 	
 	/** Perform action for window change event, either hidden or show */
