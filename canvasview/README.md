@@ -24,7 +24,7 @@ canvasView.addRenderFunction(function () {
     /** Do your rendering here **/	
 });
 
-/* Create an instance of CanvasView, with the div element as its container. */
+/* Start of the canvas animation! */
 canvasView.start();
 ```
 
