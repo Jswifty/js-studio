@@ -3,7 +3,7 @@
  *	under the given DIV container.
  *	It also initiates an animator, in which it can pass rendering functions through into it.
  *
- *	Requires: Animator.js
+ *	Requires: animator.js
  */ 
 
 var CanvasView = function (divContainer) {
@@ -56,7 +56,7 @@ var CanvasView = function (divContainer) {
 	this.removeRenderFunction = function (renderID) {
 		canvasView.animator.removeRenderFunction(renderID);
 	};
-	
+
 	/** Start the canvas view animation from the animator. */
 	this.start = function () {
 		canvasView.animator.start();
