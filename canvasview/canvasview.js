@@ -57,6 +57,11 @@ var CanvasView = function (divContainer) {
 		canvasView.animator.removeRenderFunction(renderID);
 	};
 	
+	/** Start the canvas view animation from the animator. */
+	this.start = function () {
+		canvasView.animator.start();
+	};
+	
 	/** Call the animator to pause the animation. */
 	this.pause = function () {
 		canvasView.animator.pause();
@@ -123,9 +128,6 @@ var CanvasView = function (divContainer) {
 	
 	/* Append the listener to the animator. */
 	this.animator.addAnimatorListener(this.animatorListener);
-
-	/* Start the animation. */
-	this.animator.start();
 	
 	/* Update the canvas dimensions to fit the given container. */
 	this.onResize();
