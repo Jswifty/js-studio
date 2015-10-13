@@ -1,21 +1,25 @@
 /**  
- *	AudioPlayer.js is an object class which creates an instance of an HTML audio,
- *	as well as other objects such as audio context and analyser for analysing frequencies
- *	of the playing audio.
+ *	AudioPlayer.js is an object class which creates an instance of an HTML audio under the given DIV container,
+ *	as well as other objects such as audio context and analyser for analysing frequencies of the playing audio.
  *
- *  analyerEnabled indicates whether the audio player should enable analyser for frequency data recording.
- *	convolverEnabled indicates whether the audio player should enable convolver for convolution effects. 
+ *	It takes another 2 parameters:
  *
- *	Required: Animator.js
+ *  analyerEnabled - indicates whether the audio player should enable analyser for frequency data recording.
+ *	convolverEnabled - indicates whether the audio player should enable convolver for convolution effects. 
+ *
+ *	Requires: animator.js
  */ 
 
 var AudioPlayer = function(divContainer, anaylserEnabled, convolverEnabled) {
+	
+	var audioPlayer = this;
 	
 	/* Store the DIV container. */
 	this.divContainer = divContainer;
 	
 	/* Create the audio object. */
 	this.audioElement = document.createElement("audio");
+	this.audioElement.style.position = "absolute";
 	this.audioElement.innerHTML = "Your browser does not support the audio element.";
 	
 	/* Create the audio context. */
@@ -28,20 +32,20 @@ var AudioPlayer = function(divContainer, anaylserEnabled, convolverEnabled) {
 		var extension = audioSource.substring(audioSource.lastIndexOf(".") + 1, audioSource.length);
 		
 		if (extension === "mp3" || extension === "ogg" || extension === "wav") {
-		
+			
 			var source = document.createElement("source");
 			source.src = audioSource;
 			source.type = "audio/" + extension;
 			
-			this.audioElement.appendChild(source);
+			audioPlayer.audioElement.appendChild(source);
 		}
 	};
 	
 	/** Updates the array of frequency data from the analyser. 
 	 *	This needs to be called to get the most recent data whilst the audio is playing. */
 	this.updateFrequencyData = function () {
-		if (this.analyser !== undefined && this.frequencyData !== undefined) {
-			this.analyser.getByteFrequencyData(this.frequencyData);
+		if (audioPlayer.analyser !== undefined && audioPlayer.frequencyData !== undefined) {
+			audioPlayer.analyser.getByteFrequencyData(audioPlayer.frequencyData);
 		}
 	};
 	
@@ -53,16 +57,16 @@ var AudioPlayer = function(divContainer, anaylserEnabled, convolverEnabled) {
 	/** Set whether to display the audio player controller for navigation. */
 	this.setShowController = function (showController) {
 		if (showController === false) {
-			this.audioElement.removeAttribute("controls");
+			audioPlayer.audioElement.removeAttribute("controls");
 		} else if (showController === true) {
-			this.audioElement.setAttribute("controls", "controls");
+			audioPlayer.audioElement.setAttribute("controls", "controls");
 		}
 	};
 	
 	/** Start the audio. */
 	this.start = function () {
-	
-		var audioElement = this.audioElement;
+		
+		var audioElement = audioPlayer.audioElement;
 		
 		/* If the readyState is HAVE_NOTHING, it means it's never started before.
 		 * So don't have to reset the current time anyway. */
@@ -75,61 +79,54 @@ var AudioPlayer = function(divContainer, anaylserEnabled, convolverEnabled) {
 
 	/** Pause the audio. */
 	this.pause = function () {
-		if (this.audioElement.playing !== true) {
-			this.audioElement.pause();
+		if (audioPlayer.audioElement.playing !== true) {
+			audioPlayer.audioElement.pause();
 		}
 	};
 
 	/** Resume the audio. */
 	this.resume = function () {
-		if (this.audioElement.ended === false && this.audioElement.paused === true) {
-			this.audioElement.play();
+		if (audioPlayer.audioElement.ended === false && audioPlayer.audioElement.paused === true) {
+			audioPlayer.audioElement.play();
 		}
 	};
 
 	/** Stop the audio. */
 	this.stop = function () {
-		this.audioElement.pause();
-		this.audioElement.currentTime = 0;
+		audioPlayer.audioElement.pause();
+		audioPlayer.audioElement.currentTime = 0;
 	};
 	
 	/** Perform action for the animator pause event. */
 	this.onAnimatorPaused = function () {
-		if (this.audioElement.playing !== true && this.audioElement.paused === false) {
-			this.audioElement.pause();
-			this.pausedByAnimator = true;
+		if (audioPlayer.audioElement.playing !== true && audioPlayer.audioElement.paused === false) {
+			audioPlayer.audioElement.pause();
+			audioPlayer.pausedByAnimator = true;
 		}
 	};
 	
 	/** Perform action for the animator resume event. */
 	this.onAnimatorResumed = function () {
-		if (this.audioElement.ended !== true && this.audioElement.paused === true && this.pausedByAnimator === true) {
-			this.audioElement.play();
-			this.pausedByAnimator = false;
+		if (audioPlayer.audioElement.ended !== true && audioPlayer.audioElement.paused === true && audioPlayer.pausedByAnimator === true) {
+			audioPlayer.audioElement.play();
+			audioPlayer.pausedByAnimator = false;
 		}
 	};
 	
 	/** Append an animator listener to the animator. */
 	this.attachToAnimator = function (animator) {
-	
-		var audioPlayer = this;
+
+		audioPlayer.animatorListener = new AnimatorListener(audioPlayer.onAnimatorPaused, audioPlayer.onAnimatorResumed);
 		
-		this.animatorListener = new AnimatorListener();
-		this.animatorListener.onAnimatorPause = function () { audioPlayer.onAnimatorPaused(); }
-		this.animatorListener.onAnimatorResume = function () { audioPlayer.onAnimatorResumed(); }
-		
-		animator.addAnimatorListener(this.animatorListener);
+		animator.addAnimatorListener(audioPlayer.animatorListener);
 	};
 	
 	/** Disengage the animator listener from the animator. */
 	this.detachFromAnimator = function (animator) {
-		if (this.animatorListener !== undefined) {
-			animator.removeAnimatorListener(this.animatorListener);
+		if (audioPlayer.animatorListener !== undefined) {
+			animator.removeAnimatorListener(audioPlayer.animatorListener);
 		}
 	};
-	
-	/**** INITIALISATION ****/
-	var audioPlayer = this;
 	
 	/* Append the audio element to the DIV container. */
 	this.divContainer.appendChild(this.audioElement);
@@ -160,7 +157,7 @@ var AudioPlayer = function(divContainer, anaylserEnabled, convolverEnabled) {
 	/* Setup the convolver for this audio for creating convolution effects.
 	 * This creates bufferSource, mainGainNode, sendGainNode, and convolver in audioPlayer */
 	if (convolverEnabled === true) {
-	
+		
 		var context = audioPlayer.audioContext;
 		
 		/* Create the buffer source from the audio context. */
