@@ -279,8 +279,8 @@ var Mouse = function(divContainer) {
 			mouseListener.onMouseMove && mouseListener.onMouseStop && mouseListener.onMouseClick) {
 			
 			/* Attempt to find the index of the given listener and then remove it. */
-			for(var i = mouse.listeners.length - 1; i >= 0; i--) {
-				if(mouse.listeners[i] === mouseListener) {
+			for (var i = mouse.listeners.length - 1; i >= 0; i--) {
+				if (mouse.listeners[i] === mouseListener) {
 					mouse.listeners.splice(i, 1);
 				}
 			}

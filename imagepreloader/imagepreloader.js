@@ -4,9 +4,38 @@ var ImagePreloader = function (images, callback) {
 	var preloader = this;
 
 	this.images = !(images instanceof Array) ? [images] : images;
-	this.callback = callback;
+	this.callback = !(typeof callback === "function") ? function() {} : callback;
 
 	this.preloadedImages = [];
+
+	this.addImages = function (images) {
+
+		images = !(images instanceof Array) ? [images] : images;
+
+		for (var i = 0; i < images.length; i++) {
+			if (this.images.indexOf(images[i] === -1) {
+				this.images.push(images[i]);
+			}
+		}
+	};
+
+	this.removeImages = function (images) {
+
+		images = !(images instanceof Array) ? [images] : images;
+
+		for (var i = images.length - 1; i >= 0; i--) {
+			if (this.images.indexOf(images[i]) === -1) {
+				this.images.splice(i, 1);
+			}
+		}
+	};
+
+	this.setCallback = function (callback) {
+		
+		if (typeof callback === "function") {
+			this.callback = callback;
+		}
+	};
 
 	this.preload = function () {
 
