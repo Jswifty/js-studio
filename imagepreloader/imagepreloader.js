@@ -1,4 +1,7 @@
-
+/**  
+ *	ImagePreloader.js is an object class which can stack up images for preloading, 
+ * 	and trigger the callback function once all images are loaded completely.
+ */
 var ImagePreloader = function (images, callback) {
 
 	var preloader = this;
