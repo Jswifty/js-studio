@@ -51,12 +51,12 @@ var ImagePreloader = function (images, callback) {
 			}
 		}
 
-		for (var i = 0; i < this.images.length; i++) {
+		for (var i = 0; i < preloader.images.length; i++) {
 			
 			var image = new Image();
 			
 			image.onload = onload;
-			image.src = images[i];
+			image.src = preloader.images[i];
 		}
 	};
 }
