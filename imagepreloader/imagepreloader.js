@@ -16,7 +16,7 @@ var ImagePreloader = function (images, callback) {
 		images = !(images instanceof Array) ? [images] : images;
 
 		for (var i = 0; i < images.length; i++) {
-			if (this.images.indexOf(images[i] === -1) {
+			if (this.images.indexOf(images[i]) === -1) {
 				this.images.push(images[i]);
 			}
 		}
