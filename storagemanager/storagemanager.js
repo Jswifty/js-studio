@@ -1,6 +1,6 @@
 /**  
- *	StorageManager.js is a static object class which manages storage 
- *	on the client website. A storage can be retrieved with a storage type, which is either
+ *	StorageManager.js is a static object class which manages client web storage.
+ *	A storage can be retrieved with a storage type, which is either
  *	local storage or session storage, and a namespace.
  */
 var StorageManager = {
