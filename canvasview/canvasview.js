@@ -3,11 +3,12 @@
  *	under the given DIV container.
  *	It also initiates an animator, in which it can pass rendering functions through into it.
  *
- *	Requires: animator.js
+ *	Requires: animator.js, animatorlistener.js
  */ 
 define(function (require) {
 
 	var Animator = require('./animator');
+	var AnimatorListener = require('./animatorlistener');
 
 	return function (divContainer) {
 	
@@ -124,7 +125,7 @@ define(function (require) {
 		
 		/* Fetch resize method of the DIV container and window. */
 		this.divContainer.onresize = function () { canvasView.onResize(); };
-				
+		
 		/* Create a Animator listener to adaptor events. */
 		this.animatorListener = new AnimatorListener(this.onPause, this.onResume);
 		
