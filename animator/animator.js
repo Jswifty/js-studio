@@ -60,9 +60,12 @@ define(function (require) {
 		/* The flag for determining whether the animations should be resume when the browser window is shown. */
 		this.resumeOnShown = true;
 		
+		/* The flag for determining whether the animations is currently requesting in order to avoid multiple requests. */
+		this.requesting = false;
+
 		/* The list of listeners this animator is appended to. Each animator event will trigger the corresponding method of each listeners. */
 		this.listeners = [];
-		
+
 		/** Add a rendering function with the owner object which executes the function. Returns the rendering ID of this reference. 
 			Returns a renderID for future reference. */
 		this.addRenderFunction = function (renderingObject, renderingFunction) {
@@ -121,19 +124,21 @@ define(function (require) {
 		
 		/** The iteration of the animation loop, each call depends on the animation frame of the browser. */
 		this.animate = function () {
-			
+
 			/* Check if the animations are paused or the frame rate is equal or below 0. */
-			if (!animator.isPaused && animator.FPS > 0) {
+			if (!animator.requesting && !animator.isPaused && animator.FPS > 0) {
 				
 				/* Set a time delay to compromise the desired FPS.
 				 * Since the requestAnimFrame callback method will cause a delay of roughly 4 milli seconds,
 				 * delay is reduced by that amount of time. */
 				var timeDelay = (1000 / animator.FPS) - 4;
 				
+				animator.requesting = true;
+
 				setTimeout(function() {
 					/* Request for the animation frame.
 					/* (i.e.: this will set off another iterate of this function depending on the browser). */
-					window.requestAnimFrame(function() { animator.animate(); });
+					window.requestAnimFrame(function() { animator.requesting = false; animator.animate(); });
 					
 					/* Render the registered animation objects. */
 					animator.render();

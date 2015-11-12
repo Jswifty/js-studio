@@ -7,10 +7,10 @@
  */ 
 define(function (require) {
 
-	var Animator = require('./animator');
-	var AnimatorListener = require('./animatorlistener');
+	var Animator = require("./animator");
+	var AnimatorListener = require("./animatorlistener");
 
-	return function (divContainer) {
+	return function (divContainer, animator) {
 	
 		var canvasView = this;
 		
@@ -23,7 +23,7 @@ define(function (require) {
 		this.canvas.innerHTML = "Your browser does not support HTML5 canvas.";
 		
 		/* Create an Animator instance. */
-		this.animator = new Animator();
+		this.animator = animator || new Animator();
 		
 		/* The list of canvas view listeners this view is appended to. Each canvas view event will trigger the corresponding method of each listeners. */
 		this.listeners = [];
@@ -45,7 +45,7 @@ define(function (require) {
 		
 		/** Perform action for window resize event. */
 		this.onResize = function () {
-
+			
 			/* Set canvas dimensions. */
 			canvasView.canvas.width = canvasView.divContainer.offsetWidth; 
 			canvasView.canvas.height = canvasView.divContainer.offsetHeight;
@@ -108,7 +108,6 @@ define(function (require) {
 			for (var i = 0; i < canvasView.listeners.length; i++) {
 				canvasView.listeners[i].onCanvasViewPause();
 			}
-			console.log("Canvas view paused at: " + new Date().toString());
 		};
 
 		/** Perform action for animator pause event.
@@ -117,14 +116,14 @@ define(function (require) {
 			for (var i = 0; i < canvasView.listeners.length; i++) {
 				canvasView.listeners[i].onCanvasViewResume();
 			}
-			console.log("Canvas view resume at: " + new Date().toString());
 		};
 		
 		/* Append the canvas to the DIV container. */
 		this.divContainer.appendChild(this.canvas);
 		
 		/* Fetch resize method of the DIV container and window. */
-		this.divContainer.onresize = function () { canvasView.onResize(); };
+		this.divContainer.addEventListener("resize", canvasView.onResize);
+		window.addEventListener("resize", canvasView.onResize);
 		
 		/* Create a Animator listener to adaptor events. */
 		this.animatorListener = new AnimatorListener(this.onPause, this.onResume);
