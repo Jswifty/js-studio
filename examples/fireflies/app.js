@@ -176,7 +176,5 @@ define(function (require) {
 		}
 
 		divContainer.onresize = function () { scene.onResize(); };
-
-		this.addMouseListener(divContainer);
 	};
 });

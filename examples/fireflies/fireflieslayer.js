@@ -12,6 +12,8 @@ define(function (require) {
 
 	return function (index, numOfFireFlies, divContainer, animator) {
 
+		var firefliesLayer = this;
+
 		/* DIV container. */
 		this.divContainer = divContainer;
 		
@@ -80,8 +82,6 @@ define(function (require) {
 
 		this.startFireFliesLayer = function () {
 
-			var firefliesLayer = this;
-				
 			/* Start the generating process of Fireflies, creating a firefly per second. */
 			for (var i = 0; i < firefliesLayer.numOfFireFlies; i++) {
 				setTimeout(function() { firefliesLayer.fireflies.push(new Firefly()); }, firefliesLayer.generationDelay * i);
@@ -93,32 +93,33 @@ define(function (require) {
 			/* First, update the status of the fireflies layer.
 			 * (i.e.: canvas size, mouse position, fireflies status). */
 			this.update(timeDiff);
-			
-			var context = this.canvasView.getCanvas2DContext();
-			
-			/* Clear the canvas screen. */
-			context.clearRect(0, 0, this.canvasView.canvas.width, this.canvasView.canvas.height);
-			
-			/* Set the color overlapping to become brighter. */
-			context.globalCompositeOperation = "lighter";
-			
-			/* Paint the fireflies. */
-			for(var i = 0; i <this.fireflies.length; i++) {
-				context.beginPath();
+
+			this.canvasView.draw(function (context, width, height) {
 				
-				var firefly = this.fireflies[i];
-				var gradient = context.createRadialGradient(firefly.position.x, firefly.position.y, 0, firefly.position.x, firefly.position.y, firefly.radius);
+				/* Clear the canvas screen. */
+				context.clearRect(0, 0, width, height);
 				
-				gradient.addColorStop(0, "rgba(255, 255, 255, " + firefly.brightnessString + ")");
-				gradient.addColorStop(0.1, "rgba(255, 255, 255, " + 0.8 * firefly.brightnessString + ")");
-				gradient.addColorStop(0.4, "rgba(" + firefly.rgbString + ", " + 0.2 * firefly.brightnessString + ")");
-				gradient.addColorStop(1, "rgba(" + firefly.rgbString + ", 0)");
-				context.fillStyle = gradient;
-				context.arc(firefly.position.x, firefly.position.y, firefly.radius, 2 * Math.PI, false);
+				/* Set the color overlapping to become brighter. */
+				context.globalCompositeOperation = "lighter";
 				
-				context.closePath();
-				context.fill();
-			}
+				/* Paint the fireflies. */
+				for(var i = 0; i < firefliesLayer.fireflies.length; i++) {
+					context.beginPath();
+					
+					var firefly = firefliesLayer.fireflies[i];
+					var gradient = context.createRadialGradient(firefly.position.x, firefly.position.y, 0, firefly.position.x, firefly.position.y, firefly.radius);
+					
+					gradient.addColorStop(0, "rgba(255, 255, 255, " + firefly.brightnessString + ")");
+					gradient.addColorStop(0.1, "rgba(255, 255, 255, " + 0.8 * firefly.brightnessString + ")");
+					gradient.addColorStop(0.4, "rgba(" + firefly.rgbString + ", " + 0.2 * firefly.brightnessString + ")");
+					gradient.addColorStop(1, "rgba(" + firefly.rgbString + ", 0)");
+					context.fillStyle = gradient;
+					context.arc(firefly.position.x, firefly.position.y, firefly.radius, 2 * Math.PI, false);
+					
+					context.closePath();
+					context.fill();
+				}
+			});
 		};
 
 		this.update = function (timeDiff) {

@@ -29,12 +29,12 @@ define(function (require) {
 		this.listeners = [];
 		
 		/** Canvas width getter. */
-		this.getCanvasWidth = function () {
+		this.getWidth = function () {
 			return canvasView.canvas.width;
 		};
 
 		/** Canvas height getter. */
-		this.getCanvasHeight = function () {
+		this.getHeight = function () {
 			return canvasView.canvas.height;
 		};
 		
@@ -49,6 +49,11 @@ define(function (require) {
 			/* Set canvas dimensions. */
 			canvasView.canvas.width = canvasView.divContainer.offsetWidth; 
 			canvasView.canvas.height = canvasView.divContainer.offsetHeight;
+		};
+		
+		/** Perform draw on the canvas based on the given draw function. */
+		this.draw = function (drawFunction) {
+			drawFunction(canvasView.getCanvas2DContext(), canvasView.getWidth(), canvasView.getHeight());
 		};
 		
 		/** Add a drawing method to the animator. */

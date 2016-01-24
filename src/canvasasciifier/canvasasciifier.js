@@ -43,12 +43,12 @@ define(function (require) {
 		this.textWidth = this.textpre.offsetWidth / 10;
 		this.textHeight = this.textpre.offsetHeight / 10;
 		
-		/* Perform action for window resize event. */
+		/** Perform action for window resize event. */
 		this.onResize = function () {
 			asciifier.update();
 		};
 		
-		/* Perform an update on all the ascii text area by capturing the canvas' image data. */
+		/** Perform an update on all the ascii text area by capturing the canvas' image data. */
 		this.update = function () {
 
 			var context = asciifier.canvas.getContext("2d");

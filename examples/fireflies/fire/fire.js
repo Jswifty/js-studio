@@ -125,45 +125,46 @@ define(function (require) {
 			 * (i.e.: canvas size, mouse position, fire particle status). */
 			fire.update(timeDiff);
 
-			var context = fire.canvasView.getCanvas2DContext();
+			this.canvasView.draw(function (context, width, height) {
 			
-			/* Clear the canvas screen. */
-			context.clearRect(0, 0, fire.canvasView.getCanvasWidth(), fire.canvasView.getCanvasHeight());
-			
-			/* Set the color overlapping to become brighter. */
-			context.globalCompositeOperation = 'lighter';
-			
-			/* Paint the fire. */
-			for (var i = 0; i < fire.fireParticles.length; i++) {
-				context.beginPath();
-
-				var fireParticle = fire.fireParticles[i];
-				var gradient = context.createRadialGradient(fireParticle.position.x, fireParticle.position.y, 0, fireParticle.position.x, fireParticle.position.y, fireParticle.radius);
-				gradient.addColorStop(0, 'rgba(' + fireParticle.rgbString + ', ' + fireParticle.opacityString + ')');
-				gradient.addColorStop(0.5, 'rgba(' + fireParticle.rgbString + ', ' + 0.5 * fireParticle.opacityString + ')');
-				gradient.addColorStop(1, 'rgba(' + fireParticle.rgbString + ', 0)');
-				context.fillStyle = gradient;
-				context.arc(fireParticle.position.x, fireParticle.position.y, fireParticle.radius, 2 * Math.PI, false);
+				/* Clear the canvas screen. */
+				context.clearRect(0, 0, width, height);
 				
-				context.closePath();
-				context.fill();
-			}
-			
-			/* Paint the sparks. */
-			for (var i = 0; i < fire.sparkParticles.length; i++) {
-				context.beginPath();
-
-				var sparkParticle = fire.sparkParticles[i];
-				var gradient = context.createRadialGradient(sparkParticle.position.x, sparkParticle.position.y, 0, sparkParticle.position.x, sparkParticle.position.y, sparkParticle.radius);
-				gradient.addColorStop(0, 'rgba(255, 255, 255, ' + sparkParticle.opacityString + ')');
-				gradient.addColorStop(0.6, 'rgba(' + sparkParticle.rgbString + ', ' + 0.6 * sparkParticle.opacityString + ')');
-				gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
-				context.fillStyle = gradient;
-				context.arc(sparkParticle.position.x, sparkParticle.position.y, sparkParticle.radius, 2 * Math.PI, false);
+				/* Set the color overlapping to become brighter. */
+				context.globalCompositeOperation = "lighter";
 				
-				context.closePath();
-				context.fill();
-			}
+				/* Paint the fire. */
+				for (var i = 0; i < fire.fireParticles.length; i++) {
+					context.beginPath();
+
+					var fireParticle = fire.fireParticles[i];
+					var gradient = context.createRadialGradient(fireParticle.position.x, fireParticle.position.y, 0, fireParticle.position.x, fireParticle.position.y, fireParticle.radius);
+					gradient.addColorStop(0, "rgba(" + fireParticle.rgbString + ", " + fireParticle.opacityString + ")");
+					gradient.addColorStop(0.5, "rgba(" + fireParticle.rgbString + ", " + 0.5 * fireParticle.opacityString + ")");
+					gradient.addColorStop(1, "rgba(" + fireParticle.rgbString + ", 0)");
+					context.fillStyle = gradient;
+					context.arc(fireParticle.position.x, fireParticle.position.y, fireParticle.radius, 2 * Math.PI, false);
+					
+					context.closePath();
+					context.fill();
+				}
+				
+				/* Paint the sparks. */
+				for (var i = 0; i < fire.sparkParticles.length; i++) {
+					context.beginPath();
+
+					var sparkParticle = fire.sparkParticles[i];
+					var gradient = context.createRadialGradient(sparkParticle.position.x, sparkParticle.position.y, 0, sparkParticle.position.x, sparkParticle.position.y, sparkParticle.radius);
+					gradient.addColorStop(0, "rgba(255, 255, 255, " + sparkParticle.opacityString + ")");
+					gradient.addColorStop(0.6, "rgba(" + sparkParticle.rgbString + ", " + 0.6 * sparkParticle.opacityString + ")");
+					gradient.addColorStop(1, "rgba(0, 0, 0, 0)");
+					context.fillStyle = gradient;
+					context.arc(sparkParticle.position.x, sparkParticle.position.y, sparkParticle.radius, 2 * Math.PI, false);
+					
+					context.closePath();
+					context.fill();
+				}
+			});
 		};
 	};
 });

@@ -19,14 +19,15 @@ canvas.style.position = "absolute";
 canvas.innerHTML = "Your browser does not support HTML5 canvas.";
 body.appendChild(canvas);
 
-/* Create an image, set the image source to "darth-vader.jpg", and draw it on the canvas once loaded. */
+/* Create an image, set the image source to "darth-vader.jpg". */
 var imageObj = new Image();
 imageObj.onload = function() {
+
+	/* Draw the image on the canvas once loaded. */
 	canvas.getContext("2d").drawImage(imageObj, 0, 0, 300, 150);
-	var asciify = new asciifier(canvas, { background: "black", color: "green", invert: true });
+	
+	/* Create an asciifier and pass in the canvas as the source. */
+	var asciify = new asciifier(canvas);
 };
 imageObj.src = "darth-vader.jpg";
-
-/* Create an asciifier and pass in the canvas as the source. */
-var asciify = new asciifier(canvas);
 ```
