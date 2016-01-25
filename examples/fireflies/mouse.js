@@ -22,6 +22,9 @@ define(function (require) {
 		
 		/* Previous update time-stamp of a mouse down action. */
 		this.lastMouseDownTime = 0;
+
+		/* Whether the mouse is currently contacted by touch surface. */
+		this.isTouching = false;
 		
 		/* Current mouse position. */
 		this.position = null;
@@ -131,8 +134,229 @@ define(function (require) {
 			}
 		};
 
-		/** When the Mouse comes into the parent container. */
+		/** When the mouse comes into the parent container. */
 		this.overEventMethod = function (event) {
+
+			if (mouse.isTouching === false) {
+				
+				/* Put mouse as a reference in the event. */
+				event.mouse = mouse;
+				
+				/* Skip the default behaviours upon this event. */
+				if (mouse.preventDefault) {
+					event.preventDefault();
+				}
+				
+				/* Update the mouse position with a null position to refresh the statistics. */
+				mouse.updatePosition(null);
+				
+				/* Perform action for over event */
+				mouse.onMouseOver(event);
+			}
+		};
+
+		/** When the mouse moves out from the parent container. */
+		this.outEventMethod = function (event) {
+
+			if (mouse.isTouching === false) {
+				
+				/* Put mouse as a reference in the event. */
+				event.mouse = mouse;
+				
+				/* Skip the default behaviours upon this event. */
+				if (mouse.preventDefault) {
+					event.preventDefault();
+				}
+				
+				/* Update the mouse position with a null position to clear the statistics. */
+				mouse.updatePosition(null);
+				
+				/* Perform action for out event */
+				mouse.onMouseOut(event);
+			}
+		};
+
+		/** When the mouse is pressed. */
+		this.downEventMethod = function (event) {
+
+			if (mouse.isTouching === false) {
+				
+				/* Put mouse as a reference in the event. */
+				event.mouse = mouse;
+				
+				/* Skip the default behaviours upon this event. */
+				if (mouse.preventDefault) {
+					event.preventDefault();
+				}
+				
+				/* Update the mouse position. */
+				mouse.updatePosition({ x: event.pageX, y: event.pageY });
+				
+				/* Update the mouse down time-stamp. */
+				mouse.lastMouseDownTime = mouse.lastUpdateTime;
+				
+				/* Perform action for down event. */
+				mouse.onMouseDown(event);
+			}
+		};
+
+		/** When the mouse's button is released. */
+		this.upEventMethod = function (event) {
+
+			if (mouse.isTouching === false) {
+				
+				/* Put mouse as a reference in the event. */
+				event.mouse = mouse;
+				
+				/* Skip the default behaviours upon this event. */
+				if (mouse.preventDefault) {
+					event.preventDefault();
+				}
+				
+				/* Update the mouse position. */
+				mouse.updatePosition({ x: event.pageX, y: event.pageY });
+				
+				if (mouse.lastUpdateTime - mouse.lastMouseDownTime <= mouse.CLICK_DELAY) {
+					mouse.clickEventMethod(event);
+				}
+				
+				/* Perform action for up event. */
+				mouse.onMouseUp(event);
+			}
+		};
+
+		/** When the mouse is moving. */
+		this.moveEventMethod = function (event) {
+
+			if (mouse.isTouching === false) {
+				
+				/* Put mouse as a reference in the event. */
+				event.mouse = mouse;
+				
+				/* Skip the default behaviours upon this event. */
+				if (mouse.preventDefault) {
+					event.preventDefault();
+				}
+				
+				/* Update the mouse position. */
+				mouse.updatePosition({ x: event.pageX, y: event.pageY });
+				
+				/* Re-initiate the stopping thread, calling the mouse stop in 0.05s. */
+				clearTimeout(mouse.stoppingThread);
+				mouse.stoppingThread = setTimeout(function() { mouse.stopEventMethod(event); }, 50);
+				
+				/* Perform action for move event */
+				mouse.onMouseMove(event);
+			}
+		};
+		
+		/** When the mouse has stop moving in the container. */
+		this.stopEventMethod = function (event) {
+
+			if (mouse.isTouching === false) {
+				
+				/* Put mouse as a reference in the event. */
+				event.mouse = mouse;
+				
+				/* Update the mouse position. */
+				mouse.updatePosition({ x: event.pageX, y: event.pageY });
+				
+				/* Perform action for stop event */
+				mouse.onMouseStop(event);
+			}
+		};
+
+		/** When the mouse clicks. */
+		this.clickEventMethod = function (event) {
+
+			if (mouse.isTouching === false) {
+
+				/* Put mouse as a reference in the event. */
+				event.mouse = mouse;
+				
+				/* Update the mouse position. */
+				mouse.updatePosition({ x: event.pageX, y: event.pageY });
+				
+				/* Perform action for stop event */
+				mouse.onMouseClick(event);
+			}
+		};
+
+		/** When a contact is made on the touch surface. */
+		this.touchStartMethod = function (event) {
+			
+			mouse.isTouching = true;
+
+			/* Put mouse as a reference in the event. */
+			event.mouse = mouse;
+			
+			/* Skip the default behaviours upon this event. */
+			if (mouse.preventDefault) {
+				event.preventDefault();
+			}
+			
+			/* Update the mouse position. */
+			mouse.updatePosition({ x: event.changedTouches[0].pageX, y: event.changedTouches[0].pageY });
+			
+			/* Update the mouse down time-stamp. */
+			mouse.lastMouseDownTime = mouse.lastUpdateTime;
+			
+			/* Perform action for down event. */
+			mouse.onMouseDown(event);
+		};
+
+		/** When a contact is remove on the touch surface. */
+		this.touchEndMethod = function (event) {
+
+			/* Put mouse as a reference in the event. */
+			event.mouse = mouse;
+			
+			/* Skip the default behaviours upon this event. */
+			if (mouse.preventDefault) {
+				event.preventDefault();
+			}
+			
+			/* Update the mouse position. */
+			mouse.updatePosition({ x: event.changedTouches[0].pageX, y: event.changedTouches[0].pageY });
+			
+			if (mouse.lastUpdateTime - mouse.lastMouseDownTime <= mouse.CLICK_DELAY) {
+				mouse.clickEventMethod(event);
+			}
+			
+			/* Perform action for up event. */
+			mouse.onMouseUp(event);
+
+			setTimeout(function () { mouse.isTouching = false; }, 0);
+		};
+
+		/** When a touch point moves across the touch surface. */
+		this.touchMoveMethod = function (event) {
+			
+			mouse.isTouching = true;
+
+			/* Put mouse as a reference in the event. */
+			event.mouse = mouse;
+			
+			/* Skip the default behaviours upon this event. */
+			if (mouse.preventDefault) {
+				event.preventDefault();
+			}
+			
+			/* Update the mouse position. */
+			mouse.updatePosition({ x: event.changedTouches[0].pageX, y: event.changedTouches[0].pageY });
+			
+			/* Re-initiate the stopping thread, calling the mouse stop in 0.05s. */
+			clearTimeout(mouse.stoppingThread);
+			mouse.stoppingThread = setTimeout(function() { mouse.stopEventMethod(event); }, 50);
+			
+			/* Perform action for move event */
+			mouse.onMouseMove(event);
+		};
+
+		/** When a contact enters the bound-to element on the touch surface. */
+		this.touchEnterMethod = function (event) {
+			
+			mouse.isTouching = true;
 
 			/* Put mouse as a reference in the event. */
 			event.mouse = mouse;
@@ -149,8 +373,8 @@ define(function (require) {
 			mouse.onMouseOver(event);
 		};
 
-		/** When the Mouse moves out from the parent container. */
-		this.outEventMethod = function (event) {
+		/** When a contact leaves the bound-to element on the touch surface. */
+		this.touchLeaveMethod = function (event) {
 
 			/* Put mouse as a reference in the event. */
 			event.mouse = mouse;
@@ -160,58 +384,18 @@ define(function (require) {
 				event.preventDefault();
 			}
 			
-			/* Update the mouse position with a null position to clear the statistics. */
+			/* Update the mouse position with a null position to refresh the statistics. */
 			mouse.updatePosition(null);
 			
-			/* Perform action for out event */
+			/* Perform action for over event */
 			mouse.onMouseOut(event);
+
+			setTimeout(function () { mouse.isTouching = false; }, 0);
 		};
 
-		/** When the Mouse is pressed. */
-		this.downEventMethod = function (event) {
-
-			/* Put mouse as a reference in the event. */
-			event.mouse = mouse;
-			
-			/* Skip the default behaviours upon this event. */
-			if (mouse.preventDefault) {
-				event.preventDefault();
-			}
-			
-			/* Update the mouse position. */
-			mouse.updatePosition({ x: event.pageX, y: event.pageY });
-			
-			/* Update the mouse down time-stamp. */
-			mouse.lastMouseDownTime = mouse.lastUpdateTime;
-			
-			/* Perform action for down event. */
-			mouse.onMouseDown(event);
-		};
-
-		/** When the Mouse's button is released. */
-		this.upEventMethod = function (event) {
-
-			/* Put mouse as a reference in the event. */
-			event.mouse = mouse;
-			
-			/* Skip the default behaviours upon this event. */
-			if (mouse.preventDefault) {
-				event.preventDefault();
-			}
-			
-			/* Update the mouse position. */
-			mouse.updatePosition({ x: event.pageX, y: event.pageY });
-			
-			if (mouse.lastUpdateTime - mouse.lastMouseDownTime <= mouse.CLICK_DELAY) {
-				mouse.clickEventMethod(event);
-			}
-			
-			/* Perform action for up event. */
-			mouse.onMouseUp(event);
-		};
-
-		/** When the Mouse is moving. */
-		this.moveEventMethod = function (event) {
+		/** When a contact gets cancelled. This can occur if the user has moved 
+		 *	the touch point outside the browser UI or into a plugin or if an alert modal pops up. */
+		this.touchCancelMethod = function (event) {
 			
 			/* Put mouse as a reference in the event. */
 			event.mouse = mouse;
@@ -221,41 +405,13 @@ define(function (require) {
 				event.preventDefault();
 			}
 			
-			/* Update the mouse position. */
-			mouse.updatePosition({ x: event.pageX, y: event.pageY });
+			/* Update the mouse position with a null position to refresh the statistics. */
+			mouse.updatePosition(null);
 			
-			/* Re-initiate the stopping thread, calling the mouse stop in 0.05s. */
-			clearTimeout(mouse.stoppingThread);
-			mouse.stoppingThread = setTimeout(function() { mouse.stopEventMethod(event); }, 50);
-			
-			/* Perform action for move event */
-			mouse.onMouseMove(event);
-		};
-		
-		/** When the Mouse has stop moving in the container. */
-		this.stopEventMethod = function (event) {
+			/* Perform action for over event */
+			mouse.onMouseOut(event);
 
-			/* Put mouse as a reference in the event. */
-			event.mouse = mouse;
-			
-			/* Update the mouse position. */
-			mouse.updatePosition({ x: event.pageX, y: event.pageY });
-			
-			/* Perform action for stop event */
-			mouse.onMouseStop(event);
-		};
-
-		/** When the Mouse clicks. */
-		this.clickEventMethod = function (event) {
-
-			/* Put mouse as a reference in the event. */
-			event.mouse = mouse;
-			
-			/* Update the mouse position. */
-			mouse.updatePosition({ x: event.pageX, y: event.pageY });
-			
-			/* Perform action for stop event */
-			mouse.onMouseClick(event);
+			setTimeout(function () { mouse.isTouching = false; }, 0);
 		};
 
 		/** Add a mouse listener to the mouse. */
@@ -291,11 +447,19 @@ define(function (require) {
 			mouse.listenElement = element;
 			
 			/* Engage the essential mouse events to each corresponding handler. */
+			
 			mouse.listenElement.addEventListener("mouseover", mouse.overEventMethod, false);
 			mouse.listenElement.addEventListener("mouseout", mouse.outEventMethod, false);
 			mouse.listenElement.addEventListener("mousedown", mouse.downEventMethod, false);
 			mouse.listenElement.addEventListener("mouseup", mouse.upEventMethod, false);
 			mouse.listenElement.addEventListener("mousemove", mouse.moveEventMethod, false);
+			
+			mouse.listenElement.addEventListener("touchenter", mouse.touchEnterMethod, false);
+			mouse.listenElement.addEventListener("touchleave", mouse.touchLeaveMethod, false);
+			mouse.listenElement.addEventListener("touchstart", mouse.touchStartMethod, false);
+			mouse.listenElement.addEventListener("touchend", mouse.touchEndMethod, false);
+			mouse.listenElement.addEventListener("touchmove", mouse.touchMoveMethod, false);
+			mouse.listenElement.addEventListener("touchcancel", mouse.touchCancelMethod, false);
 		};
 
 		/** Disengage the mouse from DOM element and event functions from it. */
@@ -305,11 +469,24 @@ define(function (require) {
 			mouse.listenElement = null;
 
 			/* Disengage all the mouse events from each corresponding handler. */
+			
 			mouse.listenElement.removeEventListener("mouseover", mouse.overEventMethod, false);
 			mouse.listenElement.removeEventListener("mouseout", mouse.outEventMethod, false);
 			mouse.listenElement.removeEventListener("mousedown", mouse.downEventMethod, false);
 			mouse.listenElement.removeEventListener("mouseup", mouse.upEventMethod, false);
 			mouse.listenElement.removeEventListener("mousemove", mouse.moveEventMethod, false);
+
+			mouse.listenElement.removeEventListener("touchenter", mouse.touchEnterMethod, false);
+			mouse.listenElement.removeEventListener("touchleave", mouse.touchLeaveMethod, false);
+			mouse.listenElement.removeEventListener("touchstart", mouse.touchStartMethod, false);
+			mouse.listenElement.removeEventListener("touchend", mouse.touchEndMethod, false);
+			mouse.listenElement.removeEventListener("touchmove", mouse.touchMoveMethod, false);
+			mouse.listenElement.removeEventListener("touchcancel", mouse.touchCancelMethod, false);
+		};
+
+		/** Toggle value for mouse prevent default on all events. */
+		this.setPreventDefault = function (preventDefault) {
+			mouse.preventDefault = preventDefault;
 		};
 
 		/* Append the canvas to the DIV container. */

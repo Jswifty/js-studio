@@ -61,7 +61,7 @@ define(function (require) {
 		};
 
 		this.onMouseDown = function (event) {
-			if (event.which === scene.mouseListener.LEFT_BUTTON) {
+			if (event.which === scene.mouseListener.LEFT_BUTTON || event.mouse.isTouching) {
 				scene.fire.onMouseDown(event);
 				
 				for (var i = 0; i < scene.firefliesLayers.length; i++) {
