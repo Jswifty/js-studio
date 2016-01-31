@@ -26,7 +26,7 @@ define(function (require) {
 
 		/* Create the pre text area. */
 		this.textpre = document.createElement("pre");
-		this.textpre.style.font = config.font || "bold 10px/7px Courier New";
+		this.textpre.style.font = config.font || "bold 10px/7px Courier New, Courier, Andale Mono, monospace";
 		this.textpre.style.position = "absolute";
 		this.textpre.style.height = "auto";
 		this.textpre.style.width = "auto";
@@ -34,14 +34,18 @@ define(function (require) {
 		this.textpre.style.background = config.background || "white";
 		this.textpre.style.color = config.color || "black";
 
-		/* Setup a 10 x 10 text area for calculating the true font size. */
-		this.textpre.innerHTML = "..........\n..........\n..........\n..........\n..........\n..........\n..........\n..........\n..........\n..........";
-
 		canvas.parentElement.appendChild(this.textpre);
-		canvas.parentElement.style.overflow = "hidden";
 
-		this.textWidth = this.textpre.offsetWidth / 10;
-		this.textHeight = this.textpre.offsetHeight / 10;
+		/* Setup a 10 x 10 prea text area for calculating the true font size. */
+		this.dummyTextpre = document.createElement("pre");
+		this.dummyTextpre.style.font = config.font || "bold 10px/7px Courier New, Courier, Andale Mono, monospace";
+		this.dummyTextpre.style.position = "absolute";
+		this.dummyTextpre.style.visibility = "hidden";
+		this.dummyTextpre.innerHTML = "..........\n..........\n..........\n..........\n..........\n..........\n..........\n..........\n..........\n..........";
+
+		canvas.parentElement.appendChild(this.dummyTextpre);
+
+		canvas.parentElement.style.overflow = "hidden";
 		
 		/** Perform action for window resize event. */
 		this.onResize = function () {
@@ -50,6 +54,9 @@ define(function (require) {
 		
 		/** Perform an update on all the ascii text area by capturing the canvas' image data. */
 		this.update = function () {
+
+			asciifier.textWidth = asciifier.textWidth || asciifier.dummyTextpre.offsetWidth / 10;
+			asciifier.textHeight = asciifier.textHeight || asciifier.dummyTextpre.offsetHeight / 10;
 
 			var context = asciifier.canvas.getContext("2d");
 			var imageData = context.getImageData(0, 0, asciifier.canvas.width, asciifier.canvas.height);
@@ -63,8 +70,8 @@ define(function (require) {
 
 			var asciiCode = "";
 
-			for (var y = 0; y <= asciifier.canvas.height - heightScale; y += heightScale) {
-				for (var x = 0; x <= asciifier.canvas.width - widthScale; x += widthScale) {
+			for (var y = 0; y <= asciifier.canvas.height; y += heightScale) {
+				for (var x = 0; x <= asciifier.canvas.width; x += widthScale) {
 
 					var i = Math.round(y) * asciifier.canvas.width * 4 + Math.round(x) * 4;
 
