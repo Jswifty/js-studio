@@ -10,11 +10,7 @@ require(["rain", "canvasasciifier", "canvasview"], function(Rain, Asciifier, Can
 		"}",
 		"body {",
 			"margin: 0px;",
-		"}",
-		"#main {",
-			"width: 100%;",
-			"height: 100%;",
-		"}",
+		"}"
 	].join(" ");
 
 	var head = document.getElementsByTagName("head")[0];
