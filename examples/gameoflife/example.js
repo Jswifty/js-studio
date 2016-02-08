@@ -38,7 +38,7 @@ require(["gameoflife", "canvasview", "mouse", "mouselistener"], function(Gameofl
 			
 			context.clearRect(0, 0, width, height);
 
-			context.fillStyle = "#00FF00";
+			context.fillStyle = "#FF8800";
 
 			for (var y = 0; y < gameoflife.rows; y++) {
 				for (var x = 0; x < gameoflife.columns; x++) {
