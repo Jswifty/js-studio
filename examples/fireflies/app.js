@@ -174,7 +174,5 @@ define(function (require) {
 		for (var i = 0; i < this.firefliesLayers.length; i++) {
 			this.animator.addRenderFunction(this.firefliesLayers[i], this.firefliesLayers[i].render);
 		}
-
-		divContainer.onresize = function () { scene.onResize(); };
 	};
 });
