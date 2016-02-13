@@ -20,11 +20,17 @@ define(function (require) {
 		/* Previous update time-stamp of all mouse actions. */
 		this.lastUpdateTime = 0;
 		
+		/* Whether the a mouse key is pressed down. */
+		this.isMouseDown = false;
+		
 		/* Previous update time-stamp of a mouse down action. */
 		this.lastMouseDownTime = 0;
-
+		
 		/* Whether the mouse is currently contacted by touch surface. */
 		this.isTouching = false;
+		
+		/* Previous mouse position. */
+		this.previousPosition = null;
 		
 		/* Current mouse position. */
 		this.position = null;
@@ -79,6 +85,7 @@ define(function (require) {
 			mouse.direction = mouse.position != null && newPosition != null ? mouse.getDirection(mouse.position, newPosition) : 0;
 			
 			/* Update the mouse position. */
+			mouse.previousPosition = mouse.position != null ? { x : mouse.position.x, y : mouse.position.y } : null;
 			mouse.position = newPosition != null ? { x : newPosition.x, y : newPosition.y } : null;
 			
 			/* Update the time-stamp. */
@@ -192,7 +199,8 @@ define(function (require) {
 				/* Update the mouse position. */
 				mouse.updatePosition({ x: event.pageX, y: event.pageY });
 				
-				/* Update the mouse down time-stamp. */
+				/* Update the mouse down flag and time-stamp. */
+				mouse.isMouseDown = true;
 				mouse.lastMouseDownTime = mouse.lastUpdateTime;
 				
 				/* Perform action for down event. */
@@ -216,6 +224,9 @@ define(function (require) {
 				/* Update the mouse position. */
 				mouse.updatePosition({ x: event.pageX, y: event.pageY });
 				
+				/* Update the mouse down flag. */
+				mouse.isMouseDown = false;
+
 				if (mouse.lastUpdateTime - mouse.lastMouseDownTime <= mouse.CLICK_DELAY) {
 					mouse.clickEventMethod(event);
 				}
@@ -298,7 +309,8 @@ define(function (require) {
 			/* Update the mouse position. */
 			mouse.updatePosition({ x: event.changedTouches[0].pageX, y: event.changedTouches[0].pageY });
 			
-			/* Update the mouse down time-stamp. */
+			/* Update the mouse down flag and time-stamp. */
+			mouse.isMouseDown = true;
 			mouse.lastMouseDownTime = mouse.lastUpdateTime;
 			
 			/* Perform action for down event. */
@@ -319,6 +331,9 @@ define(function (require) {
 			/* Update the mouse position. */
 			mouse.updatePosition({ x: event.changedTouches[0].pageX, y: event.changedTouches[0].pageY });
 			
+			/* Update the mouse down flag. */
+			mouse.isMouseDown = false;
+
 			if (mouse.lastUpdateTime - mouse.lastMouseDownTime <= mouse.CLICK_DELAY) {
 				mouse.clickEventMethod(event);
 			}

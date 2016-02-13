@@ -4,11 +4,11 @@ define(function (require) {
 	
 		getState : function (fireflyBehaviour) {
 			switch (fireflyBehaviour) {
-				case this.BEHAVIOUR.WANDER : 		return { behaviour: fireflyBehaviour, effectRange: 0, blurRange: 0 };		break;
-				case this.BEHAVIOUR.ATTRACT : 	return { behaviour: fireflyBehaviour, effectRange: 300, blurRange: 350 };	break;
-				case this.BEHAVIOUR.FOLLOW : 		return { behaviour: fireflyBehaviour, effectRange: 200, blurRange: 100 };	break;
-				case this.BEHAVIOUR.FLEE : 		return { behaviour: fireflyBehaviour, effectRange: 300, blurRange: 0 };		break;
-				case this.BEHAVIOUR.ARRIVE :		return { behaviour: fireflyBehaviour, effectRange: 10000, blurRange: 50 };	break;
+				case this.BEHAVIOUR.WANDER : return { behaviour: fireflyBehaviour, effectRange: 0, blurRange: 0 }; break;
+				case this.BEHAVIOUR.ATTRACT : return { behaviour: fireflyBehaviour, effectRange: 300, blurRange: 350 }; break;
+				case this.BEHAVIOUR.FOLLOW : return { behaviour: fireflyBehaviour, effectRange: 200, blurRange: 100 }; break;
+				case this.BEHAVIOUR.FLEE : return { behaviour: fireflyBehaviour, effectRange: 300, blurRange: 0 }; break;
+				case this.BEHAVIOUR.ARRIVE : return { behaviour: fireflyBehaviour, effectRange: 10000, blurRange: 50 }; break;
 			}
 		},
 

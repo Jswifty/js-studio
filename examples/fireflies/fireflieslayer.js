@@ -45,39 +45,53 @@ define(function (require) {
 		/* The heart performance for the fireflies. */
 		this.performingHeart = false;
 		this.performingTime = 5000;
+		this.heartPosition = { x : -10000, y : -10000 };
 		
 		this.target = new Target({ x : -10000, y : -10000 }, 0, 0);
 
 		this.onMouseOver = function (event) {
-			this.target = new Target((event.mouse.position === null ? { x : -10000, y : -10000 } : event.mouse.position), event.mouse.direction, event.mouse.movingSpeed);
+			firefliesLayer.target = new Target((event.mouse.position === null ? { x : -10000, y : -10000 } : event.mouse.position), event.mouse.direction, event.mouse.movingSpeed);
+			firefliesLayer.updateHeartPosition(event.mouse);
 		};
 
 		this.onMouseOut = function (event) {
 			this.target = new Target({ x : -10000, y : -10000 }, 0, 0);
+			firefliesLayer.updateHeartPosition(event.mouse);
 		};
 
 		this.onMouseMove = function (event) {
-			this.target = new Target((event.mouse.position === null ? { x : -10000, y : -10000 } : event.mouse.position), event.mouse.direction, event.mouse.movingSpeed);
+			firefliesLayer.target = new Target((event.mouse.position === null ? { x : -10000, y : -10000 } : event.mouse.position), event.mouse.direction, event.mouse.movingSpeed);
+			firefliesLayer.updateHeartPosition(event.mouse);
 		};
 
 		this.onMouseDown = function (event) {
-			this.target = new Target((event.mouse.position === null ? { x : -10000, y : -10000 } : event.mouse.position), event.mouse.direction, event.mouse.movingSpeed);
+			firefliesLayer.target = new Target((event.mouse.position === null ? { x : -10000, y : -10000 } : event.mouse.position), event.mouse.direction, event.mouse.movingSpeed);
+			firefliesLayer.updateHeartPosition(event.mouse);
 		};
 
 		this.onMouseUp = function (event) {
-			this.target = new Target((event.mouse.position === null ? { x : -10000, y : -10000 } : event.mouse.position), event.mouse.direction, event.mouse.movingSpeed);
+			firefliesLayer.target = new Target((event.mouse.position === null ? { x : -10000, y : -10000 } : event.mouse.position), event.mouse.direction, event.mouse.movingSpeed);
+			firefliesLayer.updateHeartPosition(event.mouse);
 		};
 
 		this.onMouseClick = function (event) {
-			this.target = new Target((event.mouse.position === null ? { x : -10000, y : -10000 } : event.mouse.position), event.mouse.direction, event.mouse.movingSpeed);
+			firefliesLayer.target = new Target((event.mouse.position === null ? { x : -10000, y : -10000 } : event.mouse.position), event.mouse.direction, event.mouse.movingSpeed);
+			firefliesLayer.updateHeartPosition(event.mouse);
 		};
 
 		this.onMouseStop = function (event) {
-			this.target = new Target((event.mouse.position === null ? { x : -10000, y : -10000 } : event.mouse.position), event.mouse.direction, event.mouse.movingSpeed);
+			firefliesLayer.target = new Target((event.mouse.position === null ? { x : -10000, y : -10000 } : event.mouse.position), event.mouse.direction, event.mouse.movingSpeed);
+			firefliesLayer.updateHeartPosition(event.mouse);
 		};
 
 		this.focusOnFire = function (fire) {
-			this.focusingFire = fire;
+			firefliesLayer.focusingFire = fire;
+		};
+
+		this.updateHeartPosition = function (mouse) {
+			if (mouse.isMouseDown === true) {
+				firefliesLayer.heartPosition = { x : mouse.position.x, y : mouse.position.y };
+			}
 		};
 
 		this.startFireFliesLayer = function () {
@@ -92,9 +106,9 @@ define(function (require) {
 			
 			/* First, update the status of the fireflies layer.
 			 * (i.e.: canvas size, mouse position, fireflies status). */
-			this.update(timeDiff);
+			firefliesLayer.update(timeDiff);
 
-			this.canvasView.draw(function (context, width, height) {
+			firefliesLayer.canvasView.draw(function (context, width, height) {
 				
 				/* Clear the canvas screen. */
 				context.clearRect(0, 0, width, height);
@@ -127,46 +141,55 @@ define(function (require) {
 			/* Update a new status of the fireflies. */
 			var fireflyState;
 
-			if (this.performingHeart) {
+			if (firefliesLayer.performingHeart) {
 				fireflyState = FireflyState.getState(FireflyState.BEHAVIOUR.ARRIVE);
-			} else if (this.focusingFire != null && this.focusingFire.isSparkling) {
+			} else if (firefliesLayer.focusingFire != null && firefliesLayer.focusingFire.isSparkling) {
 				fireflyState = FireflyState.getState(FireflyState.BEHAVIOUR.FLEE);
-			} else if (this.focusingFire != null && this.focusingFire.fireOn) {
+			} else if (firefliesLayer.focusingFire != null && firefliesLayer.focusingFire.fireOn) {
 				fireflyState = FireflyState.getState(FireflyState.BEHAVIOUR.ATTRACT);
-			} else if (this.target.speed > this.minFollowSpeed) {
+			} else if (firefliesLayer.target.speed > firefliesLayer.minFollowSpeed) {
 				fireflyState = FireflyState.getState(FireflyState.BEHAVIOUR.FOLLOW);
 			} else {
 				fireflyState = FireflyState.getState(FireflyState.BEHAVIOUR.WANDER);
 			}
-			var sceneBoundingBox = { width: this.canvasView.canvas.width, height: this.canvasView.canvas.height };
+			var sceneBoundingBox = { width: firefliesLayer.canvasView.canvas.width, height: firefliesLayer.canvasView.canvas.height };
 
 			/* Update the fireflies' properties according to the new status. */
-			for(var i = 0; i < this.fireflies.length; i++) {
-				if (this.performingHeart) {
-					this.fireflies[i].update(fireflyState, new Target(this.getHeartPosition(this.layerIndex, i, this.target.position), 0, 0), timeDiff, sceneBoundingBox);
+			for(var i = 0; i < firefliesLayer.fireflies.length; i++) {
+				if (firefliesLayer.performingHeart) {
+					firefliesLayer.fireflies[i].update(
+						fireflyState, 
+						new Target(firefliesLayer.getHeartPosition(firefliesLayer.layerIndex, i, firefliesLayer.heartPosition), 0, 0),
+						timeDiff,
+						sceneBoundingBox
+					);
 				} else {
-					this.fireflies[i].update(fireflyState, this.target, timeDiff, sceneBoundingBox);
+					firefliesLayer.fireflies[i].update(
+						fireflyState, 
+						firefliesLayer.target,
+						timeDiff,
+						sceneBoundingBox
+					);
 				}
 			}
 		};
 
 		this.allFirefliesAttracted = function () {
 
-			for(var i = 0; i < this.fireflies.length; i++) {
-				if (this.fireflies[i].behaviour !== FireflyState.BEHAVIOUR.ATTRACT) {
+			for(var i = 0; i < firefliesLayer.fireflies.length; i++) {
+				if (firefliesLayer.fireflies[i].behaviour !== FireflyState.BEHAVIOUR.ATTRACT) {
 					return false;
 				}
 			}
 
-			return this.fireflies.length === this.numOfFireFlies;
+			return firefliesLayer.fireflies.length === firefliesLayer.numOfFireFlies;
 		};
 
 		this.performHeart = function () {
 
-			this.performingHeart = true;
-			
-			var layer = this;
-			setTimeout(function () { layer.performingHeart = false; }, layer.performingTime);
+			firefliesLayer.performingHeart = true;
+
+			setTimeout(function () { firefliesLayer.performingHeart = false; }, firefliesLayer.performingTime);
 		};
 
 		this.getHeartPosition = function (layerIndex, fireflyIndex, centerPosition) {
