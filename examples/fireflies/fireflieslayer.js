@@ -89,7 +89,7 @@ define(function (require) {
 		};
 
 		this.updateHeartPosition = function (mouse) {
-			if (mouse.isMouseDown === true) {
+			if (mouse.isMouseDown === true && mouse.position !== null) {
 				firefliesLayer.heartPosition = { x : mouse.position.x, y : mouse.position.y };
 			}
 		};
