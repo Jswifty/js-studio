@@ -153,7 +153,7 @@ define(function (require) {
 			
 			var numOfLayerFireflies = numOfFireflies / numOfFirefliesLayers;
 			
-			this.firefliesLayers[i] = new FirefliesLayer(i, numOfLayerFireflies, divContainer);
+			this.firefliesLayers[i] = new FirefliesLayer(i, numOfLayerFireflies, divContainer, this.animator);
 			
 			this.firefliesLayers[i].getHeartPosition = function (layerIndex, fireflyIndex, centerPosition) {
 				
@@ -169,7 +169,7 @@ define(function (require) {
 			this.firefliesLayers[i].focusOnFire(this.fire);
 		}
 		
-		var fireID = this.animator.addRenderFunction(this.fire, this.fire.render);
+		this.animator.addRenderFunction(this.fire, this.fire.render);
 		
 		for (var i = 0; i < this.firefliesLayers.length; i++) {
 			this.animator.addRenderFunction(this.firefliesLayers[i], this.firefliesLayers[i].render);

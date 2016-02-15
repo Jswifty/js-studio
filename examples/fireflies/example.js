@@ -17,8 +17,8 @@ head.appendChild(style);
 
 var body = document.getElementsByTagName("body")[0];
 
-require(["app"], function(scene) {
-	var firefliesScene = new scene(body);
-	firefliesScene.addMouseListener(body);
-	firefliesScene.startScene();
+require(["firefliesscene"], function(Scene) {
+	var scene = new Scene(body);
+	scene.addMouseListener(body);
+	scene.startScene();
 });

@@ -34,8 +34,6 @@ define(function (require) {
 		this.canvasView.canvas.id = "firefliesCanvas" + index.toString();
 		this.canvasView.canvas.style.zIndex = 0;
 		
-		this.divContainer.appendChild(this.canvasView.canvas);
-		
 		/* The fire to focus on. */
 		this.focusingFire = null;
 		
