@@ -281,31 +281,24 @@ define(function (require) {
 		
 		/** Adapt visibility change on the window for pausing and resuming. */
 		/* Chrome 13+. */
-	    if ("hidden" in document) {
-	        document.addEventListener("visibilitychange", function(event) { animator.onWindowChange(document.hidden); });
-		}
+		document.addEventListener("visibilitychange", function(event) { animator.onWindowChange(document.hidden); });
+
 		/* Firefox 10+. */
-	    else if ("mozHidden" in document) {
-	        document.addEventListener("mozvisibilitychange", function(event) { animator.onWindowChange(document.mozHidden); });
-	    }
-	    /* Opera 12.10+. */
-		else if ("webkitHidden" in document) {
-	        document.addEventListener("webkitvisibilitychange", function(event) { animator.onWindowChange(document.webkitHidden); });
-	    }
-	    /* Internet Explorer 10+. */
-		else if ("msHidden" in document) {
-	        document.addEventListener("msvisibilitychange", function(event) { animator.onWindowChange(document.msHidden); });
-	    }
-	    /* Internet Explorer 9 and lower. */
-		else if ("onfocusin" in document && "onfocusout" in document) {
-	        document.onfocusin = function(event) { animator.onWindowShow(); };
-			document.onfocusout = function(event) { animator.onWindowHidden(); };
-		}
+		document.addEventListener("mozvisibilitychange", function(event) { animator.onWindowChange(document.mozHidden); });
+
+		/* Opera 12.10+. */
+		document.addEventListener("webkitvisibilitychange", function(event) { animator.onWindowChange(document.webkitHidden); });
+
+		/* Internet Explorer 10+. */
+		document.addEventListener("msvisibilitychange", function(event) { animator.onWindowChange(document.msHidden); });
+
+		/* Internet Explorer 9 and lower. */
+		document.onfocusin = function(event) { animator.onWindowShow(); };
+		document.onfocusout = function(event) { animator.onWindowHidden(); };
+
 		/* Other. */
-	    else {
-	        window.onpageshow = window.onfocus = function(event) { animator.onWindowShow(); };
-			window.onpagehide = window.onblur = function(event) { animator.onWindowHidden(); };
-		}
+		window.onpageshow = window.onfocus = function(event) { animator.onWindowShow(); };
+		window.onpagehide = window.onblur = function(event) { animator.onWindowHidden(); };
 	};
 });
 
