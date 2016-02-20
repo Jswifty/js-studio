@@ -1,95 +1,100 @@
 /**  
- *	StorageManager.js is a static object class which manages client web storage.
+ *	storagemanager.js is a static object class which manages client web storage.
  *	A storage can be retrieved with a storage type, which is either
  *	local storage or session storage, and a namespace.
  */
-var StorageManager = {
+define(function (require) {
 
-	createStorage : function (storageType, namespace) {
-		window[storageType][namespace] = window[storageType][namespace] || "{}";
-		return StorageManager.getStorage(storageType, namespace);
-	},
+	return function () {
+		
+		var storagemanager = this;
 
-	getStorage : function (storageType, namespace) {
+		this.createStorage = function (storageType, namespace) {
+			window[storageType][namespace] = window[storageType][namespace] || "{}";
+			return storagemanager.getStorage(storageType, namespace);
+		};
 
-		if (window[storageType][namespace] !== undefined) {
-			
-			return {
+		this.getStorage = function (storageType, namespace) {
 
-				getAll : function () {
+			if (window[storageType][namespace] !== undefined) {
+				
+				return {
 
-					try {
-						return JSON.parse(window[storageType][namespace]);
-					} catch (exception) {
-						return null;
-					}
-				},
+					getAll : function () {
 
-				get : function (key) {
-
-					var storedValue = null;
-					
-					try {
-
-						var storage = JSON.parse(window[storageType][namespace]);
-						
-						if (storage[key] !== undefined) {
-							storedValue = storage[key];
+						try {
+							return JSON.parse(window[storageType][namespace]);
+						} catch (exception) {
+							return null;
 						}
+					},
 
-					} catch (exception) {}
+					get : function (key) {
 
-					return storedValue;
-				},
-
-				set : function (key, value) {
-					
-					try {
-
-						var storage = JSON.parse(window[storageType][namespace]);
-						storage[key] = value;
-
-						window[storageType][namespace] = JSON.stringify(storage);
-
-						return true;
-
-					} catch (exception) {
-						return false;
-					}
-				},
-
-				remove : function (key) {
-
-					try {
+						var storedValue = null;
 						
-						var storage = JSON.parse(window[storageType][namespace]);
+						try {
+
+							var storage = JSON.parse(window[storageType][namespace]);
+							
+							if (storage[key] !== undefined) {
+								storedValue = storage[key];
+							}
+
+						} catch (exception) {}
+
+						return storedValue;
+					},
+
+					set : function (key, value) {
 						
-						if (storage[key] === undefined) {
+						try {
+
+							var storage = JSON.parse(window[storageType][namespace]);
+							storage[key] = value;
+
+							window[storageType][namespace] = JSON.stringify(storage);
+
 							return true;
+
+						} catch (exception) {
+							return false;
 						}
-						
-						delete storage[key];
+					},
 
-						window[storageType][namespace] = JSON.stringify(storage);
+					remove : function (key) {
 
-						return true;
+						try {
+							
+							var storage = JSON.parse(window[storageType][namespace]);
+							
+							if (storage[key] === undefined) {
+								return true;
+							}
+							
+							delete storage[key];
 
-					} catch (exception) {
-						return false;
+							window[storageType][namespace] = JSON.stringify(storage);
+
+							return true;
+
+						} catch (exception) {
+							return false;
+						}
+					},
+
+					clear : function () {
+						window[storageType][namespace] = "{}";
 					}
-				},
 
-				clear : function () {
-					window[storageType][namespace] = "{}";
-				}
-
-				dispose : function () {
-					return window[storageType].removeItem(namespace);
+					dispose : function () {
+						return window[storageType].removeItem(namespace);
+					}
 				}
 			}
-		}
-		else {
-			return null;
-		}
-	}
+			else {
+				return null;
+			}
+		};
+	};
 };
