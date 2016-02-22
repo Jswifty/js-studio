@@ -2,7 +2,7 @@
 
 
 ## Animator
-<code>Animator</code> is an object class which registers rendering functions from objects and executes them repeatedly in a rate depended on the native window browser's <code>requestAnimationFrame</code> call-back method.
+```Animator``` is an object class which registers rendering functions from objects and executes them repeatedly in a rate depended on the native window browser's ```requestAnimationFrame``` call-back method.
 
 ## Usage
 ```javascript
@@ -29,8 +29,8 @@ animator.removeRenderFunction(renderID);
 ```
 
 ## AnimatorListener
-<code>AnimatorListener</code> is an interface which handles events triggered from <code>Animator</code>.
-Each instance of <code>AnimatorListener</code> is required to be appended to an <code>Animator</code> object.
+```AnimatorListener``` is an interface which handles events triggered from ```Animator```.
+Each instance of ```AnimatorListener``` is required to be appended to an ```Animator``` object.
 
 ## Usage
 ```javascript

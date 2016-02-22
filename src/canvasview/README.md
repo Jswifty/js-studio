@@ -1,11 +1,9 @@
 # CanvasView & CanvasViewListener
 
-
 ## CanvasView
-<code>CanvasView</code> is an object class which creates an instance of a HTML5 canvas under the given DIV container.
-It also initiates an animator, in which it can pass rendering functions through into it.
+```CanvasView``` is an object class which creates an instance of a HTML5 canvas under the given container element. It also initiates an animator, in which it can pass rendering functions through into it.
 
-Requires: animator.js
+Requires: animator.js, animatorlistener.js
 
 ## Usage
 ```javascript
@@ -29,8 +27,8 @@ canvasView.start();
 ```
 
 ## CanvasViewListener
-<code>CanvasViewListener</code> is an interface which handles events triggered from <code>CanvasView</code>.
-Each instance of <code>CanvasViewListener</code> is required to be appended to an <code>CanvasView</code> object.
+```CanvasViewListener``` is an interface which handles events triggered from ```CanvasView```.
+Each instance of ```CanvasViewListener``` is required to be appended to an ```CanvasView``` object.
 
 ## Usage
 ```javascript

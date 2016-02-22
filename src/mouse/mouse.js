@@ -1,10 +1,6 @@
-/**  
- *	mouse.js is an object class which monitors mouse events triggered from the given div container.
- *  It also captures details of the input over time in terms of location and motion.
- */ 
 define(function (require) {
 
-	return function(divContainer) {
+	return function (container) {
 		
 		var mouse = this;
 		
@@ -505,8 +501,8 @@ define(function (require) {
 		};
 
 		/* Append the canvas to the DIV container. */
-		if (divContainer) {
-			this.attachToElement(divContainer);
+		if (container) {
+			this.attachToElement(container);
 		}
 	};
 });

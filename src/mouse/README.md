@@ -1,8 +1,7 @@
 # Mouse & MouseListener
 
-
 ## Mouse
-<code>Mouse</code> is an object class which monitors mouse events triggered from the given div container.
+```Mouse``` is an object class which monitors mouse events triggered from the given div container.
 It also captures details of the input over time in terms of location and motion.
 
 ## Usage
@@ -16,8 +15,8 @@ var mouse = new Mouse(divContainer);
 ```
 
 ## Mouseistener
-<code>Mouseistener</code> is an object class which handles events triggered from <code>Mouse</code>.
-Each instance of <code>Mouseistener</code> is required to be added into a <code>Mouse</code> object.
+```Mouseistener``` is an object class which handles events triggered from ```Mouse```.
+Each instance of ```Mouseistener``` is required to be added into a ```Mouse``` object.
 
 ## Usage
 ```javascript

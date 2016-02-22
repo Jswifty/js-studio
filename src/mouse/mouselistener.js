@@ -1,10 +1,6 @@
-/**
- *	mouselistener.js is an object class which handles events triggered from Mouse.
- *	Each instance is required to be added into a mouse object.
- */
 define(function (require) {
 	
-	return function() {
+	return function () {
 	
 		var mouseListener = this;
 

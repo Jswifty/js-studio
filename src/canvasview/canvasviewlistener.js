@@ -1,7 +1,3 @@
-/**  
- *	canvasviewlistener.js is an interface object class which handles events triggered from canvas view.
- *	Each instance is required to be added into an canvas view object.
- */
 define(function (require) {
 
 	return function (onCanvasViewPause, onCanvasViewResume) {

@@ -1,8 +1,7 @@
 # CanvasAsciifier
 
-
 ## CanvasAsciifier
-<code>CanvasAsciifier</code> is an object class which generates the ascii effect of a given canvas display, optionally with configurations. 
+```CanvasAsciifier``` is an object class which generates the ascii effect of a given canvas display, optionally with configurations. 
 It also allows canvas with animations, which the animator can then be passed in as a parameter.
 
 Requires: animator.js (Optional)

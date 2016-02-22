@@ -1,7 +1,3 @@
-/** 
- *	animatorlistener.js is an interface which handles events triggered from Animator.
- *	Each instance of AnimatorListener is required to be added into an animator object.
- */
 define(function (require) {
 	
 	return function (onAnimatorPause, onAnimatorResume) {

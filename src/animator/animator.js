@@ -1,7 +1,3 @@
-/**
- *  animator.js is an object class which registers rendering functions from objects and executes them 
- *  repeatedly in a rate depended on the native window browser's requestAnimationFrame method.
- */ 
 define(function (require) {
 
 	return function () {

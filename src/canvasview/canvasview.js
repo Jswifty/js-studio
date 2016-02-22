@@ -1,21 +1,14 @@
-/**  
- *	canvasview.js is an object class which creates an instance of a HTML5 canvas
- *	under the given DIV container.
- *	It also initiates an animator, in which it can pass rendering functions through into it.
- *
- *	Requires: animator.js, animatorlistener.js
- */ 
 define(function (require) {
 
 	var Animator = require("./animator");
 	var AnimatorListener = require("./animatorlistener");
 
-	return function (divContainer, animator) {
+	return function (container, animator) {
 	
 		var canvasView = this;
 		
 		/* Store the DIV container. */
-		this.divContainer = divContainer;
+		this.container = container;
 		
 		/* Create the canvas. */
 		this.canvas = document.createElement("canvas");
@@ -47,8 +40,8 @@ define(function (require) {
 		this.onResize = function () {
 			
 			/* Set canvas dimensions. */
-			canvasView.canvas.width = canvasView.divContainer.offsetWidth; 
-			canvasView.canvas.height = canvasView.divContainer.offsetHeight;
+			canvasView.canvas.width = canvasView.container.offsetWidth; 
+			canvasView.canvas.height = canvasView.container.offsetHeight;
 		};
 		
 		/** Perform draw on the canvas based on the given draw function. */
@@ -124,10 +117,10 @@ define(function (require) {
 		};
 		
 		/* Append the canvas to the DIV container. */
-		this.divContainer.appendChild(this.canvas);
+		this.container.appendChild(this.canvas);
 		
 		/* Fetch resize method of the DIV container and window. */
-		this.divContainer.addEventListener("resize", canvasView.onResize);
+		this.container.addEventListener("resize", canvasView.onResize);
 		window.addEventListener("resize", canvasView.onResize);
 		
 		/* Create a Animator listener to adaptor events. */
