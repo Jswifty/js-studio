@@ -1,20 +1,13 @@
-/**  
- *	storagemanager.js is a static object class which manages client web storage.
- *	A storage can be retrieved with a storage type, which is either
- *	local storage or session storage, and a namespace.
- */
 define(function (require) {
 
-	return function () {
-		
-		var storagemanager = this;
+	return {
 
-		this.createStorage = function (storageType, namespace) {
+		createStorage : function (storageType, namespace) {
 			window[storageType][namespace] = window[storageType][namespace] || "{}";
 			return storagemanager.getStorage(storageType, namespace);
-		};
+		},
 
-		this.getStorage = function (storageType, namespace) {
+		getStorage : function (storageType, namespace) {
 
 			if (window[storageType][namespace] !== undefined) {
 				
@@ -92,9 +85,10 @@ define(function (require) {
 					}
 				}
 			}
+			
 			else {
 				return null;
 			}
 		};
-	};
-};
+	}
+});

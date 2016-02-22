@@ -1,8 +1,8 @@
 # StorageManager
 
-<code>StorageManager</code> is an static object class which manages client web storage.
-A storage can be retrieved with a storage type, which is either local storage or session storage, 
-and a namespace.
+<code>StorageManager</code> is a static object class which manages client web storages.
+A storage can be retrieved with a storage type, which is either ```localStorage``` or ```sessionStorage```, 
+and a namespace, which is self-defined.
 
 ## Usage
 ```javascript

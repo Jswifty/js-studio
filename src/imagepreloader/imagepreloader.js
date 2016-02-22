@@ -1,62 +1,30 @@
-/**  
- *	ImagePreloader.js is an object class which can stack up images for preloading, 
- * 	and trigger the callback function once all images are loaded completely.
- */
-var ImagePreloader = function (images, callback) {
+define(function (require) {
 
-	var preloader = this;
+	return function (images, callback) {
 
-	this.images = !(images instanceof Array) ? [images] : images;
-	this.callback = !(typeof callback === "function") ? function() {} : callback;
+		if (typeof images === "string") {
+			images = [images];
+		} 
 
-	this.preloadedImages = [];
+		if (images instanceof Array && typeof callback === "function") {
 
-	this.addImages = function (images) {
+			var preloadedImages = [];
 
-		images = !(images instanceof Array) ? [images] : images;
+			for (var i = 0; i < images.length; i++) {
+				
+				var image = new Image();
+				
+				image.onload = function () {
+					
+					preloadedImages.push(this);
 
-		for (var i = 0; i < images.length; i++) {
-			if (this.images.indexOf(images[i]) === -1) {
-				this.images.push(images[i]);
+					if (preloadedImages.length === images.length) {
+						callback(preloadedImages);
+					}
+				};
+
+				image.src = images[i];
 			}
 		}
 	};
-
-	this.removeImages = function (images) {
-
-		images = !(images instanceof Array) ? [images] : images;
-
-		for (var i = images.length - 1; i >= 0; i--) {
-			if (this.images.indexOf(images[i]) === -1) {
-				this.images.splice(i, 1);
-			}
-		}
-	};
-
-	this.setCallback = function (callback) {
-		
-		if (typeof callback === "function") {
-			this.callback = callback;
-		}
-	};
-
-	this.preload = function () {
-
-		function onload () {
-			
-			preloader.preloadedImages.push(this);
-
-			if (preloader.preloadedImages.length === preloader.preloadedImages.length) {
-				preloader.callback(preloader.preloadedImages);
-			}
-		}
-
-		for (var i = 0; i < preloader.images.length; i++) {
-			
-			var image = new Image();
-			
-			image.onload = onload;
-			image.src = preloader.images[i];
-		}
-	};
-}
+});

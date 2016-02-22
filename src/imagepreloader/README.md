@@ -1,6 +1,6 @@
 # ImagePreloader
 
-<code>ImagePreloader</code> is an object class which can stack up images for preloading, and trigger the callback function once all images are loaded completely.
+<code>ImagePreloader</code> is a static function which triggers the given callback function once all images are loaded completely.
 
 ## Usage
 ```javascript
