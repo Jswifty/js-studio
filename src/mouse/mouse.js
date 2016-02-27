@@ -1,6 +1,10 @@
+/**  
+ *	mouse.js is an object class which monitors mouse events triggered from the given div container.
+ *  It also captures details of the input over time in terms of location and motion.
+ */ 
 define(function (require) {
 
-	return function (container) {
+	return function(divContainer) {
 		
 		var mouse = this;
 		
@@ -425,6 +429,13 @@ define(function (require) {
 			setTimeout(function () { mouse.isTouching = false; }, 0);
 		};
 
+
+		/** When the mouse is outside of the target element and a mouse's button is released. */
+		this.documentUpMethod = function (event) {
+			/* Update the mouse down flag. */
+			mouse.isMouseDown = false;
+		};
+
 		/** Add a mouse listener to the mouse. */
 		this.addMouseListener = function (mouseListener) {
 			
@@ -458,7 +469,7 @@ define(function (require) {
 			mouse.listenElement = element;
 			
 			/* Engage the essential mouse events to each corresponding handler. */
-			
+			document.documentElement.addEventListener("mouseup", mouse.documentUpMethod, false);
 			mouse.listenElement.addEventListener("mouseover", mouse.overEventMethod, false);
 			mouse.listenElement.addEventListener("mouseout", mouse.outEventMethod, false);
 			mouse.listenElement.addEventListener("mousedown", mouse.downEventMethod, false);
@@ -480,7 +491,7 @@ define(function (require) {
 			mouse.listenElement = null;
 
 			/* Disengage all the mouse events from each corresponding handler. */
-			
+			document.documentElement.removeEventListener("mouseup", mouse.documentUpMethod, false);
 			mouse.listenElement.removeEventListener("mouseover", mouse.overEventMethod, false);
 			mouse.listenElement.removeEventListener("mouseout", mouse.outEventMethod, false);
 			mouse.listenElement.removeEventListener("mousedown", mouse.downEventMethod, false);
@@ -501,8 +512,8 @@ define(function (require) {
 		};
 
 		/* Append the canvas to the DIV container. */
-		if (container) {
-			this.attachToElement(container);
+		if (divContainer) {
+			this.attachToElement(divContainer);
 		}
 	};
 });
