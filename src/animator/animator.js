@@ -38,8 +38,11 @@ define(function (require) {
 		/* The current time which the animate functions are called. */
 		this.newAnimateTime = 0;
 		
-		/* The flag for determining whether the animations are paused. */
+		/* The flag for determining whether the animator is paused. */
 		this.isPaused = false;
+
+		/* The flag for determining whether the animator is commanded to pause externally. */
+		this.isPauseRequested = false;
 		
 		/* The flag for determining whether the animations are allowed to exceed the FPS range. */
 		this.allowExceedFPSRange = false;
@@ -122,7 +125,7 @@ define(function (require) {
 		this.animate = function () {
 
 			/* Check if the animations are paused or the frame rate is equal or below 0. */
-			if (!animator.requesting && !animator.isPaused && animator.FPS > 0) {
+			if (animator.requesting === false && animator.isPaused === false && animator.FPS > 0) {
 				
 				/* Set a time delay to compromise the desired FPS.
 				 * Since the requestAnimFrame callback method will cause a delay of roughly 4 milli seconds,
@@ -188,8 +191,12 @@ define(function (require) {
 		};
 		
 		/** Pause the animation loop. */
-		this.pause = function () {
+		this.pause = function (quietMode) {
 			
+			if (quietMode !== true) {
+				animator.isPauseRequested = true;
+			}
+
 			if (animator.isPaused === false) {
 			
 				animator.isPaused = true;
@@ -199,9 +206,13 @@ define(function (require) {
 		};
 		
 		/** Resume the animation loop. */
-		this.resume = function () {
+		this.resume = function (quietMode) {
 			
-			if (animator.isPaused === true) {
+			if (quietMode !== true) {
+				animator.isPauseRequested = false;
+			}
+
+			if (animator.isPauseRequested === false && animator.isPaused === true) {
 				
 				animator.isPaused = false;
 				
@@ -253,15 +264,21 @@ define(function (require) {
 		
 		/** Perform action for window hidden event. */
 		this.onWindowHidden = function () {
+
+			animator.isFoused = false;
+
 			if (animator.pauseOnHidden) {
-				animator.pause();
+				animator.pause(true);
 			}
 		};
 
 		/** Perform action for window show event. */
 		this.onWindowShow = function () {
+
+			animator.isFoused = true;
+
 			if (animator.resumeOnShown) {
-				animator.resume();
+				animator.resume(true);
 			}
 		};
 		
