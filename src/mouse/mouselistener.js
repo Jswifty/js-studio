@@ -9,51 +9,7 @@ define(function (require) {
 		this.MIDDLE_BUTTON = 2;
 		this.RIGHT_BUTTON = 3;
 		
-		/**** The following are all methods for overriding handlers. ****/
-		
-		this.mouseOver = function (onMouseOver) {
-			if (onMouseOver && typeof onMouseOver === "function") {
-				mouseListener.onMouseOver = onMouseOver;
-			}
-		};
-		
-		this.mouseOut = function (onMouseOut) {
-			if (onMouseOut && typeof onMouseOut === "function") {
-				mouseListener.onMouseOut = onMouseOut;
-			}
-		};
-		
-		this.mouseDown = function (onMouseDown) {
-			if (onMouseDown && typeof onMouseDown === "function") {
-				mouseListener.onMouseDown = onMouseDown;
-			}
-		};
-
-		this.mouseUp = function (onMouseUp) {
-			if (onMouseUp && typeof onMouseUp === "function") {
-				mouseListener.onMouseUp = onMouseUp;
-			}
-		};
-
-		this.mouseMove = function (onMouseMove) {
-			if (onMouseMove && typeof onMouseMove === "function") {
-				mouseListener.onMouseMove = onMouseMove;
-			}
-		};
-		
-		this.mouseStop = function (onMouseStop) {
-			if (onMouseStop && typeof onMouseStop === "function") {
-				mouseListener.onMouseStop = onMouseStop;
-			}
-		};
-
-		this.mouseClick = function (onMouseClick) {
-			if (onMouseClick && typeof onMouseClick === "function") {
-				mouseListener.onMouseClick = onMouseClick;
-			}
-		};
-
-		/**** Handler methods ****/
+		/**** The following are all handler methods for overriding. ****/
 
 		/** Perform action for over event */
 		this.onMouseOver = function (event) {
@@ -101,7 +57,7 @@ define(function (require) {
 
 		/** Perform action for move event */
 		this.onMouseMove = function (event) {
-			// console.log("mouse move" + (event.mouseMovingFast ? " fast" : ""));
+			// console.log("mouse move));
 		};
 		
 		/** Perform action for stop event */
@@ -113,7 +69,7 @@ define(function (require) {
 		this.onMouseClick = function (event) {
 			switch (event.which) {
 				case mouseListener.LEFT_BUTTON:
-					// console.log(" left click on " + this.position.x + ", " + this.position.y);
+					// console.log(" left click on " + event.mouse.position.x + ", " + event.mouse.position.y);
 					break;
 				case mouseListener.MIDDLE_BUTTON:
 					// console.log(" middle click ");

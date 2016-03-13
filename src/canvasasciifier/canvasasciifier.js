@@ -7,6 +7,7 @@ define(function (require) {
 		/* Store the canvas element. */
 		this.canvas = canvas;
 
+		/* Parse the configurations from the parameter. */
 		config = config || {};
 
 		this.invert = false;

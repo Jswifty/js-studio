@@ -3,28 +3,35 @@ define(function (require) {
 	return function (images, callback) {
 
 		if (typeof images === "string") {
-			images = [images];
-		} 
+			images = [ images ];
+		} else if (images instanceof Array) {
+			images = images;
+		} else {
+			images = [];
+		}
 
-		if (images instanceof Array && typeof callback === "function") {
+		if (callback && typeof callback === "function") {
+			callback = callback;
+		} else {
+			callback = function () {};
+		}
 
-			var preloadedImages = [];
+		var preloadedImages = [];
 
-			for (var i = 0; i < images.length; i++) {
+		for (var i = 0; i < images.length; i++) {
+			
+			var image = new Image();
+			
+			image.onload = function () {
 				
-				var image = new Image();
-				
-				image.onload = function () {
-					
-					preloadedImages.push(this);
+				preloadedImages.push(this);
 
-					if (preloadedImages.length === images.length) {
-						callback(preloadedImages);
-					}
-				};
+				if (preloadedImages.length === images.length) {
+					callback(preloadedImages);
+				}
+			};
 
-				image.src = images[i];
-			}
+			image.src = images[i];
 		}
 	};
 });

@@ -6,14 +6,14 @@ define(function (require) {
 		if (onCanvasViewPause && typeof onCanvasViewPause === "function") {
 			this.onCanvasViewPause = onCanvasViewPause;
 		} else {
-			this.onCanvasViewPause = function() {};
+			this.onCanvasViewPause = function () {};
 		}
 
 		/** Perform action for resume event */
 		if (onCanvasViewResume && typeof onCanvasViewResume === "function") {
 			this.onCanvasViewResume = onCanvasViewResume;
 		} else {
-			this.onCanvasViewResume = function() {};
+			this.onCanvasViewResume = function () {};
 		}
 	};
 });

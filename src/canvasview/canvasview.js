@@ -1,7 +1,7 @@
 define(function (require) {
 
-	var Animator = require("./animator");
-	var AnimatorListener = require("./animatorlistener");
+	var Animator = require("../animator/animator");
+	var AnimatorListener = require("../animator/animatorlistener");
 
 	return function (container, animator) {
 	

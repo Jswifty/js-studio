@@ -2,9 +2,21 @@ define(function (require) {
 
 	return {
 
+		createLocalStorage : function (namespace) {
+			return this.getStorage("localStorage", namespace);
+		},
+
+		createSessionStorage : function (namespace) {
+			eturn this.getStorage("sessionStorage", namespace);
+		},
+
 		createStorage : function (storageType, namespace) {
-			window[storageType][namespace] = window[storageType][namespace] || "{}";
-			return storagemanager.getStorage(storageType, namespace);
+			if (storageType && namespace) {
+				window[storageType][namespace] = window[storageType][namespace] || "{}";
+				return this.getStorage(storageType, namespace);
+			} else {
+				return null;
+			}
 		},
 
 		getStorage : function (storageType, namespace) {
@@ -78,7 +90,7 @@ define(function (require) {
 
 					clear : function () {
 						window[storageType][namespace] = "{}";
-					}
+					},
 
 					dispose : function () {
 						return window[storageType].removeItem(namespace);
@@ -89,6 +101,6 @@ define(function (require) {
 			else {
 				return null;
 			}
-		};
+		}
 	}
 });

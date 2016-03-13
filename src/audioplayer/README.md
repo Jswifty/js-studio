@@ -6,7 +6,7 @@ It takes another 2 parameters:
 	analyerEnabled - indicates whether the audio player should enable analyser for frequency data recording.
 	convolverEnabled - indicates whether the audio player should enable convolver for convolution effects. 
 
-Requires: animator.js
+Requires: animatorlistener.js
 
 ## Usage
 ```javascript
