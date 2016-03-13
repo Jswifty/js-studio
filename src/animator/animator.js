@@ -324,7 +324,7 @@ window.requestAnimFrame = (function () {
 			window.mozRequestAnimationFrame		|| 
 			window.oRequestAnimationFrame		|| 
 			window.msRequestAnimationFrame		|| 
-			function(callback, element) { window.setTimeout(callback, 1000 / 60); };
+			function (callback, element) { window.setTimeout(callback, 1000 / 60); };
 })();
 
 /** Set the cancel animation frame to the native event frame. */
@@ -338,5 +338,5 @@ window.cancelAnimFrame = (function () {
 			window.mozCancelRequestAnimationFrame		|| 
 			window.oCancelRequestAnimationFrame			|| 
 			window.msCancelRequestAnimationFrame		|| 
-			function(id) { window.clearTimeout(id); };
+			function (id) { window.clearTimeout(id); };
 })();
