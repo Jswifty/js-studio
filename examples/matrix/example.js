@@ -1,4 +1,4 @@
-require(["rain", "canvasasciifier", "canvasview"], function(Rain, Asciifier, CanvasView) {
+require(["rain", "../../src/canvasasciifier/canvasasciifier", "../../src/canvasview/canvasview"], function (Rain, Asciifier, CanvasView) {
 
 	var style = document.createElement("style");
 	style.type = "text/css";
@@ -31,18 +31,6 @@ require(["rain", "canvasasciifier", "canvasview"], function(Rain, Asciifier, Can
 	
 	var rain = new Rain(100, 0.7);
 
-	function fallbackFunction () {
-
-		var source = document.createElement("source");
-		source.src = "demo.mp4";
-		source.type = "video/mp4";
-		
-		video.appendChild(source);
-
-		rain.interval = 0;
-		video.play();
-	}
-
 	navigator.getUserMedia = navigator.getUserMedia || 
 							navigator.webkitGetUserMedia || 
 							navigator.mozGetUserMedia || 
@@ -56,17 +44,14 @@ require(["rain", "canvasasciifier", "canvasview"], function(Rain, Asciifier, Can
 			
 			rain.interval = 0;
 			video.play();
-		}, fallbackFunction);
-	}
-	else {
-		fallbackFunction();
+		}, function () {});
 	}
 
 	canvasView.addRenderFunction(function () {
 		
 		var context = canvasView.getCanvas2DContext();
-		var width = canvasView.getCanvasWidth();
-		var height = canvasView.getCanvasHeight();
+		var width = canvasView.getWidth();
+		var height = canvasView.getHeight();
 
 		context.clearRect(0, 0, width, height);
 
