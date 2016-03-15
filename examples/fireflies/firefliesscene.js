@@ -2,9 +2,9 @@ define(function (require) {
 
 	var Fire = require("./fire/fire");
 	var FirefliesLayer = require("./fireflieslayer");
-	var Animator = require("./animator");
-	var Mouse = require("./mouse");
-	var MouseListener = require("./mouselistener");
+	var Animator = require("../../src/animator/animator");
+	var Mouse = require("../../src/mouse/mouse");
+	var MouseListener = require("../../src/mouse/mouselistener");
 
 	return function (divContainer) {
 		
@@ -19,13 +19,13 @@ define(function (require) {
 			scene.mouse = new Mouse(divContainer);
 
 			scene.mouseListener = new MouseListener();
-			scene.mouseListener.mouseOver(scene.onMouseOver);
-			scene.mouseListener.mouseOut(scene.onMouseOut);
-			scene.mouseListener.mouseMove(scene.onMouseMove);
-			scene.mouseListener.mouseDown(scene.onMouseDown);
-			scene.mouseListener.mouseUp(scene.onMouseUp);
-			scene.mouseListener.mouseClick(scene.onMouseClick);
-			scene.mouseListener.mouseStop(scene.onMouseStop);
+			scene.mouseListener.onMouseOver = scene.onMouseOver;
+			scene.mouseListener.onMouseOut = scene.onMouseOut;
+			scene.mouseListener.onMouseMove = scene.onMouseMove;
+			scene.mouseListener.onMouseDown = scene.onMouseDown;
+			scene.mouseListener.onMouseUp = scene.onMouseUp;
+			scene.mouseListener.onMouseClick = scene.onMouseClick;
+			scene.mouseListener.onMouseStop = scene.onMouseStop;
 			
 			scene.mouse.addMouseListener(scene.mouseListener);
 		};

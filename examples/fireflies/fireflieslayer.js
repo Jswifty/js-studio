@@ -1,6 +1,6 @@
 define(function (require) {
 
-	var CanvasView = require("./canvasview");
+	var CanvasView = require("../../src/canvasview/canvasview");
 	var Firefly = require("./firefly");
 	var FireflyState = require("./fireflystate");
 
