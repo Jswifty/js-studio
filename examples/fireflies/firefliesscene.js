@@ -1,7 +1,7 @@
 define(function (require) {
 
-	var Fire = require("./fire/fire");
-	var FirefliesLayer = require("./fireflieslayer");
+	var Fire = require("fire/fire");
+	var FirefliesLayer = require("fireflieslayer");
 	var Animator = require("../../src/animator/animator");
 	var Mouse = require("../../src/mouse/mouse");
 	var MouseListener = require("../../src/mouse/mouselistener");

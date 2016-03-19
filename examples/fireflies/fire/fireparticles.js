@@ -1,6 +1,6 @@
 define(function (require) {
 
-	var FireUtils = require("./fireutils");
+	var FireUtils = require("fireutils");
 
 	return function () {
 		

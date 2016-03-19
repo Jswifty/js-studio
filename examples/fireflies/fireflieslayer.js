@@ -1,8 +1,8 @@
 define(function (require) {
 
 	var CanvasView = require("../../src/canvasview/canvasview");
-	var Firefly = require("./firefly");
-	var FireflyState = require("./fireflystate");
+	var Firefly = require("firefly");
+	var FireflyState = require("fireflystate");
 
 	var Target = function (position, direction, speed) {
 		this.position = position;

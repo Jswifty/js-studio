@@ -1,8 +1,8 @@
 define(function (require) {
 
 	var CanvasView = require("../../../src/canvasview/canvasview");
-	var FireParticle = require("./fireparticles");
-	var SparkParticle = require("./sparkparticles");
+	var FireParticle = require("fireparticles");
+	var SparkParticle = require("sparkparticles");
 
 	return function (index, numOfParticles, divContainer, animator) {
 

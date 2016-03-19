@@ -1,6 +1,6 @@
 define(function (require) {
 
-	var SparkUtils = require("./sparkutils");
+	var SparkUtils = require("sparkutils");
 
 	return function () {
 

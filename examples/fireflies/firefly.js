@@ -1,6 +1,6 @@
 define(function (require) {
 
-	var State = require("./fireflystate");
+	var State = require("fireflystate");
 	var Utils = {
 	
 		/* transfer function from color to an RGB string for ease of rendering. */
