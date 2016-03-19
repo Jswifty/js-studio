@@ -3,71 +3,79 @@
  */ 
 define(function (require) {
 
-	var LifeGrid = require("./lifegrid");
-	var Animator = require("./animator");
-	var Mouse = require("./mouse");
-	var MouseListener = require("./mouselistener");
+	var LifeGrid = require("lifegrid");
+	var ControlMenu = require("controlmenu");
+	var Mouse = require("../../src/mouse/mouse");
+	var MouseListener = require("../../src/mouse/mouselistener");
 
-	return function (divContainer, rows, columns) {
+	return function (container, rows, columns) {
 	
 		var gameoflife = this;
 
-		/* Create an Animator. */
-		this.animator = new Animator();
+		this.isDrawMode = true;
 
 		/* Life grid, which creates a canvas. */
-		this.lifeGrid = new LifeGrid(rows, columns, divContainer, this.animator);
-
-		this.addMouseListener = function (divContainer) {
+		this.lifeGrid = new LifeGrid(rows, columns, container);
 			
-			if (gameoflife.mouse && gameoflife.mouseListener) {
-				gameoflife.mouse.removeMouseListener(gameoflife.mouseListener);
-			}
+		this.mouse = new Mouse(this.lifeGrid.canvasView.canvas);
 
-			gameoflife.mouse = new Mouse(divContainer);
+		this.mouseListener = new MouseListener();
+		this.mouseListener.onMouseOver = mouseHandler;
+		this.mouseListener.onMouseOut = mouseHandler;
+		this.mouseListener.onMouseMove = mouseHandler;
+		this.mouseListener.onMouseDown = mouseHandler;
+		this.mouseListener.onMouseUp = mouseHandler;
+		
+		this.mouse.addMouseListener(this.mouseListener);
 
-			gameoflife.mouseListener = new MouseListener();
-			gameoflife.mouseListener.mouseOver(gameoflife.mouseHandler);
-			gameoflife.mouseListener.mouseOut(gameoflife.mouseHandler);
-			gameoflife.mouseListener.mouseMove(gameoflife.mouseHandler);
-			gameoflife.mouseListener.mouseDown(gameoflife.mouseHandler);
-			gameoflife.mouseListener.mouseUp(gameoflife.mouseHandler);
-			
-			gameoflife.mouse.addMouseListener(gameoflife.mouseListener);
-		};
+		function mouseHandler (event) {
 
-		this.mouseHandler = function (event) {
+			var lifeGrid = gameoflife.lifeGrid;
 
-			//if (event.mouse.isMouseDown === true) {
+			var mouse = event.mouse;
+			var position = mouse.position;
 
-				var lifeGrid = gameoflife.lifeGrid
-				var position = event.mouse.position;
+			if (position && position.x && position.y) {
 
-				if (position !== null && position !== undefined) {
+				var pointX = Math.floor(position.x / lifeGrid.canvasView.getWidth() * lifeGrid.columns);
+				var pointY = Math.floor(position.y / lifeGrid.canvasView.getHeight() * lifeGrid.rows);
 
-					var pointX = Math.floor(position.x / lifeGrid.canvasView.getWidth() * lifeGrid.columns);
-					var pointY = Math.floor(position.y / lifeGrid.canvasView.getHeight() * lifeGrid.rows);
+				if (mouse.isMouseDown === true) {
 
 					for (var y = Math.max(0, pointY - 1); y <= pointY + 1 && y < lifeGrid.rows; y++) {
 						for (var x = Math.max(0, pointX - 1); x <= pointX + 1 && x < lifeGrid.columns; x++) {
-							lifeGrid.setCell(y, x, true);
+							lifeGrid.setCell(y, x, gameoflife.isDrawMode);
 						}
 					}
 				}
-			//}
-		};
+
+				var shadawCells = [];
+
+				for (var y = Math.max(0, pointY - 1); y <= pointY + 1 && y < lifeGrid.rows; y++) {
+					for (var x = Math.max(0, pointX - 1); x <= pointX + 1 && x < lifeGrid.columns; x++) {
+						shadawCells.push({ y: y, x: x });
+					}
+				}
+
+				lifeGrid.setShadowCells(shadawCells);
+			}
+
+			else {
+				lifeGrid.setShadowCells([]);
+			}
+
+			lifeGrid.draw();
+		}
 
 		this.start = function () {
-			gameoflife.animator.start();
+			gameoflife.lifeGrid.start();
 		};
 
-		this.pause = function () {
-			gameoflife.animator.pause();
+		this.setDrawMode = function (drawMode) {
+			gameoflife.isDrawMode = drawMode;
 		};
 
-		this.resume = function () {
-			gameoflife.animator.resume();
-		};
+		this.controlMenu = new ControlMenu(container, gameoflife.lifeGrid.pause, gameoflife.lifeGrid.resume, gameoflife.lifeGrid.setSpeed, this.setDrawMode);
 
 		/* Scene Styling. */
 		var sceneStyle = document.createElement("style");
@@ -78,9 +86,7 @@ define(function (require) {
 		document.getElementsByTagName("head")[0].appendChild(sceneStyle);
 
 		/* Apply the scene's styling onto the container. */
-		divContainer.className = "gameOfLifeStyle";
-
-		this.animator.addRenderFunction(this.lifeGrid, this.lifeGrid.render);
+		container.className = "gameOfLifeStyle";
 
 		/* Finally, reset the game. */
 		this.lifeGrid.reset();

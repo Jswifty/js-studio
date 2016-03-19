@@ -17,16 +17,10 @@ head.appendChild(style);
 
 var body = document.getElementsByTagName("body")[0];
 
-require(["gameoflife"], function(Gameoflife) {
+require(["fonts", "gameoflife"], function(fontsStyle, GameOflife) {
 
-	var gameoflife = new Gameoflife(body, 500, 500);
+	document.getElementsByTagName("head")[0].appendChild(fontsStyle);
 
-	for (var y = 10; y < 480; y += 2) {
-		for (var x = 10; x < 480; x += 1) {
-			gameoflife.lifeGrid.setCell(y, x, true);
-		}
-	}
-
-	gameoflife.addMouseListener(body);
+	var gameoflife = new GameOflife(body, 400, 400);
 	gameoflife.start();
 });

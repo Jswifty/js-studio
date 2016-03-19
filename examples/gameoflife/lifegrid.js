@@ -3,35 +3,58 @@
  */ 
 define(function (require) {
 
-	var CanvasView = require("./canvasview");
+	var CanvasView = require("../../src/canvasview/canvasview");
 
-	return function (rows, columns, divContainer, animator) {
+	return function (rows, columns, container) {
 	
-		var lifegrid = this;
+		var lifeGrid = this;
 
 		this.rows = rows;
 		this.columns = columns;
 		this.grid = [];
+		this.shadowCells = [];
 
 		/* Create a CanvasView. */
-		this.canvasView = new CanvasView(divContainer, animator);
+		this.canvasView = new CanvasView(container);
 		this.canvasView.canvas.id = "game_of_life";
 		this.canvasView.canvas.style.zIndex = 0;
 
+		this.paused = false;
+
+		this.start = function () {
+			lifeGrid.canvasView.start();
+		};
+
+		this.pause = function () {
+			lifeGrid.paused = true;
+		};
+
+		this.resume = function () {
+			lifeGrid.paused = false;
+		};
+
+		this.setSpeed = function (speed) {
+			lifeGrid.canvasView.animator.FPS = speed;
+		};
+
 		this.getCell = function (y, x) {
-			return lifegrid.grid[y][x];
+			return lifeGrid.grid[y][x];
 		};
 
 		this.setCell = function (y, x, alive) {
-			lifegrid.grid[y][x] = alive;
+			lifeGrid.grid[y][x] = alive;
+		};
+
+		this.setShadowCells = function (shadowCells) {
+			lifeGrid.shadowCells = shadowCells;
 		};
 
 		this.updateCellState = function (y, x, grid) {
 
 			var numOfLiveNeighbours = 0;
 
-			for (var sideY = Math.max(0, y - 1); sideY <= y + 1 && sideY < lifegrid.rows; sideY++) {
-				for (var sideX = Math.max(0, x - 1); sideX <= x + 1 && sideX < lifegrid.columns; sideX++) {
+			for (var sideY = Math.max(0, y - 1); sideY <= y + 1 && sideY < lifeGrid.rows; sideY++) {
+				for (var sideX = Math.max(0, x - 1); sideX <= x + 1 && sideX < lifeGrid.columns; sideX++) {
 					if ((sideY !== y || sideX !== x) && grid[sideY][sideX] === true) {
 						numOfLiveNeighbours++;
 					}
@@ -43,30 +66,61 @@ define(function (require) {
 
 		this.reset = function () {
 
-			for (var y = 0; y < lifegrid.rows; y++) {
-				lifegrid.grid[y] = [];
-				for (var x = 0; x < lifegrid.columns; x++) {
-					lifegrid.setCell(y, x, false);
+			for (var y = 0; y < lifeGrid.rows; y++) {
+				lifeGrid.grid[y] = [];
+				for (var x = 0; x < lifeGrid.columns; x++) {
+					lifeGrid.setCell(y, x, false);
 				}
 			}
 		};
 
 		this.render = function () {
 
-			lifegrid.update();
+			if (lifeGrid.paused === false) {
+				lifeGrid.update();
+			}
 
-			lifegrid.canvasView.draw(function (context, width, height) {
+			lifeGrid.draw();
+		};
 
-				var cellWidth = width / lifegrid.columns;
-				var cellHeight = height / lifegrid.rows;
+		this.update = function () {
+
+			var newGrid = [];
+
+			for (var y = 0; y < lifeGrid.rows; y++) {
+				newGrid[y] = [];
+				for (var x = 0; x < lifeGrid.columns; x++) {
+					newGrid[y][x] = lifeGrid.updateCellState(y, x, lifeGrid.grid);
+				}
+			}
+
+			lifeGrid.grid = newGrid;
+		};
+
+		this.draw = function () {
+			
+			lifeGrid.canvasView.draw(function (context, width, height) {
+
+				var cellWidth = width / lifeGrid.columns;
+				var cellHeight = height / lifeGrid.rows;
 				
 				context.clearRect(0, 0, width, height);
 
-				context.fillStyle = "#FF8800";
+				context.fillStyle = "rgba(225, 125, 0, 0.5)";
 
-				for (var y = 0; y < lifegrid.rows; y++) {
-					for (var x = 0; x < lifegrid.columns; x++) {
-						if (lifegrid.getCell(y, x)) {
+				for (var i = 0; i < lifeGrid.shadowCells.length; i++) {
+
+					var x = lifeGrid.shadowCells[i].x;
+					var y = lifeGrid.shadowCells[i].y;
+
+					context.fillRect(x * cellWidth, y * cellHeight, cellWidth, cellHeight);
+				}
+
+				context.fillStyle = "rgba(225, 125, 0, 1)";
+
+				for (var y = 0; y < lifeGrid.rows; y++) {
+					for (var x = 0; x < lifeGrid.columns; x++) {
+						if (lifeGrid.getCell(y, x)) {
 							context.fillRect(x * cellWidth, y * cellHeight, cellWidth, cellHeight);
 						}
 					}
@@ -74,18 +128,6 @@ define(function (require) {
 			});
 		};
 
-		this.update = function () {
-
-			var newGrid = [];
-
-			for (var y = 0; y < lifegrid.rows; y++) {
-				newGrid[y] = [];
-				for (var x = 0; x < lifegrid.columns; x++) {
-					newGrid[y][x] = lifegrid.updateCellState(y, x, lifegrid.grid);
-				}
-			}
-
-			lifegrid.grid = newGrid;
-		};
+		lifeGrid.canvasView.animator.addRenderFunction(lifeGrid, lifeGrid.render);
 	};
 });
