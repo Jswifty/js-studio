@@ -1,5 +1,31 @@
 define(function (require) {
 
+	/** GLOBAL INITIALISATION */
+
+	/** Set the request animation frame to the native event frame. */
+	window.requestAnimFrame = (function () {
+		return	window.requestAnimationFrame		|| 
+				window.webkitRequestAnimationFrame	|| 
+				window.mozRequestAnimationFrame		|| 
+				window.oRequestAnimationFrame		|| 
+				window.msRequestAnimationFrame		|| 
+				function (callback, element) { window.setTimeout(callback, 1000 / 60); };
+	})();
+
+	/** Set the cancel animation frame to the native event frame. */
+	window.cancelAnimFrame = (function () {
+		return	window.cancelAnimationFrame					|| 
+				window.webkitCancelAnimationFrame			|| 
+				window.mozCancelAnimationFrame				|| 
+				window.oCancelAnimationFrame				|| 
+				window.msCancelAnimationFrame				|| 
+				window.webkitCancelRequestAnimationFrame	|| 
+				window.mozCancelRequestAnimationFrame		|| 
+				window.oCancelRequestAnimationFrame			|| 
+				window.msCancelRequestAnimationFrame		|| 
+				function (id) { window.clearTimeout(id); };
+	})();
+
 	return function () {
 	
 		var animator = this;
@@ -314,29 +340,3 @@ define(function (require) {
 		window.onpagehide = window.onblur = function(event) { animator.onWindowHidden(); };
 	};
 });
-
-/** GLOBAL INITIALISATION */
-
-/** Set the request animation frame to the native event frame. */
-window.requestAnimFrame = (function () {
-	return	window.requestAnimationFrame		|| 
-			window.webkitRequestAnimationFrame	|| 
-			window.mozRequestAnimationFrame		|| 
-			window.oRequestAnimationFrame		|| 
-			window.msRequestAnimationFrame		|| 
-			function (callback, element) { window.setTimeout(callback, 1000 / 60); };
-})();
-
-/** Set the cancel animation frame to the native event frame. */
-window.cancelAnimFrame = (function () {
-	return	window.cancelAnimationFrame					|| 
-			window.webkitCancelAnimationFrame			|| 
-			window.mozCancelAnimationFrame				|| 
-			window.oCancelAnimationFrame				|| 
-			window.msCancelAnimationFrame				|| 
-			window.webkitCancelRequestAnimationFrame	|| 
-			window.mozCancelRequestAnimationFrame		|| 
-			window.oCancelRequestAnimationFrame			|| 
-			window.msCancelRequestAnimationFrame		|| 
-			function (id) { window.clearTimeout(id); };
-})();

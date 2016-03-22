@@ -1,5 +1,10 @@
 define(function () {
 	
+	window.navigator = window.navigator || {};
+	window.navigator.getUserMedia = window.navigator.getUserMedia 	||
+								window.navigator.webkitGetUserMedia	||
+								window.navigator.mozGetUserMedia;
+
 	return function (callback, error, settings) {
 		
 		if (window.navigator.getUserMedia) {	
@@ -36,8 +41,3 @@ define(function () {
 		}
 	};
 });
-
-window.navigator = window.navigator || {};
-window.navigator.getUserMedia = window.navigator.getUserMedia 		||
-								window.navigator.webkitGetUserMedia	||
-								window.navigator.mozGetUserMedia;

@@ -1,5 +1,7 @@
 define(function () {
 	
+	window.navigator = window.navigator || {};
+
 	return {
 		
 		watchID: null,
@@ -89,5 +91,3 @@ define(function () {
 		}
 	};
 });
-
-window.navigator = window.navigator || {};
