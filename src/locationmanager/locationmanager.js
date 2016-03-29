@@ -4,6 +4,8 @@ define(function () {
 
 	return {
 		
+		geoLocation: window.navigator.geolocation,
+
 		watchID: null,
 
 		requestPosition: function (callback, error, settings) {
@@ -11,9 +13,8 @@ define(function () {
 			settings = settings || {};
 
 			var requestTimer;
-			var geoLocation = window.navigator.geolocation;
 
-			if (geoLocation) {
+			if (this.geoLocation) {
 
 				if (settings.timeout) {
 					requestTimer = setTimeout(function () {
@@ -25,7 +26,7 @@ define(function () {
 					}, settings.timeout);
 				}
 
-				geoLocation.getCurrentPosition(function (position) {
+				this.geoLocation.getCurrentPosition(function (position) {
 
 					if (requestTimer) {
 						clearTimeout(requestTimer);
@@ -48,9 +49,8 @@ define(function () {
 			settings = settings || {};
 
 			var requestTimer;
-			var geoLocation = window.navigator.geolocation;
 
-			if (geoLocation) {
+			if (this.geoLocation) {
 
 				if (settings.timeout) {
 					requestTimer = setTimeout(function () {
@@ -63,10 +63,10 @@ define(function () {
 				}
 
 				if (this.watchID) {
-					geoLocation.clearWatch(this.watchID);
+					this.geoLocation.clearWatch(this.watchID);
 				}
 
-				this.watchID = geoLocation.watchPosition(function (position) {
+				this.watchID = this.geoLocation.watchPosition(function (position) {
 
 					if (requestTimer) {
 						clearTimeout(requestTimer);
@@ -86,7 +86,7 @@ define(function () {
 
 		stopWatchingPosition: function () {
 			if (this.watchID) {
-				window.navigator.geolocation.clearWatch(this.watchID);
+				this.geoLocation.clearWatch(this.watchID);
 			}
 		}
 	};

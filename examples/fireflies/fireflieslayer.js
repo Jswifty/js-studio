@@ -10,12 +10,12 @@ define(function (require) {
 		this.speed = speed;
 	};
 
-	return function (index, numOfFireFlies, divContainer, animator) {
+	return function (index, numOfFireFlies, container, animator) {
 
 		var firefliesLayer = this;
 
 		/* DIV container. */
-		this.divContainer = divContainer;
+		this.container = container;
 		
 		/* Layer index. */
 		this.layerIndex = index;
@@ -30,7 +30,7 @@ define(function (require) {
 		this.generationDelay = 1000;
 		
 		/* Create the canvas. */
-		this.canvasView = new CanvasView(divContainer, animator);
+		this.canvasView = new CanvasView(container, animator);
 		this.canvasView.canvas.id = "firefliesCanvas" + index.toString();
 		this.canvasView.canvas.style.zIndex = 0;
 		

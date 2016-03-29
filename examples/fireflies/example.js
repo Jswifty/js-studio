@@ -1,16 +1,7 @@
-var style = document.createElement("style");
+var style = document.createElement("link");
+style.rel = "stylesheet";
 style.type = "text/css";
-style.id = "mainStyle";
-style.innerHTML = [
-	"html, body {",
-		"width: 100%;",
-		"height: 100%;",
-	"}",
-	"body {",
-		"margin: 0px;",
-		"background: black;",
-	"}"
-].join(" ");
+style.href = "example.css";
 
 var head = document.getElementsByTagName("head")[0];
 head.appendChild(style);

@@ -1,4 +1,4 @@
-define(function (require) {
+define(function () {
 
 	return function (canvas, config, animator) {
 	
@@ -39,8 +39,6 @@ define(function (require) {
 		this.dummyTextpre.innerHTML = "..........\n..........\n..........\n..........\n..........\n..........\n..........\n..........\n..........\n..........";
 
 		canvas.parentElement.appendChild(this.dummyTextpre);
-
-		canvas.parentElement.style.overflow = "hidden";
 		
 		/** Perform action for window resize event. */
 		this.onResize = function () {

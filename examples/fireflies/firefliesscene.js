@@ -6,17 +6,26 @@ define(function (require) {
 	var Mouse = require("../../src/mouse/mouse");
 	var MouseListener = require("../../src/mouse/mouselistener");
 
-	return function (divContainer) {
+	/**** SCENE STYLING. ****/
+	var style = document.createElement("link");
+	style.rel = "stylesheet";
+	style.type = "text/css";
+	style.href = "firefliesscene.css";
+
+	/* Insert the scene styling into the the header of the web page. */
+	document.getElementsByTagName("head")[0].appendChild(style);
+
+	return function (container) {
 		
 		var scene = this;
 		
-		this.addMouseListener = function (divContainer) {
+		this.addMouseListener = function (container) {
 			
 			if (scene.mouse && scene.mouseListener) {
 				scene.mouse.removeMouseListener(scene.mouseListener);
 			}
 
-			scene.mouse = new Mouse(divContainer);
+			scene.mouse = new Mouse(container);
 
 			scene.mouseListener = new MouseListener();
 			scene.mouseListener.onMouseOver = scene.onMouseOver;
@@ -126,24 +135,16 @@ define(function (require) {
 			}
 		};
 
-		/* Scene Styling. */
-		var sceneStyle = document.createElement("style");
-		sceneStyle.type = "text/css";
-		sceneStyle.innerHTML = ".firefliesSceneStyle { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; -o-user-select: none; user-select: none; }";
-
-		/* Insert the scene styling into the the header of the web page. */
-		document.getElementsByTagName("head")[0].appendChild(sceneStyle);
-
 		/* Apply the scene's styling onto the container. */
-		divContainer.className = "firefliesSceneStyle";
+		container.className = "firefliesScene";
 		
 		/* Create an Animator. */
 		this.animator = new Animator();
 
 		/* Fire layer, which creates a canvas. */
-		this.fire = new Fire(0, 50, divContainer, this.animator);
+		this.fire = new Fire(0, 50, container, this.animator);
 		
-		/* Fireflies layers, which creates a canvas for each layer. */	
+		/* Fireflies layers, which creates a canvas for each layer. */
 		var numOfFireflies = 100;
 		var numOfFirefliesLayers = 2;
 		
@@ -153,7 +154,7 @@ define(function (require) {
 			
 			var numOfLayerFireflies = numOfFireflies / numOfFirefliesLayers;
 			
-			this.firefliesLayers[i] = new FirefliesLayer(i, numOfLayerFireflies, divContainer, this.animator);
+			this.firefliesLayers[i] = new FirefliesLayer(i, numOfLayerFireflies, container, this.animator);
 			
 			this.firefliesLayers[i].getHeartPosition = function (layerIndex, fireflyIndex, centerPosition) {
 				
@@ -169,6 +170,7 @@ define(function (require) {
 			this.firefliesLayers[i].focusOnFire(this.fire);
 		}
 		
+		/* Hook up drawing methods to the animator. */
 		this.animator.addRenderFunction(this.fire, this.fire.render);
 		
 		for (var i = 0; i < this.firefliesLayers.length; i++) {

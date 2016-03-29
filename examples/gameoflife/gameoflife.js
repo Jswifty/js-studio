@@ -80,7 +80,16 @@ define(function (require) {
 		/* Scene Styling. */
 		var sceneStyle = document.createElement("style");
 		sceneStyle.type = "text/css";
-		sceneStyle.innerHTML = ".gameOfLifeStyle { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; -o-user-select: none; user-select: none; }";
+		sceneStyle.innerHTML = [
+			".gameOfLifeStyle {",
+				"-webkit-user-select: none;",
+				"-moz-user-select: none;",
+				"-ms-user-select: none;",
+				"-o-user-select: none;",
+				"user-select: none;",
+				"overflow: hidden;",
+			"}"
+		].join(" ");
 
 		/* Insert the scene styling into the the header of the web page. */
 		document.getElementsByTagName("head")[0].appendChild(sceneStyle);

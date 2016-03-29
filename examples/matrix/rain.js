@@ -1,7 +1,4 @@
-/**  
- *	rain.js is an object class which generates the rain effect on a canvas.
- */ 
-define(function (require) {
+define(function () {
 
 	return function (interval, density) {
 	

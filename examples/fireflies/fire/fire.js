@@ -1,15 +1,15 @@
 define(function (require) {
 
 	var CanvasView = require("../../../src/canvasview/canvasview");
-	var FireParticle = require("fireparticles");
-	var SparkParticle = require("sparkparticles");
+	var FireParticle = require("fire/fireparticles");
+	var SparkParticle = require("fire/sparkparticles");
 
-	return function (index, numOfParticles, divContainer, animator) {
+	return function (index, numOfParticles, container, animator) {
 
 		var fire = this;
 
 		/* DIV container. */
-		this.divContainer = divContainer;
+		this.container = container;
 		
 		/* Layer index. */
 		this.layerIndex = index;
@@ -49,7 +49,7 @@ define(function (require) {
 		this.sparklingTime = 120;
 		
 		/* Create the canvas. */
-		this.canvasView = new CanvasView(divContainer, animator);
+		this.canvasView = new CanvasView(container, animator);
 		this.canvasView.canvas.id = 'fireCanvas';
 		this.canvasView.canvas.style.zIndex = index.toString();
 
