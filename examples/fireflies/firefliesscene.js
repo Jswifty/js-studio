@@ -1,16 +1,19 @@
-define(function (require) {
+define([
+	"module",
+	"./fire/fire",
+ 	"./fireflieslayer",
+ 	"js-studio/animator/animator",
+ 	"js-studio/mouse/mouse",
+ 	"js-studio/mouse/mouselistener"
+], function (module, Fire, FirefliesLayer, Animator, Mouse, MouseListener) {
 
-	var Fire = require("fire/fire");
-	var FirefliesLayer = require("fireflieslayer");
-	var Animator = require("../../src/animator/animator");
-	var Mouse = require("../../src/mouse/mouse");
-	var MouseListener = require("../../src/mouse/mouselistener");
+	var currentDirectory = module.uri.replace("firefliesscene.js", "");
 
 	/**** SCENE STYLING. ****/
 	var style = document.createElement("link");
 	style.rel = "stylesheet";
 	style.type = "text/css";
-	style.href = "firefliesscene.css";
+	style.href = currentDirectory + "firefliesscene.css";
 
 	/* Insert the scene styling into the the header of the web page. */
 	document.getElementsByTagName("head")[0].appendChild(style);

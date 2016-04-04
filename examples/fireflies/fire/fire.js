@@ -1,8 +1,8 @@
-define(function (require) {
-
-	var CanvasView = require("../../../src/canvasview/canvasview");
-	var FireParticle = require("fire/fireparticles");
-	var SparkParticle = require("fire/sparkparticles");
+define([
+	"js-studio/canvasview/canvasview",
+	"./fireparticles",
+	"./sparkparticles"
+], function (CanvasView, FireParticle, SparkParticle) {
 
 	return function (index, numOfParticles, container, animator) {
 

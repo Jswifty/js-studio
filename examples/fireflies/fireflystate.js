@@ -2,35 +2,35 @@ define(function () {
 
 	return {
 	
-		getState : function (fireflyBehaviour) {
+		getState: function (fireflyBehaviour) {
 			switch (fireflyBehaviour) {
-				case this.BEHAVIOUR.WANDER : return { behaviour: fireflyBehaviour, effectRange: 0, blurRange: 0 }; break;
-				case this.BEHAVIOUR.ATTRACT : return { behaviour: fireflyBehaviour, effectRange: 300, blurRange: 350 }; break;
-				case this.BEHAVIOUR.FOLLOW : return { behaviour: fireflyBehaviour, effectRange: 200, blurRange: 100 }; break;
-				case this.BEHAVIOUR.FLEE : return { behaviour: fireflyBehaviour, effectRange: 300, blurRange: 0 }; break;
-				case this.BEHAVIOUR.ARRIVE : return { behaviour: fireflyBehaviour, effectRange: 10000, blurRange: 50 }; break;
+				case this.BEHAVIOUR.WANDER: return { behaviour: fireflyBehaviour, effectRange: 0, blurRange: 0 }; break;
+				case this.BEHAVIOUR.ATTRACT: return { behaviour: fireflyBehaviour, effectRange: 300, blurRange: 350 }; break;
+				case this.BEHAVIOUR.FOLLOW: return { behaviour: fireflyBehaviour, effectRange: 200, blurRange: 100 }; break;
+				case this.BEHAVIOUR.FLEE: return { behaviour: fireflyBehaviour, effectRange: 300, blurRange: 0 }; break;
+				case this.BEHAVIOUR.ARRIVE: return { behaviour: fireflyBehaviour, effectRange: 10000, blurRange: 50 }; break;
 			}
 		},
 
-		Target : function (position, direction, speed) {
+		Target: function (position, direction, speed) {
 			this.position = position;
 			this.direction = direction;
 			this.speed = speed;
 		},
 
-		BEHAVIOUR : {
-			WANDER : 0,
-			ATTRACT : 1,
-			FOLLOW : 2,
-			FLEE : 3,
-			ARRIVE : 4
+		BEHAVIOUR: {
+			WANDER: 0,
+			ATTRACT: 1,
+			FOLLOW: 2,
+			FLEE: 3,
+			ARRIVE: 4
 		},
 
 		/** Move randomly. */
-		WANDER : {
+		WANDER: {
 
 			/* Purple color with variance. */
-			color : function () {
+			color: function () {
 				return {
 					r: 255 * Math.random() >> 0,
 					g: 0,
@@ -39,24 +39,24 @@ define(function () {
 			},
 			
 			/* Slow speed, in terms of pixels per second. */
-			speed : function () { return 30 + 30 * Math.random(); },
+			speed: function () { return 30 + 30 * Math.random(); },
 			
 			/* React slowly in speed, in terms of pixels per second. */
-			acceleration : 300,
+			acceleration: 300,
 			
 			/* Steer Randomly. */
-			randomDir : function () { return -7.5 + 15 * Math.random(); },
+			randomDir: function () { return -7.5 + 15 * Math.random(); },
 			
 			/* Dim brightness range. */
-			brightnessMin : function () { return  -2 + 0.5 * Math.random(); },
-			brightnessMax : function () { return  0.5 + 0.5 * Math.random(); }
+			brightnessMin: function () { return  -2 + 0.5 * Math.random(); },
+			brightnessMax: function () { return  0.5 + 0.5 * Math.random(); }
 		},
 
 		/** Move towards the target in a slow speed. */
-		ATTRACT : {
+		ATTRACT: {
 
 			/* Yellow color with variance. */
-			color : function () {
+			color: function () {
 				return {
 					r: 255,
 					g: 255 * Math.random() >> 0,
@@ -65,21 +65,21 @@ define(function () {
 			},
 			
 			/* Medium speed, in terms of pixels per second. */
-			speed : function () { return 50 + 50 * Math.random(); },
+			speed: function () { return 50 + 50 * Math.random(); },
 			
 			/* React normally in speed, in terms of pixels per second. */
-			acceleration : 700,
+			acceleration: 700,
 			
 			/* Medium brightness range. */
-			brightnessMin : function () { return  -0.4 + 0.4 * Math.random(); },
-			brightnessMax : function () { return  1 + 0.2 * Math.random(); }
+			brightnessMin: function () { return  -0.4 + 0.4 * Math.random(); },
+			brightnessMax: function () { return  1 + 0.2 * Math.random(); }
 		},
 
 		/** Follow the same direction as the target and move in a medium fast speed. */
-		FOLLOW : {
+		FOLLOW: {
 
 			/* Green color with variance. */
-			color : function () {
+			color: function () {
 				return {
 					r: 0,
 					g: 255 * Math.random() >> 0,
@@ -88,27 +88,27 @@ define(function () {
 			},
 			
 			/* Speed with dependence on the target speed. Therefore no standard speed applied. */
-			speed : null,
+			speed: null,
 			
 			/* The speed magnifier for better effect. */
-			speedMagnifier : 40,
+			speedMagnifier: 40,
 			
 			/* The distance factor for better effect. */
-			distanceFactor : 20,
+			distanceFactor: 20,
 			
 			/* React extremely quickly in speed, in terms of pixels per second. */
-			acceleration : 2500,
+			acceleration: 2500,
 			
 			/* Medium brightness range. */
-			brightnessMin : function () { return  -0.2 + 0.4 * Math.random(); },
-			brightnessMax : function () { return  1 + 0.2 * Math.random(); }
+			brightnessMin: function () { return  -0.2 + 0.4 * Math.random(); },
+			brightnessMax: function () { return  1 + 0.2 * Math.random(); }
 		},
 
 		/** Move away from the target position in fast speed. */
-		FLEE : {
+		FLEE: {
 
 			/* Blue color with variance. */
-			color : function () {
+			color: function () {
 				return {
 					r: 0,
 					g: 255 * Math.random() >> 0,
@@ -117,24 +117,24 @@ define(function () {
 			},
 			
 			/* Extreme speed, in terms of pixels per second. */
-			speed : function () { return 800 + 200 * Math.random(); },
+			speed: function () { return 800 + 200 * Math.random(); },
 			
 			/* Speed factor for better effects. */
-			speedFactor : 100,
+			speedFactor: 100,
 			
 			/* React extremely quickly in speed, in terms of pixels per second. */
-			acceleration : 4000,
+			acceleration: 4000,
 			
 			/* Great brightness range. */
-			brightnessMin : function () { return  0 + 0.4 * Math.random(); },
-			brightnessMax : function () { return  1 + 0.2 * Math.random(); }
+			brightnessMin: function () { return  0 + 0.4 * Math.random(); },
+			brightnessMax: function () { return  1 + 0.2 * Math.random(); }
 		},
 
 		/** Move toward the target in fast speed, then eventually slow down as it approaches close. */
-		ARRIVE : {
+		ARRIVE: {
 
 			/* Color with all variance. */
-			color : function () {
+			color: function () {
 				return {
 					r: 255 * Math.random() >> 0,
 					g: 255 * Math.random() >> 0,
@@ -143,17 +143,17 @@ define(function () {
 			},
 			
 			/* Speed with dependence on the target position. Therefore no standard speed applied. */
-			speed : null,
+			speed: null,
 			
 			/* Speed factor for better effects. */
-			speedFactor : 2,
+			speedFactor: 2,
 			
 			/* React quickly in speed, in terms of pixels per second. */
-			acceleration : 800,
+			acceleration: 800,
 			
 			/* Great brightness range. */
-			brightnessMin : function () { return  0 + 0.4 * Math.random(); },
-			brightnessMax : function () { return  1 + 0.2 * Math.random(); }
+			brightnessMin: function () { return  0 + 0.4 * Math.random(); },
+			brightnessMax: function () { return  1 + 0.2 * Math.random(); }
 		}
 	};
 });
