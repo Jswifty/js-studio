@@ -1,14 +1,18 @@
 define([
+	"module",
+	"./coderain",
 	"js-studio/canvasasciifier/canvasasciifier",
 	"js-studio/canvasview/canvasview",
 	"js-studio/usermediamanager/usermediamanager"
-], function (Asciifier, CanvasView, UserMediaManager) {
+], function (module, CodeRain, Asciifier, CanvasView, UserMediaManager) {
+
+	var currentDirectory = module.uri.replace("matrixscene.js", "");
 
 	/**** SCENE STYLING. ****/
 	var style = document.createElement("link");
 	style.rel = "stylesheet";
 	style.type = "text/css";
-	style.href = "matrixscene.css";
+	style.href = currentDirectory + "matrixscene.css";
 
 	/* Insert the scene styling into the the header of the web page. */
 	document.getElementsByTagName("head")[0].appendChild(style);
@@ -23,7 +27,7 @@ define([
 				
 				scene.video.src = window.URL.createObjectURL(stream);
 				
-				scene.video.loop = false;
+				scene.codeRain.stop();
 				scene.video.play();
 
 			}, function () {
@@ -33,6 +37,7 @@ define([
 
 		this.startScene = function () {
 			scene.video.play();
+			scene.codeRain.start();
 			scene.canvasView.start();
 		};
 
@@ -41,20 +46,6 @@ define([
 		
 		/* Create a video element for streaming. */
 		this.video = document.createElement("video");
-		this.video.className = "hidden";
-		this.video.loop = true;
-
-		var mp4Source = document.createElement("source");
-		mp4Source.src = "demo.mp4";
-		mp4Source.type = "video/mp4";
-		this.video.appendChild(mp4Source);
-
-		var oggSource = document.createElement("source");
-		oggSource.src = "demo.ogv";
-		oggSource.type = "video/ogg";
-		this.video.appendChild(oggSource);
-
-		container.appendChild(this.video);
 		
 		/* Create a canvas view for capturing pixel colors. */
 		this.canvasView = new CanvasView(body);
@@ -62,6 +53,9 @@ define([
 
 		/* Create an asciifier for converting colors into ASCII. */
 		this.asciifier = new Asciifier(this.canvasView.canvas, { color: "green", invert: true }, this.canvasView.animator);
+
+		/* Rain object for rain effect. */
+		this.codeRain = new CodeRain(100, 0.7);
 
 		/* Hook up drawing methods to the canvas view. */
 		this.canvasView.addRenderFunction(function () {
@@ -72,6 +66,7 @@ define([
 
 			context.clearRect(0, 0, width, height);
 			context.drawImage(scene.video, 0, 0, width, height);
+			scene.codeRain.draw(context, width, height, scene.asciifier.textWidth);
 		});
 	};
 });
