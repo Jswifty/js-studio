@@ -3,5 +3,9 @@
 }
 
 .invisible {
-	visibility: none;
+	visibility: hidden;
+}
+
+.hidden {
+	display: none;
 }

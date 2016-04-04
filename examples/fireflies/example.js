@@ -12,7 +12,7 @@ require.config({
 	paths: { "js-studio": "../../src/" },
 });
 
-require(["firefliesscene"], function(Scene) {
+require(["./firefliesscene"], function(Scene) {
 	var scene = new Scene(body);
 	scene.addMouseListener(body);
 	scene.startScene();

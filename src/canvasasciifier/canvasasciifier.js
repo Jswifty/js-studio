@@ -26,7 +26,7 @@ define(function () {
 		this.textpre.style.height = "auto";
 		this.textpre.style.width = "auto";
 		this.textpre.style.margin = "0px";
-		this.textpre.style.background = config.background || "white";
+		this.textpre.style.background = config.background || "none";
 		this.textpre.style.color = config.color || "black";
 
 		canvas.parentElement.appendChild(this.textpre);
