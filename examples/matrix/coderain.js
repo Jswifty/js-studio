@@ -2,7 +2,7 @@ define(function () {
 
 	return function (interval, density) {
 	
-		var rain = this;
+		var codeRain = this;
 
 		var rainDrops = [];
 
@@ -13,16 +13,16 @@ define(function () {
 			
 			setTimeout(function () {
 				
-				rain.createRainDrop();
+				codeRain.createRainDrop();
 
-				if (rain.interval > 0) {
-					rain.start();
+				if (codeRain.interval > 0) {
+					codeRain.start();
 				}
-			}, rain.interval || 50);
+			}, codeRain.interval || 50);
 		};
 
 		this.stop = function () {
-			rain.interval = 0;
+			codeRain.interval = 0;
 		};
 
 		this.createRainDrop = function () {
@@ -56,7 +56,7 @@ define(function () {
 					var gradient = context.createLinearGradient(0, dropStart, 0, dropEnd);
 				
 					gradient.addColorStop(0, "rgba(255, 255, 255, 0)");
-					gradient.addColorStop(0.5, "rgba(255, 255, 255, " + (rain.density || 0.5) + ")");
+					gradient.addColorStop(0.5, "rgba(255, 255, 255, " + (codeRain.density || 0.5) + ")");
 					
 					context.fillStyle = gradient;
 					context.fillRect(location, dropStart, dropWidth, dropLength);

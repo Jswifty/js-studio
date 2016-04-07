@@ -5,13 +5,13 @@ define([
 	/**** FIREFLY CONFIG ****/
 
 	/* The color changing speed in terms of value per second. */
-	colorVar = 300;
+	var colorVar = 300;
 	
 	/* The change in brightness in terms of value per second. */
-	brightnessVar = 3;
+	var brightnessVar = 3;
 	
 	/* The the steering factor for better effects. */
-	steerFactor = 25;
+	var steerFactor = 25;
 
 	/* transfer function from color to an RGB string for ease of rendering. */
 	function toRGBString (color) {

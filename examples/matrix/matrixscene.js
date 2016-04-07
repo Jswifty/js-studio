@@ -21,26 +21,6 @@ define([
 		
 		var scene = this;
 
-		this.requestUserCamera = function () {
-
-			UserMediaManager.requestUserMedia(function (stream) {
-				
-				scene.video.src = window.URL.createObjectURL(stream);
-				
-				scene.codeRain.stop();
-				scene.video.play();
-
-			}, function () {
-
-			}, { video: true });
-		};
-
-		this.startScene = function () {
-			scene.video.play();
-			scene.codeRain.start();
-			scene.canvasView.start();
-		};
-
 		/* Apply the scene's styling onto the container. */
 		container.className = "matrixScene";
 		
@@ -68,5 +48,25 @@ define([
 			context.drawImage(scene.video, 0, 0, width, height);
 			scene.codeRain.draw(context, width, height, scene.asciifier.textWidth);
 		});
+
+		this.requestUserCamera = function () {
+
+			UserMediaManager.requestUserMedia(function (stream) {
+				
+				scene.video.src = window.URL.createObjectURL(stream);
+				
+				scene.codeRain.stop();
+				scene.video.play();
+
+			}, function () {
+
+			}, { video: true });
+		};
+
+		this.startScene = function () {
+			scene.video.play();
+			scene.codeRain.start();
+			scene.canvasView.start();
+		};
 	};
 });

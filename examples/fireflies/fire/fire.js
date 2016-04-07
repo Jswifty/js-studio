@@ -28,6 +28,7 @@ define([
 		
 		/* Spark particles. */
 		this.sparkParticles = [];
+		
 		for (var i = 0; i < this.numOfSparkParticles; i++) {
 			this.sparkParticles[i] = new SparkParticle();
 		}
