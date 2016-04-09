@@ -5,9 +5,9 @@ define([
  	"js-studio/animator/animator",
  	"js-studio/mouse/mouse",
  	"js-studio/mouse/mouselistener"
-], function (module, Fire, FirefliesLayer, Animator, Mouse, MouseListener) {
+], function (Module, Fire, FirefliesLayer, Animator, Mouse, MouseListener) {
 
-	var currentDirectory = module.uri.replace("firefliesscene.js", "");
+	var currentDirectory = Module.uri.replace("firefliesscene.js", "");
 
 	/**** SCENE STYLING. ****/
 	var style = document.createElement("link");

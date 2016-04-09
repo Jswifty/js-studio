@@ -4,9 +4,9 @@ define([
 	"js-studio/canvasasciifier/canvasasciifier",
 	"js-studio/canvasview/canvasview",
 	"js-studio/usermediamanager/usermediamanager"
-], function (module, CodeRain, Asciifier, CanvasView, UserMediaManager) {
+], function (Module, CodeRain, Asciifier, CanvasView, UserMediaManager) {
 
-	var currentDirectory = module.uri.replace("matrixscene.js", "");
+	var currentDirectory = Module.uri.replace("matrixscene.js", "");
 
 	/**** SCENE STYLING. ****/
 	var style = document.createElement("link");

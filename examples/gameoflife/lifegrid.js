@@ -1,9 +1,6 @@
-/**  
- *	lifegrid.js is an object class which.
- */ 
-define(function (require) {
-
-	var CanvasView = require("../../src/canvasview/canvasview");
+define([
+	"js-studio/canvasview/canvasview"
+], function (CanvasView) {
 
 	return function (rows, columns, container) {
 	
@@ -11,15 +8,23 @@ define(function (require) {
 
 		this.rows = rows;
 		this.columns = columns;
+		
 		this.grid = [];
+		
+		this.color = {
+			r: 255,
+			g: 125,
+			b: 0
+		};
+
 		this.shadowCells = [];
+		
+		this.paused = false;
 
 		/* Create a CanvasView. */
 		this.canvasView = new CanvasView(container);
-		this.canvasView.canvas.id = "game_of_life";
+		this.canvasView.canvas.id = "gameofLife";
 		this.canvasView.canvas.style.zIndex = 0;
-
-		this.paused = false;
 
 		this.start = function () {
 			lifeGrid.canvasView.start();
@@ -47,6 +52,10 @@ define(function (require) {
 
 		this.setShadowCells = function (shadowCells) {
 			lifeGrid.shadowCells = shadowCells;
+		};
+
+		this.clearShadowCells = function () {
+			lifeGrid.shadowCells = [];
 		};
 
 		this.updateCellState = function (y, x, grid) {
@@ -106,7 +115,7 @@ define(function (require) {
 				
 				context.clearRect(0, 0, width, height);
 
-				context.fillStyle = "rgba(225, 125, 0, 0.5)";
+				context.fillStyle = "rgba(" + lifeGrid.color.r + ", " + lifeGrid.color.g + ", " + lifeGrid.color.b + ", 0.5)";
 
 				for (var i = 0; i < lifeGrid.shadowCells.length; i++) {
 
@@ -116,7 +125,7 @@ define(function (require) {
 					context.fillRect(x * cellWidth, y * cellHeight, cellWidth, cellHeight);
 				}
 
-				context.fillStyle = "rgba(225, 125, 0, 1)";
+				context.fillStyle = "rgba(" + lifeGrid.color.r + ", " + lifeGrid.color.g + ", " + lifeGrid.color.b + ", 1)";
 
 				for (var y = 0; y < lifeGrid.rows; y++) {
 					for (var x = 0; x < lifeGrid.columns; x++) {
@@ -128,6 +137,8 @@ define(function (require) {
 			});
 		};
 
-		lifeGrid.canvasView.animator.addRenderFunction(lifeGrid, lifeGrid.render);
+		this.canvasView.animator.addRenderFunction(this, this.render);
+		
+		this.reset();
 	};
 });

@@ -1,0 +1,35 @@
+define([
+	"module",
+	"./lifegrid",
+	"./controlmenu"
+], function (module, LifeGrid, ControlMenu) {
+
+	var currentDirectory = module.uri.replace("gameoflifescene.js", "");
+
+	/**** SCENE STYLING. ****/
+	var style = document.createElement("link");
+	style.rel = "stylesheet";
+	style.type = "text/css";
+	style.href = currentDirectory + "gameoflifescene.css";
+
+	/* Insert the scene styling into the the header of the web page. */
+	document.getElementsByTagName("head")[0].appendChild(style);
+
+	return function (container, rows, columns) {
+	
+		var scene = this;
+
+		/* Apply the scene's styling onto the container. */
+		container.className = "gameofLifeScene";
+
+		/* Create a life grid with the given dimensions, which draws the grid and updates it. */
+		this.lifeGrid = new LifeGrid(rows, columns, container);
+
+		/* Create a control menu, which displays the controls of the grid. */
+		this.controlMenu = new ControlMenu(container, this.lifeGrid);
+			
+		this.startScene = function () {
+			scene.lifeGrid.start();
+		};
+	};
+});

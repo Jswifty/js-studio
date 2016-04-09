@@ -1,26 +1,19 @@
-var style = document.createElement("style");
+var style = document.createElement("link");
+style.rel = "stylesheet";
 style.type = "text/css";
-style.id = "mainStyle";
-style.innerHTML = [
-	"html, body {",
-		"width: 100%;",
-		"height: 100%;",
-	"}",
-	"body {",
-		"margin: 0px;",
-		"background: black;",
-	"}"
-].join(" ");
+style.href = "example.css";
 
 var head = document.getElementsByTagName("head")[0];
 head.appendChild(style);
 
 var body = document.getElementsByTagName("body")[0];
 
-require(["fonts", "gameoflife"], function(fontsStyle, GameOflife) {
+require.config({
+	paths: { "js-studio": "../../src/" },
+});
 
-	document.getElementsByTagName("head")[0].appendChild(fontsStyle);
+require(["./gameoflifescene"], function(Scene) {
 
-	var gameoflife = new GameOflife(body, 400, 400);
-	gameoflife.start();
+	var gameoflife = new Scene(body, 400, 400);
+	gameoflife.startScene();
 });
