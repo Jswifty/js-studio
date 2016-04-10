@@ -1,5 +1,10 @@
+@font-face {
+	font-family: arcon;
+	src: url("fonts/arcon/arcon.otf") format("opentype");
+}
+
 body {
-	font-family: "Arcon";
+	font-family: arcon;
 }
 
 #menuButton {

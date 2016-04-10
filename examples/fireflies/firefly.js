@@ -19,7 +19,7 @@ define([
 	};
 	
 	function radius () {
-		return 20 + 10 * Math.random();
+		return 10 + 20 * Math.random();
 	};
 
 	/** Calculate the distance from the origin position to the destination position. */

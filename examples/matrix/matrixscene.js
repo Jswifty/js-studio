@@ -28,7 +28,7 @@ define([
 		this.video = document.createElement("video");
 		
 		/* Create a canvas view for capturing pixel colors. */
-		this.canvasView = new CanvasView(body);
+		this.canvasView = new CanvasView(container);
 		this.canvasView.canvas.className = "invisible";
 
 		/* Create an asciifier for converting colors into ASCII. */

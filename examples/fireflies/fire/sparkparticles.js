@@ -3,7 +3,10 @@ define(function () {
 	/**** SPARK PARTICLES CONFIG ****/
 		
 	/* Radius reducing speed in terms of pixels per second. */
-	var radiusVar = 50;
+	var radiusVar = 10;
+
+	/* Downward speed in terms of pixels per second. */
+	var gravityVar = 30;
 	
 	/* Start color of the spark : Bright yellow color. */
 	function startColor () {
@@ -30,20 +33,20 @@ define(function () {
 	
 	/* Starting Radius. */
 	function startRadius () {
-		return 15 + 10 * Math.random();
+		return 5 + 5 * Math.random();
 	}
 	
 	/* Fire velocity in terms of pixels per second. */
 	function velocity () {
 		return {
 			x: -500 + 1000 * Math.random(), 
-			y: -500 + 1000 * Math.random()
+			y: -750 + 1000 * Math.random()
 		};
 	}
 	
 	/* Lifespan and remaining life time in terms of seconds. */
 	function lifespan () {
-		return 0.2 + 0.05 * Math.random();
+		return 1 + 2 * Math.random();
 	}
 
 	/**** SPARK PARTICLES OBJECT ****/
@@ -102,6 +105,9 @@ define(function () {
 				sparkParticle.position.x += sparkParticle.velocity.x * timeDiff;
 				sparkParticle.position.y += sparkParticle.velocity.y * timeDiff;
 			}
+
+			/* Update vertical velocity. */
+			sparkParticle.velocity.y += gravityVar;
 			
 			/* Update Color String. */
 			sparkParticle.rgbString = toRGBString(sparkParticle.color);
