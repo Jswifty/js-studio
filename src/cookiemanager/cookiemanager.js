@@ -23,21 +23,19 @@ define(function () {
 			return null;
 		},
 
-		setCookie : function (name, value, hours) {
+		setCookie : function (name, value, days) {
 
 			var expires = "";
 
 			if (days) {
-				var date = new Date();
-				date.setTime(date.getTime() + (hours * 60 * 60 * 1000));
-				expires = "; expires=" + date.toGMTString();
+				expires = "; expires=" + new Date(new Date.getTime() + days * 24 * 60 * 60 * 1000).toGMTString();
 			}
 
 			document.cookie = name + "=" + value + expires + "; path=/";
 		},
 
 		removeCookie: function (name) {
-			this.setCookie(name, "", -1);
+			document.cookie = name + "=; expires=" + new Date().toGMTString() + "; path=/";
 		}
 	};
 });
