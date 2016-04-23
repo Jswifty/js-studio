@@ -4,7 +4,8 @@ define([
 	"./controlmenu"
 ], function (module, LifeGrid, ControlMenu) {
 
-	var currentDirectory = module.uri.replace("gameoflifescene.js", "");
+	var uri = Module.uri;
+	var currentDirectory = uri.substring(0, uri.lastIndexOf("/") + 1);
 
 	/**** SCENE STYLING. ****/
 	var style = document.createElement("link");

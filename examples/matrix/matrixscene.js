@@ -6,7 +6,8 @@ define([
 	"js-studio/usermediamanager/usermediamanager"
 ], function (Module, CodeRain, Asciifier, CanvasView, UserMediaManager) {
 
-	var currentDirectory = Module.uri.replace("matrixscene.js", "");
+	var uri = Module.uri;
+	var currentDirectory = uri.substring(0, uri.lastIndexOf("/") + 1);
 
 	/**** SCENE STYLING. ****/
 	var style = document.createElement("link");
