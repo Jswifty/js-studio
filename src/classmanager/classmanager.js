@@ -41,19 +41,26 @@ define(function () {
 			element.className = newClassNames.join(" ");
 		},
 		
-		toggleClass : function (element, classname) {
+		toggleClass : function (element, classname, toggleOn) {
 			
-			var oldClassName = element.className;
+			if (toggleOn === true) {
+				this.addClass(element, classname);
+			} else if (toggleOn === false) {
+				this.removeClass(element, classname);
+			} else {
+				
+				var oldClassName = element.className;
 
-			this.removeClass(element, classname);
+				this.removeClass(element, classname);
 
-			if (oldClassName === element.className) {
+				if (oldClassName === element.className) {
 
-				if (element.className.length > 0) {
-					element.className += " ";
+					if (element.className.length > 0) {
+						element.className += " ";
+					}
+
+					element.className += classname;
 				}
-
-				element.className += classname;
 			}
 		}
 	};
