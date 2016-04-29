@@ -2,7 +2,7 @@ define([
 	"module",
 	"./lifegrid",
 	"./controlmenu"
-], function (module, LifeGrid, ControlMenu) {
+], function (Module, LifeGrid, ControlMenu) {
 
 	var uri = Module.uri;
 	var currentDirectory = uri.substring(0, uri.lastIndexOf("/") + 1);
@@ -20,6 +20,9 @@ define([
 	
 		var scene = this;
 
+		rows = rows || 400;
+		columns = columns || 400;
+
 		/* Apply the scene's styling onto the container. */
 		container.className = "gameofLifeScene";
 
@@ -31,6 +34,14 @@ define([
 			
 		this.startScene = function () {
 			scene.lifeGrid.start();
+		};
+
+		this.addMouseListener = function (container) {
+			scene.controlMenu.addMouseListener(container);
+		};
+
+		this.setShowControlMenu = function (show) {
+			scene.controlMenu.setShowControlMenu(show);
 		};
 	};
 });

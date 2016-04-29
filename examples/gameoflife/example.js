@@ -6,6 +6,7 @@ require(["./gameoflifescene"], function(Scene) {
 
 	var body = document.getElementsByTagName("body")[0];
 
-	var gameoflife = new Scene(body, 400, 400);
+	var gameoflife = new Scene(body);
 	gameoflife.startScene();
+	gameoflife.setShowControlMenu(true);
 });

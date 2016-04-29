@@ -21,59 +21,11 @@ define([
 		ERASE: 2
 	}
 
-	return function (divContainer, lifeGrid) {
+	return function (container, lifeGrid) {
 	
 		var controlMenu = this;
 
 		this.drawMode = MODE.DRAW;
-
-		this.mouse = new Mouse(lifeGrid.canvasView.canvas);
-
-		this.mouseListener = new MouseListener();
-		this.mouseListener.onMouseOver = mouseHandler;
-		this.mouseListener.onMouseOut = mouseHandler;
-		this.mouseListener.onMouseMove = mouseHandler;
-		this.mouseListener.onMouseDown = mouseHandler;
-		this.mouseListener.onMouseUp = mouseHandler;
-		
-		this.mouse.addMouseListener(this.mouseListener);
-
-		function mouseHandler (event) {
-
-			var mouse = event.mouse;
-			var position = mouse.position;
-
-			if (position && position.x && position.y) {
-
-				var pointX = Math.floor(position.x / lifeGrid.canvasView.getWidth() * lifeGrid.columns);
-				var pointY = Math.floor(position.y / lifeGrid.canvasView.getHeight() * lifeGrid.rows);
-
-				if (mouse.isMouseDown === true) {
-
-					for (var y = Math.max(0, pointY - 1); y <= pointY + 1 && y < lifeGrid.rows; y++) {
-						for (var x = Math.max(0, pointX - 1); x <= pointX + 1 && x < lifeGrid.columns; x++) {
-							lifeGrid.setCell(y, x, controlMenu.drawMode === MODE.DRAW);
-						}
-					}
-				}
-
-				var shadawCells = [];
-
-				for (var y = Math.max(0, pointY - 1); y <= pointY + 1 && y < lifeGrid.rows; y++) {
-					for (var x = Math.max(0, pointX - 1); x <= pointX + 1 && x < lifeGrid.columns; x++) {
-						shadawCells.push({ y: y, x: x });
-					}
-				}
-
-				lifeGrid.setShadowCells(shadawCells);
-			}
-
-			else {
-				lifeGrid.clearShadowCells();
-			}
-
-			lifeGrid.draw();
-		}
 
 		var menuContainer = document.createElement("div");
 		menuContainer.id = "menuContainer";
@@ -166,9 +118,71 @@ define([
 			ClassManager.toggleClass(menuContainer, "expanded");
 		};
 
-		divContainer.appendChild(menuContainer);
-		divContainer.appendChild(menuButton);
+		container.appendChild(menuContainer);
+		container.appendChild(menuButton);
 
 		lifeGrid.setSpeed(30);
+
+		this.setShowControlMenu = function (show) {
+			ClassManager.toggleClass(menuButton, "show", show);
+			ClassManager.toggleClass(menuContainer, "show", show);
+		};
+
+		this.addMouseListener = function (container) {
+
+			var mouseHandler = function (event) {
+
+				var mouse = event.mouse;
+				var position = mouse.position;
+
+				if (position && position.x && position.y) {
+
+					var pointX = Math.floor(position.x / lifeGrid.canvasView.getWidth() * lifeGrid.columns);
+					var pointY = Math.floor(position.y / lifeGrid.canvasView.getHeight() * lifeGrid.rows);
+
+					if (mouse.isMouseDown === true) {
+
+						for (var y = Math.max(0, pointY - 1); y <= pointY + 1 && y < lifeGrid.rows; y++) {
+							for (var x = Math.max(0, pointX - 1); x <= pointX + 1 && x < lifeGrid.columns; x++) {
+								lifeGrid.setCell(y, x, controlMenu.drawMode === MODE.DRAW);
+							}
+						}
+					}
+
+					var shadawCells = [];
+
+					for (var y = Math.max(0, pointY - 1); y <= pointY + 1 && y < lifeGrid.rows; y++) {
+						for (var x = Math.max(0, pointX - 1); x <= pointX + 1 && x < lifeGrid.columns; x++) {
+							shadawCells.push({ y: y, x: x });
+						}
+					}
+
+					lifeGrid.setShadowCells(shadawCells);
+				}
+
+				else {
+					lifeGrid.clearShadowCells();
+				}
+
+				lifeGrid.draw();
+			}
+
+			if (controlMenu.mouse && controlMenu.mouseListener) {
+				controlMenu.mouse.removeMouseListener(controlMenu.mouseListener);
+			}
+
+			var mouse = controlMenu.mouse = new Mouse(container);
+			var mouseListener = controlMenu.mouseListener = new MouseListener();
+
+			mouseListener.onMouseOver = mouseHandler;
+			mouseListener.onMouseOut = mouseHandler;
+			mouseListener.onMouseMove = mouseHandler;
+			mouseListener.onMouseDown = mouseHandler;
+			mouseListener.onMouseUp = mouseHandler;
+			
+			mouse.addMouseListener(mouseListener);
+		};
+
+		this.addMouseListener(lifeGrid.canvasView.canvas);
 	};
 });
