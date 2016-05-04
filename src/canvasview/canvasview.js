@@ -1,8 +1,8 @@
-define(function (require) {
-
-	var Animator = require("../animator/animator");
-	var AnimatorListener = require("../animator/animatorlistener");
-
+define([
+	"../animator/animator",
+	"../animator/animatorlistener"
+], function (Animator, AnimatorListener) {
+	
 	return function (container, animator) {
 	
 		var canvasView = this;

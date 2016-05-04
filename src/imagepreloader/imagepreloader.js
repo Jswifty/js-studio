@@ -4,15 +4,11 @@ define(function () {
 
 		if (typeof images === "string") {
 			images = [ images ];
-		} else if (images instanceof Array) {
-			images = images;
-		} else {
+		} else if (!(images instanceof Array)) {
 			images = [];
 		}
 
-		if (callback && typeof callback === "function") {
-			callback = callback;
-		} else {
+		if (typeof callback !== "function") {
 			callback = function () {};
 		}
 

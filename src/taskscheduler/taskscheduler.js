@@ -49,7 +49,7 @@ define(function () {
 
 			var task = taskScheduler.currentTask;
 
-			if (task) {
+			if (task !== undefined) {
 
 				if (task.callbackIndex >= 0 && typeof task.params[task.callbackIndex] === "function") {
 
@@ -84,7 +84,7 @@ define(function () {
 			/* TODO increment progress */
 			taskScheduler.progress++;
 
-			if (taskScheduler.currentTask) {
+			if (taskScheduler.currentTask !== undefined) {
 				
 				taskScheduler.isRunning = true;
 
@@ -111,16 +111,19 @@ define(function () {
 		/** Add a task scheduler listener to the task scheduler. */
 		this.addTaskShedulerListener = function (taskSchedulerListener) {
 
-			/* Make sure the input object qualifies as an instance of TaskSchedulerListener. */
-			if (!taskSchedulerListener.onTaskStart || typeof taskSchedulerListener.onTaskStart !== "function") {
-				taskSchedulerListener.onTaskStart = function() {};
-			}
+			if (taskSchedulerListener !== undefined) {
+				
+				/* Make sure the input object qualifies as an instance of TaskSchedulerListener. */
+				if (typeof taskSchedulerListener.onTaskStart !== "function") {
+					taskSchedulerListener.onTaskStart = function() {};
+				}
 
-			if (!taskSchedulerListener.finishCallback || typeof taskSchedulerListener.finishCallback !== "function") {
-				taskSchedulerListener.finishCallback = function() {};
-			}
+				if (typeof taskSchedulerListener.finishCallback !== "function") {
+					taskSchedulerListener.finishCallback = function() {};
+				}
 
-			taskScheduler.listeners.push(taskSchedulerListener);
+				taskScheduler.listeners.push(taskSchedulerListener);
+			}
 		};
 		
 		/** Remove a task scheduler listener from the task scheduler. */

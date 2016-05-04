@@ -10,12 +10,7 @@ define(function () {
 		/* Parse the configurations from the parameter. */
 		config = config || {};
 
-		this.invert = false;
-
-		if (config.invert !== undefined) {
-			this.invert = config.invert;
-		}
-
+		this.invert = config.invert || false;
 		this.asciiData = config.asciiData || [" ", ".", ",", ";", "|", "*", "%", "@", "X", "#", "W", "M"];
 		this.asciiIntervals = 255 / this.asciiData.length;
 
@@ -101,7 +96,7 @@ define(function () {
 		this.onResize();
 
 		/* If the canvas is animating by an animator, plug in the update function to the rendering function. */
-		if (animator && animator.addRenderFunction) {
+		if (animator !== undefined && animator.addRenderFunction !== undefined) {
 			animator.addRenderFunction(this, this.update);
 		}
 	};
