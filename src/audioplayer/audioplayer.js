@@ -1,7 +1,7 @@
 
-define(function (require) {
-
-	var AnimatorListener = require("../animator/animatorlistener");
+define([
+	"../animator/animatorlistener"
+], function (AnimatorListener) {
 
 	return function (container, anaylserEnabled, convolverEnabled) {
 		
@@ -106,15 +106,15 @@ define(function (require) {
 		
 		/** Append an animator listener to the animator. */
 		this.attachToAnimator = function (animator) {
-
-			audioPlayer.animatorListener = new AnimatorListener(audioPlayer.onAnimatorPaused, audioPlayer.onAnimatorResumed);
-			
-			animator.addAnimatorListener(audioPlayer.animatorListener);
+			if (animator !== undefined && animator.addAnimatorListener !== undefined) {
+				audioPlayer.animatorListener = new AnimatorListener(audioPlayer.onAnimatorPaused, audioPlayer.onAnimatorResumed);
+				animator.addAnimatorListener(audioPlayer.animatorListener);
+			}
 		};
 		
 		/** Disengage the animator listener from the animator. */
 		this.detachFromAnimator = function (animator) {
-			if (audioPlayer.animatorListener !== undefined) {
+			if (audioPlayer.animatorListener !== undefined && animator !== undefined && animator.removeAnimatorListener !== undefined) {
 				animator.removeAnimatorListener(audioPlayer.animatorListener);
 			}
 		};
