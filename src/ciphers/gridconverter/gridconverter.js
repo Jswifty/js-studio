@@ -2,11 +2,13 @@ define(function () {
 
 	return {
 
+		voidCharacters: [ "█","▓", "▒", "░", "▬", "◙", "◘", "⌂", "æ", "Æ" ],
+
 		convertStringToGrid: function (string, numberOfRows, numberOfColumns, horizontally, voidCharacter) {
 			
 			if (typeof numberOfRows !== "number" || typeof numberOfColumns !== "number" || numberOfRows * numberOfColumns < string.length) {
 				numberOfRows = Math.ceil(Math.sqrt(string.length));
-				numberOfColumns = Math.ceil(Math.sqrt(string.length));
+				numberOfColumns = numberOfRows;
 			}
 
 			if (horizontally !== true && horizontally !== false) {

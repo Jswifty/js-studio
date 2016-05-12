@@ -2,9 +2,7 @@ define([
 	"../gridconverter/gridconverter"
 ], function (GridConverter) {
 
-	var voidCharacters = [ "█","▓", "▒", "░", "▬", "◙", "◘", "⌂", "æ", "Æ" ];
-
-	function writeRouteCipher (grid, clockwise, firstRow, lastRow, firstCol, lastCol) {
+	function writeCipher (grid, clockwise, firstRow, lastRow, firstCol, lastCol) {
 		
 		var string = "";
 
@@ -77,20 +75,20 @@ define([
 			lastCol--;
 			
 			if (firstRow <= lastRow && firstCol <= lastCol) {
-				string += writeRouteCipher(grid, clockwise, firstRow, lastRow, firstCol, lastCol);
+				string += writeCipher(grid, clockwise, firstRow, lastRow, firstCol, lastCol);
 			}
 		}
 
 		return string;
 	};
 
-	function readRouteCipher (string, numberOfRows, numberOfColumns, horizontally, clockwise, voidCharacter, grid, firstRow, lastRow, firstCol, lastCol) {
+	function readCipher (string, numberOfRows, numberOfColumns, horizontally, clockwise, voidCharacter, grid, firstRow, lastRow, firstCol, lastCol) {
 	
 		if (typeof string === "string") {
 
 			if (typeof numberOfRows !== "number" || typeof numberOfColumns !== "number" || numberOfRows * numberOfColumns < string.length) {
 				numberOfRows = Math.ceil(Math.sqrt(string.length));
-				numberOfColumns = Math.ceil(Math.sqrt(string.length));
+				numberOfColumns = numberOfRows;
 			}
 
 			if (horizontally !== true && horizontally !== false) {
@@ -185,7 +183,7 @@ define([
 			lastCol--;
 
 			if (firstRow <= lastRow && firstCol <= lastCol) {
-				readRouteCipher(string, numberOfRows, numberOfColumns, horizontally, clockwise, voidCharacter, grid, firstRow, lastRow, firstCol, lastCol);
+				readCipher(string, numberOfRows, numberOfColumns, horizontally, clockwise, voidCharacter, grid, firstRow, lastRow, firstCol, lastCol);
 			}
 
 			return GridConverter.convertGridToString(grid, horizontally, voidCharacter);
@@ -200,7 +198,7 @@ define([
 		
 			if (typeof numberOfRows !== "number" || typeof numberOfColumns !== "number" || numberOfRows * numberOfColumns < string.length) {
 				numberOfRows = Math.ceil(Math.sqrt(string.length));
-				numberOfColumns = Math.ceil(Math.sqrt(string.length));
+				numberOfColumns = numberOfRows;
 			}
 
 			if (horizontally !== true && horizontally !== false) {
@@ -214,6 +212,7 @@ define([
 			if (typeof voidCharacter !== "string" || voidCharacter.length === 0) {
 
 				var index = 0;
+				var voidCharacters = GridConverter.voidCharacters;
 
 				while (string.indexOf(voidCharacters[index]) !== -1) {
 					index++;
@@ -223,7 +222,7 @@ define([
 			}
 
 			var grid = GridConverter.convertStringToGrid(string, numberOfRows, numberOfColumns, horizontally, voidCharacter);
-			var encipheredString = writeRouteCipher(grid, clockwise);
+			var encipheredString = writeCipher(grid, clockwise);
 
 			encipheredString += "[";
 			encipheredString += numberOfRows + ",";
@@ -267,9 +266,11 @@ define([
 					}
 				}
 
+				string = string.substring(0, string.lastIndexOf("["));
+
 				if (typeof numberOfRows !== "number" || typeof numberOfColumns !== "number" || numberOfRows * numberOfColumns < string.length) {
 					numberOfRows = Math.ceil(Math.sqrt(string.length));
-					numberOfColumns = Math.ceil(Math.sqrt(string.length));
+					numberOfColumns = numberOfRows;
 				}
 
 				if (horizontally !== true && horizontally !== false) {
@@ -282,7 +283,7 @@ define([
 
 				voidCharacter = voidCharacter || "█";
 
-				return readRouteCipher(string, numberOfRows, numberOfColumns, horizontally, clockwise, voidCharacter);
+				return readCipher(string, numberOfRows, numberOfColumns, horizontally, clockwise, voidCharacter);
 			}
 
 			return "";
