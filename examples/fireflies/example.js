@@ -1,5 +1,5 @@
 require.config({
-	paths: { "js-studio": "../../src/" },
+	paths: { "js-studio": "../../src" },
 });
 
 require(["./firefliesscene"], function(Scene) {
