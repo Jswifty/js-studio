@@ -3,7 +3,6 @@ define([
 ], function (GridConverter) {
 
 	function writeCipher (grid, horizontally, forward) {
-		
 		var string = "";
 
 		var numberOfRows = grid.length;
@@ -18,46 +17,34 @@ define([
 		}
 
 		if (horizontally === true) {
-
 			for (var i = 0; i < numberOfRows; i++) {
-
 				for (var j = 0; j < numberOfColumns; j++) {
-
 					if (forward === true) {
 						string += grid[i][j];
-					}
-
-					else if (forward === false) {
+					} else if (forward === false) {
 						string += grid[numberOfRows - i - 1][j];
 					}
 				}
 			}
 		}
-		
+
 		else if (horizontally === false) {
-
 			for (var i = 0; i < numberOfColumns; i++) {
-
 				for (var j = 0; j < numberOfRows; j++) {
-
 					if (forward === true) {
 						string += grid[j][i];
-					}
-
-					else if (forward === false) {
+					} else if (forward === false) {
 						string += grid[j][numberOfColumns - i - 1];
 					}
 				}
 			}
 		}
-		
+
 		return string;
 	};
 
 	function readCipher (string, numberOfRows, numberOfColumns, horizontally, forward, voidCharacter) {
-	
 		if (typeof string === "string") {
-
 			if (typeof numberOfRows !== "number" || typeof numberOfColumns !== "number" || numberOfRows * numberOfColumns < string.length) {
 				numberOfRows = Math.ceil(Math.sqrt(string.length));
 				numberOfColumns = numberOfRows;
@@ -76,26 +63,21 @@ define([
 			var grid = [];
 
 			for (var i = 0; i < numberOfRows; i++) {
-
 				grid[i] = [];
 
 				for (var j = 0; j < numberOfColumns; j++) {
-				
 					var charIndex;
-					
+
 					if (horizontally === false) {
 						if (forward === true) {
 							charIndex = i * numberOfColumns + j;
-						}
-						else if (forward === false) {
+						} else if (forward === false) {
 							charIndex = (numberOfRows - i - 1) * numberOfColumns + j;
 						}
-					}
-					else if (horizontally === true) {						
+					} else if (horizontally === true) {
 						if (forward === true) {
 							charIndex = j * numberOfRows + i;
-						}
-						else if (forward === false) {
+						} else if (forward === false) {
 							charIndex = (numberOfColumns - j - 1) * numberOfRows + i;
 						}
 					}
@@ -103,7 +85,7 @@ define([
 					grid[i][j] = (charIndex < string.length) ? string.charAt(charIndex) : voidCharacter;
 				}
 			}
-			
+
 			return GridConverter.convertGridToString(grid, horizontally, voidCharacter);
 		}
 
@@ -113,7 +95,6 @@ define([
 	return {
 
 		encipher: function (string, numberOfRows, numberOfColumns, horizontally, forward, voidCharacter) {
-		
 			if (typeof numberOfRows !== "number" || typeof numberOfColumns !== "number" || numberOfRows * numberOfColumns < string.length) {
 				numberOfRows = Math.ceil(Math.sqrt(string.length));
 				numberOfColumns = numberOfRows;
@@ -128,7 +109,6 @@ define([
 			}
 
 			if (typeof voidCharacter !== "string" || voidCharacter.length === 0) {
-
 				var index = 0;
 				var voidCharacters = GridConverter.voidCharacters;
 
@@ -154,13 +134,10 @@ define([
 		},
 
 		decipher: function (string, numberOfRows, numberOfColumns, horizontally, forward, voidCharacter) {
-
 			if (typeof string === "string" && string.length > 0) {
-
 				var settingsParams = string.substring(string.lastIndexOf("[") + 1, string.lastIndexOf("]"));
 
 				if (settingsParams.length > 0) {
-
 					var params = settingsParams.split(",");
 
 					if (params[0] !== undefined) {

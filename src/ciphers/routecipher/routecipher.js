@@ -3,11 +3,9 @@ define([
 ], function (GridConverter) {
 
 	function writeCipher (grid, clockwise, firstRow, lastRow, firstCol, lastCol) {
-		
 		var string = "";
 
 		if (grid !== undefined && grid.length > 0 && grid[0].length > 0) {
-			
 			firstRow = firstRow || 0;
 			lastRow = lastRow || grid.length - 1;
 			firstCol = firstCol || 0;
@@ -16,9 +14,8 @@ define([
 			if (clockwise !== true && clockwise !== false) {
 				clockwise = true;
 			}
-			
-			if (clockwise === true) {
 
+			if (clockwise === true) {
 				for (var i = lastCol; i > firstCol; i--) {
 					string += grid[lastRow][i];
 				}
@@ -29,10 +26,7 @@ define([
 
 				if (firstRow === lastRow || firstCol === lastCol) {
 					string += grid[firstRow][firstCol];
-				}
-
-				else {
-
+				} else {
 					for (var i = firstCol; i < lastCol; i++) {
 						string += grid[firstRow][i];
 					}
@@ -41,10 +35,7 @@ define([
 						string += grid[i][lastCol];
 					}
 				}
-			}
-
-			else if (clockwise === false) {
-
+			} else if (clockwise === false) {
 				for (var i = firstRow; i < lastRow; i++) {
 					string += grid[i][firstCol];
 				}
@@ -52,13 +43,10 @@ define([
 				for (var i = firstCol; i < lastCol; i++) {
 					string += grid[lastRow][i];
 				}
-				
+
 				if (firstRow === lastRow || firstCol === lastCol) {
 					string += grid[lastRow][lastCol];
-				}
-
-				else {
-
+				} else {
 					for (var i = lastRow; i > firstRow; i--) {
 						string += grid[i][lastCol];
 					}
@@ -73,7 +61,7 @@ define([
 			lastRow--;
 			firstCol++;
 			lastCol--;
-			
+
 			if (firstRow <= lastRow && firstCol <= lastCol) {
 				string += writeCipher(grid, clockwise, firstRow, lastRow, firstCol, lastCol);
 			}
@@ -83,9 +71,7 @@ define([
 	};
 
 	function readCipher (string, numberOfRows, numberOfColumns, horizontally, clockwise, voidCharacter, grid, firstRow, lastRow, firstCol, lastCol) {
-	
 		if (typeof string === "string") {
-
 			if (typeof numberOfRows !== "number" || typeof numberOfColumns !== "number" || numberOfRows * numberOfColumns < string.length) {
 				numberOfRows = Math.ceil(Math.sqrt(string.length));
 				numberOfColumns = numberOfRows;
@@ -107,7 +93,6 @@ define([
 			lastCol = lastCol || numberOfColumns - 1;
 
 			if (grid === undefined) {
-				
 				grid = [];
 
 				for (var i = 0; i < numberOfRows; i++) {
@@ -116,7 +101,6 @@ define([
 			}
 
 			if (clockwise === true) {
-
 				for (var i = lastCol; i > firstCol; i--) {
 					grid[lastRow][i] = string.charAt(0);
 					string = string.substring(1);
@@ -126,14 +110,11 @@ define([
 					grid[i][firstCol] = string.charAt(0);
 					string = string.substring(1);
 				}
-				
+
 				if (firstRow === lastRow || firstCol === lastCol) {
 					grid[firstRow][firstCol] = string.charAt(0);
 					string = string.substring(1);
-				}
-
-				else {
-
+				} else {
 					for (var i = firstCol; i < lastCol; i++) {
 						grid[firstRow][i] = string.charAt(0);
 						string = string.substring(1);
@@ -144,10 +125,7 @@ define([
 						string = string.substring(1);
 					}
 				}
-			}
-
-			else if (clockwise === false) {
-
+			} else if (clockwise === false) {
 				for (var i = firstRow; i < lastRow; i++) {
 					grid[i][firstCol] = string.charAt(0);
 					string = string.substring(1);
@@ -157,14 +135,11 @@ define([
 					grid[lastRow][i] = string.charAt(0);
 					string = string.substring(1);
 				}
-				
+
 				if (firstRow === lastRow || firstCol === lastCol) {
 					grid[lastRow][lastCol] = string.charAt(0);
 					string = string.substring(1);
-				}
-
-				else {
-
+				} else {
 					for (var i = lastRow; i > firstRow; i--) {
 						grid[i][lastCol] = string.charAt(0);
 						string = string.substring(1);
@@ -176,7 +151,7 @@ define([
 					}
 				}
 			}
-			
+
 			firstRow++;
 			lastRow--;
 			firstCol++;
@@ -195,7 +170,6 @@ define([
 	return {
 
 		encipher: function (string, numberOfRows, numberOfColumns, horizontally, clockwise, voidCharacter) {
-		
 			if (typeof numberOfRows !== "number" || typeof numberOfColumns !== "number" || numberOfRows * numberOfColumns < string.length) {
 				numberOfRows = Math.ceil(Math.sqrt(string.length));
 				numberOfColumns = numberOfRows;
@@ -210,7 +184,6 @@ define([
 			}
 
 			if (typeof voidCharacter !== "string" || voidCharacter.length === 0) {
-
 				var index = 0;
 				var voidCharacters = GridConverter.voidCharacters;
 
@@ -236,13 +209,10 @@ define([
 		},
 
 		decipher: function (string, numberOfRows, numberOfColumns, horizontally, clockwise, voidCharacter) {
-
 			if (typeof string === "string" && string.length > 0) {
-
 				var settingsParams = string.substring(string.lastIndexOf("[") + 1, string.lastIndexOf("]"));
 
 				if (settingsParams.length > 0) {
-
 					var params = settingsParams.split(",");
 
 					if (params[0] !== undefined) {

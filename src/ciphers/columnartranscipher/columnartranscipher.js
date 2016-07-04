@@ -3,7 +3,6 @@ define([
 ], function (GridConverter) {
 
 	function writeCipher (grid, horizontally, columnarOrder) {
-		
 		var string = "";
 
 		var numberOfRows = grid.length;
@@ -14,7 +13,6 @@ define([
 		}
 
 		if (typeof columnarOrder !== "object" || columnarOrder.length !== numberOfColumns) {
-			
 			columnarOrder = [];
 
 			for (var i = 0; i < numberOfColumns; i++) {
@@ -22,40 +20,35 @@ define([
 			}
 
 			for (var i = numberOfColumns - 1; i > 0; i--) {
-
 				var index = Math.floor(Math.random() * numberOfColumns);
-
 				var value = columnarOrder[index];
+
 				columnarOrder[index] = columnarOrder[i];
 				columnarOrder[i] = value;
 			}
 		}
 
 		if (horizontally === true) {
-
 			for (var i = 0; i < numberOfRows; i++) {
 				for (var j = 0; j < numberOfColumns; j++) {
 					string += grid[i][columnarOrder[j]];
 				}
 			}
 		}
-		
-		else if (horizontally === false) {
 
+		else if (horizontally === false) {
 			for (var i = 0; i < numberOfColumns; i++) {
 				for (var j = 0; j < numberOfRows; j++) {
 					string += grid[j][columnarOrder[i]];
 				}
 			}
 		}
-		
+
 		return string;
 	};
 
 	function readCipher (string, numberOfRows, numberOfColumns, horizontally, columnarOrder, voidCharacter) {
-	
 		if (typeof string === "string") {
-
 			if (typeof numberOfRows !== "number" || typeof numberOfColumns !== "number" || numberOfRows * numberOfColumns < string.length) {
 				numberOfRows = Math.ceil(Math.sqrt(string.length));
 				numberOfColumns = numberOfRows;
@@ -66,7 +59,6 @@ define([
 			}
 
 			if (typeof columnarOrder !== "object" || columnarOrder.length !== numberOfColumns) {
-				
 				columnarOrder = [];
 
 				for (var i = 0; i < numberOfColumns; i++) {
@@ -85,24 +77,21 @@ define([
 			var grid = [];
 
 			for (var i = 0; i < numberOfRows; i++) {
-
 				grid[i] = [];
 
 				for (var j = 0; j < numberOfColumns; j++) {
-				
 					var charIndex;
-					
+
 					if (horizontally === false) {
 						charIndex = i * numberOfColumns + inverseConlumnarOrder[j];
-					}
-					else if (horizontally === true) {						
+					} else if (horizontally === true) {
 						charIndex = inverseConlumnarOrder[j] * numberOfRows + i;
 					}
 
 					grid[i][j] = (charIndex < string.length) ? string.charAt(charIndex) : voidCharacter;
 				}
 			}
-			
+
 			return GridConverter.convertGridToString(grid, horizontally, voidCharacter);
 		}
 
@@ -112,7 +101,6 @@ define([
 	return {
 
 		encipher: function (string, numberOfRows, numberOfColumns, horizontally, columnarOrder, voidCharacter) {
-		
 			if (typeof numberOfRows !== "number" || typeof numberOfColumns !== "number" || numberOfRows * numberOfColumns < string.length) {
 				numberOfRows = Math.ceil(Math.sqrt(string.length));
 				numberOfColumns = numberOfRows;
@@ -123,7 +111,6 @@ define([
 			}
 
 			if (typeof columnarOrder !== "object" || columnarOrder.length !== numberOfColumns) {
-			
 				columnarOrder = [];
 
 				for (var i = 0; i < numberOfColumns; i++) {
@@ -131,17 +118,15 @@ define([
 				}
 
 				for (var i = numberOfColumns - 1; i > 0; i--) {
-
 					var index = Math.floor(Math.random() * numberOfColumns);
-
 					var value = columnarOrder[index];
+
 					columnarOrder[index] = columnarOrder[i];
 					columnarOrder[i] = value;
 				}
 			}
 
 			if (typeof voidCharacter !== "string" || voidCharacter.length === 0) {
-
 				var index = 0;
 				var voidCharacters = GridConverter.voidCharacters;
 
@@ -160,12 +145,15 @@ define([
 			encipheredString += numberOfColumns + ",";
 			encipheredString += (horizontally === true ? "↔" : "↕") + ",";
 			encipheredString += "{";
+
 			for (var i = 0; i < columnarOrder.length; i++) {
 				encipheredString += columnarOrder[i];
+
 				if (i < columnarOrder.length - 1) {
 					encipheredString += "|";
 				}
 			}
+
 			encipheredString += "},";
 			encipheredString += voidCharacter;
 			encipheredString += "]";
@@ -174,13 +162,10 @@ define([
 		},
 
 		decipher: function (string, numberOfRows, numberOfColumns, horizontally, columnarOrder, voidCharacter) {
-
 			if (typeof string === "string" && string.length > 0) {
-
 				var settingsParams = string.substring(string.lastIndexOf("[") + 1, string.lastIndexOf("]"));
 
 				if (settingsParams.length > 0) {
-
 					var params = settingsParams.split(",");
 
 					if (params[0] !== undefined) {
@@ -194,6 +179,7 @@ define([
 					if (params[2] === "↔" || params[2] === "↕") {
 						horizontally = params[2] === "↔";
 					}
+
 					if (typeof params[3] === "string" && params[3].indexOf("{") === 0 && params[3].indexOf("}") === params[3].length - 1) {
 						columnarOrder = params[3].substring(1, params[3].length - 1).split("|");
 					}
@@ -215,7 +201,6 @@ define([
 				}
 
 				if (typeof columnarOrder !== "object" || columnarOrder.length !== numberOfColumns) {
-					
 					columnarOrder = [];
 
 					for (var i = 0; i < numberOfColumns; i++) {
