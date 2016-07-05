@@ -1,7 +1,6 @@
 define(function () {
 
 	return function (listener) {
-
 		var taskScheduler = this;
 
 		/* The current task that the task scheuduler is running. */
@@ -22,7 +21,6 @@ define(function () {
 		this.listeners = [];
 
 		this.addTask = function (task) {
-
 			/* Create a new instance of the task. */
 			var newTask = {
 				caller: task.caller || window,
@@ -52,16 +50,12 @@ define(function () {
 			taskScheduler.updateStatus();
 
 			if (taskScheduler.currentTask !== null && taskScheduler.currentTask !== undefined) {
-
 				var task = taskScheduler.currentTask;
 
 				setTimeout(function () {
-
 					if (taskScheduler.requestCancel === true) {
 						taskScheduler.cancel();
-					}
-
-					else {
+					} else {
 						if (task.callbackIndex >= 0 && typeof task.params[task.callbackIndex] === "function") {
 							var callbackFunction = task.params[task.callbackIndex];
 
@@ -73,9 +67,7 @@ define(function () {
 							})();
 
 							task.method.apply(task.caller, task.params);
-						}
-
-						else {
+						} else {
 							task.method.apply(task.caller, task.params);
 							taskScheduler.runNextTask();
 						}
@@ -95,7 +87,6 @@ define(function () {
 
 		/* Update the current status of the progress and the current task. */
 		this.updateStatus = function () {
-
 			if (taskScheduler.currentTask !== null && taskScheduler.currentTask !== undefined) {
 				taskScheduler.isRunning = true;
 
@@ -128,9 +119,7 @@ define(function () {
 
 		/** Add a task scheduler listener to the task scheduler. */
 		this.addTaskSchedulerListener = function (taskSchedulerListener) {
-
 			if (taskSchedulerListener !== undefined) {
-
 				/* Make sure the input object qualifies as an instance of TaskSchedulerListener. */
 				if (typeof taskSchedulerListener.onTaskStart !== "function") {
 					taskSchedulerListener.onTaskStart = function() {};
@@ -146,7 +135,6 @@ define(function () {
 
 		/** Remove a task scheduler listener from the task scheduler. */
 		this.removeTaskSchedulerListener = function (taskSchedulerListener) {
-
 			/* Attempt to find the index of the given listener and then remove it. */
 			for (var i = taskScheduler.listeners.length - 1; i >= 0; i--) {
 				if (taskScheduler.listeners[i] === taskSchedulerListener) {

@@ -1,17 +1,15 @@
 define(function () {
-	
+
 	window.navigator = window.navigator || {};
 	window.navigator.getUserMedia = window.navigator.getUserMedia 	||
 								window.navigator.webkitGetUserMedia	||
 								window.navigator.mozGetUserMedia	||
 								window.navigator.msGetUserMedia;
-	
+
 	return {
 
 		requestUserMedia: function (callback, error, settings) {
-		
 			if (window.navigator.getUserMedia) {
-				
 				settings = settings || { video: true, audio: true };
 
 				var requestTimer;
@@ -27,7 +25,6 @@ define(function () {
 				}
 
 				window.navigator.getUserMedia(settings, function (stream) {
-
 					if (requestTimer) {
 						clearTimeout(requestTimer);
 					}
