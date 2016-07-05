@@ -2,13 +2,11 @@ define(function () {
 
 	return {
 
-		getCookie : function (name) {
-
+		getCookie: function (name) {
 			var nameKey = name + "=";
 			var cookieArray = document.cookie.split(";");
 
 			for (var i = 0; i < cookieArray.length; i++) {
-				
 				var cookie = cookieArray[i];
 
 				while (cookie.charAt(0) === " ") {
@@ -23,8 +21,7 @@ define(function () {
 			return null;
 		},
 
-		setCookie : function (name, value, days) {
-
+		setCookie: function (name, value, days) {
 			var expires = "";
 
 			if (days) {

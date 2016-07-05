@@ -2,8 +2,7 @@ define(function () {
 
 	return {
 
-		hasClass : function (element, classname) {
-
+		hasClass: function (element, classname) {
 			var classNames = element.className.split(" ");
 
 			for (var i = 0; i < classNames.length; i++) {
@@ -15,10 +14,8 @@ define(function () {
 			return false;
 		},
 
-		addClass : function (element, classname) {
-
+		addClass: function (element, classname) {
 			if (this.hasClass(element, classname) === false) {
-
 				if (element.className.length > 0) {
 					element.className += " ";
 				}
@@ -26,35 +23,32 @@ define(function () {
 				element.className += classname;
 			}
 		},
-		
-		removeClass : function (element, classname) {
-			
+
+		removeClass: function (element, classname) {
 			var newClassNames = [];
 			var classNames = element.className.split(" ");
-			
+
 			for (var i = 0; i < classNames.length; i++) {
 				if (classNames[i].length > 0 && classNames[i] !== classname) {
 					newClassNames.push(classNames[i]);
 				}
 			}
-			
+
 			element.className = newClassNames.join(" ");
 		},
-		
-		toggleClass : function (element, classname, toggleOn) {
-			
+
+		toggleClass: function (element, classname, toggleOn) {
 			if (toggleOn === true) {
 				this.addClass(element, classname);
 			} else if (toggleOn === false) {
 				this.removeClass(element, classname);
 			} else {
-				
+
 				var oldClassName = element.className;
 
 				this.removeClass(element, classname);
 
 				if (oldClassName === element.className) {
-
 					if (element.className.length > 0) {
 						element.className += " ";
 					}
