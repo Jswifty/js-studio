@@ -15,18 +15,22 @@ define(function () {
 		this.progress = -1;
 		this.tasksTotal = 0;
 
+		/* Whether a cancel request has be sent to stop it from running. */
+		this.requestCancel = false;
+
 		/* The list of listeners this task scheduler is appended to. Each task event will trigger the corresponding method of each listeners. */
 		this.listeners = [];
 
-		this.addTask = function (object, method, description, params, callbackIndex) {
+		this.addTask = function (task) {
 
 			/* Create a new instance of the task. */
 			var newTask = {
-				object: object,
-				method: method,
-				description: description,
-				params: params,
-				callbackIndex: callbackIndex
+				caller: task.caller || window,
+				method:  task.method || function () {},
+				description: task.description || "",
+				params: task.params || [],
+				callbackIndex: (task.callbackIndex >= 0) ? task.callbackIndex : -1,
+				delay: task.delay || 0
 			};
 
 			/* Put the task into the task linked list. */
@@ -40,72 +44,86 @@ define(function () {
 
 			/* Sum up the numebr of tasks. */
 			taskScheduler.tasksTotal++;
-		};
+
+			return this;
+		}
 
 		this.run = function () {
-
-			/* Update the current status of the progress and the current task. */
 			taskScheduler.updateStatus();
 
-			var task = taskScheduler.currentTask;
+			if (taskScheduler.currentTask !== null && taskScheduler.currentTask !== undefined) {
 
-			if (task !== undefined) {
+				var task = taskScheduler.currentTask;
 
-				if (task.callbackIndex >= 0 && typeof task.params[task.callbackIndex] === "function") {
+				setTimeout(function () {
 
-					var callbackFunction = task.params[task.callbackIndex];
+					if (taskScheduler.requestCancel === true) {
+						taskScheduler.cancel();
+					}
 
-					task.params[task.callbackIndex] = (function () {
+					else {
+						if (task.callbackIndex >= 0 && typeof task.params[task.callbackIndex] === "function") {
+							var callbackFunction = task.params[task.callbackIndex];
 
-						return function () {
+							task.params[task.callbackIndex] = (function () {
+								return function () {
+									callbackFunction.apply(this, arguments);
+									taskScheduler.runNextTask();
+								};
+							})();
 
-							callbackFunction.apply(this, arguments);
+							task.method.apply(task.caller, task.params);
+						}
 
-							taskScheduler.currentTask = task.next;
-							taskScheduler.run();
-						};
-					})();
-
-					task.method.apply(task.object, task.params);
-				}
-
-				else {
-
-					task.method.apply(task.object, task.params);
-
-					taskScheduler.currentTask = task.next;
-					taskScheduler.run();
-				}
+						else {
+							task.method.apply(task.caller, task.params);
+							taskScheduler.runNextTask();
+						}
+					}
+				}, task.delay);
 			}
 		};
 
+		this.runNextTask = function () {
+			if (taskScheduler.currentTask !== null && taskScheduler.currentTask !== undefined) {
+				taskScheduler.currentTask = taskScheduler.currentTask.next;
+			}
+
+			taskScheduler.progress++;
+			taskScheduler.run();
+		};
+
+		/* Update the current status of the progress and the current task. */
 		this.updateStatus = function () {
 
-			/* TODO increment progress */
-			taskScheduler.progress++;
-
-			if (taskScheduler.currentTask !== undefined) {
-
+			if (taskScheduler.currentTask !== null && taskScheduler.currentTask !== undefined) {
 				taskScheduler.isRunning = true;
 
 				/* listener task event */
-				/*
-				 - progress / tasksTotal
-				 - current task description
-				*/
 				for (var i = 0; i < taskScheduler.listeners.length; i++) {
 					taskScheduler.listeners[i].onTaskStart(taskScheduler.currentTask, taskScheduler.progress, taskScheduler.tasksTotal);
 				}
 			} else {
-
 				taskScheduler.isRunning = false;
 				taskScheduler.progress = -1;
+				taskScheduler.lastTask = null;
 
 				/* listener complete event */
 				for (var i = 0; i < taskScheduler.listeners.length; i++) {
 					taskScheduler.listeners[i].finishCallback();
 				}
 			}
+		};
+
+		this.stop = function () {
+			taskScheduler.requestCancel = true;
+		};
+
+		this.cancel = function () {
+			taskScheduler.currentTask = null;
+			taskScheduler.lastTask = null;
+			taskScheduler.updateStatus();
+			taskScheduler.requestCancel = false;
 		};
 
 		/** Add a task scheduler listener to the task scheduler. */
