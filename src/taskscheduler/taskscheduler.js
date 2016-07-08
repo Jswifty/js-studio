@@ -47,6 +47,9 @@ define(function () {
 		}
 
 		this.run = function () {
+			taskScheduler.isRunning = true;
+			taskScheduler.progress++;
+			
 			taskScheduler.updateStatus();
 
 			if (taskScheduler.currentTask !== null && taskScheduler.currentTask !== undefined) {
@@ -81,15 +84,12 @@ define(function () {
 				taskScheduler.currentTask = taskScheduler.currentTask.next;
 			}
 
-			taskScheduler.progress++;
 			taskScheduler.run();
 		};
 
 		/* Update the current status of the progress and the current task. */
 		this.updateStatus = function () {
 			if (taskScheduler.currentTask !== null && taskScheduler.currentTask !== undefined) {
-				taskScheduler.isRunning = true;
-
 				/* listener task event */
 				for (var i = 0; i < taskScheduler.listeners.length; i++) {
 					taskScheduler.listeners[i].onTaskStart(taskScheduler.currentTask, taskScheduler.progress, taskScheduler.tasksTotal);
@@ -97,7 +97,9 @@ define(function () {
 			} else {
 				taskScheduler.isRunning = false;
 				taskScheduler.progress = -1;
+				taskScheduler.currentTask = null;
 				taskScheduler.lastTask = null;
+				taskScheduler.tasksTotal = 0;
 
 				/* listener complete event */
 				for (var i = 0; i < taskScheduler.listeners.length; i++) {
@@ -112,14 +114,16 @@ define(function () {
 
 		this.cancel = function () {
 			taskScheduler.currentTask = null;
-			taskScheduler.lastTask = null;
 			taskScheduler.updateStatus();
 			taskScheduler.requestCancel = false;
 		};
 
 		/** Add a task scheduler listener to the task scheduler. */
 		this.addTaskSchedulerListener = function (taskSchedulerListener) {
-			if (taskSchedulerListener !== undefined) {
+			if (taskSchedulerListener !== undefined && 
+				(typeof taskSchedulerListener.onTaskStart === "function" ||
+				 typeof taskSchedulerListener.finishCallback === "function")) {
+				
 				/* Make sure the input object qualifies as an instance of TaskSchedulerListener. */
 				if (typeof taskSchedulerListener.onTaskStart !== "function") {
 					taskSchedulerListener.onTaskStart = function() {};
