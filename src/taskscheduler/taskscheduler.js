@@ -1,6 +1,7 @@
 define(function () {
 
 	return function (listener) {
+
 		var taskScheduler = this;
 
 		/* The current task that the task scheuduler is running. */
@@ -49,7 +50,7 @@ define(function () {
 		this.run = function () {
 			taskScheduler.isRunning = true;
 			taskScheduler.progress++;
-			
+
 			taskScheduler.updateStatus();
 
 			if (taskScheduler.currentTask !== null && taskScheduler.currentTask !== undefined) {
@@ -120,10 +121,10 @@ define(function () {
 
 		/** Add a task scheduler listener to the task scheduler. */
 		this.addTaskSchedulerListener = function (taskSchedulerListener) {
-			if (taskSchedulerListener !== undefined && 
+			if (taskSchedulerListener !== undefined &&
 				(typeof taskSchedulerListener.onTaskStart === "function" ||
 				 typeof taskSchedulerListener.finishCallback === "function")) {
-				
+
 				/* Make sure the input object qualifies as an instance of TaskSchedulerListener. */
 				if (typeof taskSchedulerListener.onTaskStart !== "function") {
 					taskSchedulerListener.onTaskStart = function() {};

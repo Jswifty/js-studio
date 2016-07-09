@@ -1,6 +1,7 @@
 define(function () {
 
 	return function (images, callback) {
+
 		if (typeof images === "string") {
 			images = [ images ];
 		} else if (!(images instanceof Array)) {
