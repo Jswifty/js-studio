@@ -1,6 +1,6 @@
 define([
   "../classmanager/classmanager"
-],function (ClassManager) {
+], function (ClassManager) {
 
 	return function (properties) {
     properties = properties || {};
