@@ -1,8 +1,10 @@
 define(function () {
 	var navigator = window.navigator || {};
+
 	var userAgent = navigator.userAgent || "";
 	var platform = navigator.platform || "";
 	var cookieEnabled = navigator.cookieEnabled || false;
+	var online = navigator.onLine || false;
 
 	var deviceType = "Unknown";
 
@@ -57,6 +59,7 @@ define(function () {
 		machine: machine,
 		browser: browser,
 		browserVersion: browserVersion,
-		cookiesEnabled: cookieEnabled
+		cookiesEnabled: cookieEnabled,
+		online: online
 	};
 });
