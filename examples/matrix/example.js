@@ -8,5 +8,4 @@ require(["./matrixscene"], function (Scene) {
 
 	var scene = new Scene(body);
 	scene.startScene();
-	scene.requestUserCamera();
 });

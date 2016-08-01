@@ -1,24 +1,24 @@
 define(function () {
 
 	return function (interval, density) {
-	
+
 		var codeRain = this;
 
 		var rainDrops = [];
 
 		this.interval = interval || 50;
-		this.density = density || 0.5;
+		this.density = density || 0.3;
 
 		this.start = function () {
-			
+
 			setTimeout(function () {
-				
+
 				codeRain.createRainDrop();
 
 				if (codeRain.interval > 0) {
 					codeRain.start();
 				}
-			}, codeRain.interval || 50);
+			}, codeRain.interval);
 		};
 
 		this.stop = function () {
@@ -34,7 +34,7 @@ define(function () {
 		};
 
 		this.draw = function (context, width, height, dropWidth) {
-			
+
 			var nowTime = new Date().getTime();
 
 			for (var i = rainDrops.length - 1; i >= 0; i--) {
@@ -54,10 +54,10 @@ define(function () {
 					var dropStart = dropEnd - dropLength;
 
 					var gradient = context.createLinearGradient(0, dropStart, 0, dropEnd);
-				
+
 					gradient.addColorStop(0, "rgba(255, 255, 255, 0)");
-					gradient.addColorStop(0.5, "rgba(255, 255, 255, " + (codeRain.density || 0.5) + ")");
-					
+					gradient.addColorStop(0.5, "rgba(255, 255, 255, " + codeRain.density + ")");
+
 					context.fillStyle = gradient;
 					context.fillRect(location, dropStart, dropWidth, dropLength);
 				}
