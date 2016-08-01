@@ -2,21 +2,22 @@ define([
   "../classmanager/classmanager"
 ], function (ClassManager) {
 
-	return function (properties) {
+	return function (type, properties) {
+    type = type || "div";
     properties = properties || {};
 
-		var domElement = document.createElement(properties.type || "div");
+		var domElement = document.createElement(type);
 
-    if (properties.id !== undefined) {
-	    domElement.id = properties.id;
-    }
-
-    if (properties.class !== undefined) {
-      domElement.className = properties.class;
-    }
-
-    if (properties.html !== undefined) {
-      domElement.innerHTML = properties.html;
+    for (property in properties) {
+      if (properties.hasOwnProperty(property)) {
+        if (property === "class") {
+          domElement.className = properties[property];
+        } else if (property === "html") {
+          domElement.innerHTML = properties[property];
+        } else {
+          domElement[property] = properties[property];
+        }
+      }
     }
 
 		domElement.onMouseDown = function (mouseDown) {
@@ -54,4 +55,4 @@ define([
 
 		return domElement;
 	};
-}
+});
