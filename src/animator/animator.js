@@ -22,7 +22,7 @@ define(function () {
 				window.webkitCancelRequestAnimationFrame	||
 				window.mozCancelRequestAnimationFrame			||
 				window.oCancelRequestAnimationFrame				||
-				window.msCancelRequestAnimationFrame			|| 
+				window.msCancelRequestAnimationFrame			||
 				function (id) { window.clearTimeout(id); };
 	})();
 
@@ -79,11 +79,11 @@ define(function () {
 		 * have the standard FPS time difference as the parameter value. */
 		this.isTimeBased = true;
 
-		/* The flag for determining whether the animations should be paused when the browser window is hidden. */
-		this.pauseOnHidden = true;
+		/* The flag for determining whether the animations should be paused when the browser window loses focus. */
+		this.pauseOnHidden = false;
 
-		/* The flag for determining whether the animations should be resume when the browser window is shown. */
-		this.resumeOnShown = true;
+		/* The flag for determining whether the animations should be resume when the browser window gains focus. */
+		this.resumeOnShown = false;
 
 		/* The flag for determining whether the animations is currently requesting in order to avoid multiple requests. */
 		this.requesting = false;

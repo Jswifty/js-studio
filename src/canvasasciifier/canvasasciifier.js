@@ -1,9 +1,9 @@
 define(function () {
 
 	return function (canvas, config, animator) {
-	
+
 		var asciifier = this;
-		
+
 		/* Store the canvas element. */
 		this.canvas = canvas;
 
@@ -34,12 +34,12 @@ define(function () {
 		this.dummyTextpre.innerHTML = "..........\n..........\n..........\n..........\n..........\n..........\n..........\n..........\n..........\n..........";
 
 		canvas.parentElement.appendChild(this.dummyTextpre);
-		
+
 		/** Perform action for window resize event. */
 		this.onResize = function () {
 			asciifier.update();
 		};
-		
+
 		/** Perform an update on all the ascii text area by capturing the canvas' image data. */
 		this.update = function () {
 
@@ -68,7 +68,7 @@ define(function () {
 					if (asciifier.invert !== true) {
 						averageValue = 765 - averageValue;
 					}
-					
+
 					averageValue = averageValue / 3 * pixels[i+3] / 255;
 
 					var currentValue = asciifier.asciiIntervals;
@@ -91,7 +91,7 @@ define(function () {
 		/* Fetch resize method of the canvas and window. */
 		canvas.addEventListener("resize", asciifier.onResize);
 		window.addEventListener("resize", asciifier.onResize);
-		
+
 		/* Update the pre text area dimensions to fit the given container. */
 		this.onResize();
 
