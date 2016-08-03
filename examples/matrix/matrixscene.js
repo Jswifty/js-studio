@@ -11,10 +11,7 @@ define([
 	var currentDirectory = uri.substring(0, uri.lastIndexOf("/") + 1);
 
 	/**** SCENE STYLING. ****/
-	var style = document.createElement("link");
-	style.rel = "stylesheet";
-	style.type = "text/css";
-	style.href = currentDirectory + "matrixscene.css";
+	var style = new DOMElement("link", { rel: "stylesheet", type: "text/css", href: currentDirectory + "matrixscene.css" });
 
 	/* Insert the scene styling into the the header of the web page. */
 	document.getElementsByTagName("head")[0].appendChild(style);

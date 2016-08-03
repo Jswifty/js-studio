@@ -11,62 +11,59 @@ define([
 	var currentDirectory = uri.substring(0, uri.lastIndexOf("/") + 1);
 
 	/**** SCENE STYLING. ****/
-	var style = document.createElement("link");
-	style.rel = "stylesheet";
-	style.type = "text/css";
-	style.href = currentDirectory + "firefliesscene.css";
+	var style = new DOMElement("link", { rel: "stylesheet", type: "text/css", href: currentDirectory + "firefliesscene.css" });
 
 	/* Insert the scene styling into the the header of the web page. */
 	document.getElementsByTagName("head")[0].appendChild(style);
 
 	return function (container) {
-		
+
 		var scene = this;
 
 		/* Apply the scene's styling onto the container. */
 		container.className = "firefliesScene";
-		
+
 		/* Create an Animator. */
 		this.animator = new Animator();
 
 		/* Fire layer, which creates a canvas. */
 		this.fire = new Fire(0, 50, container, this.animator);
-		
+
 		/* Fireflies layers, which creates a canvas for each layer. */
 		var numOfFireflies = 100;
 		var numOfFirefliesLayers = 2;
-		
+
 		this.firefliesLayers = [];
 
 		for (var i = 0; i < numOfFirefliesLayers; i++) {
-			
+
 			var numOfLayerFireflies = numOfFireflies / numOfFirefliesLayers;
-			
+
 			this.firefliesLayers[i] = new FirefliesLayer(i, numOfLayerFireflies, container, this.animator);
-			
+
 			this.firefliesLayers[i].getHeartPosition = function (layerIndex, fireflyIndex, centerPosition) {
-				
+
 				var firefliesIndex = fireflyIndex + (layerIndex * numOfLayerFireflies);
 				var f = (firefliesIndex - numOfFireflies / 2) / numOfFireflies * 2 * Math.PI;
 
-				return { 
+				return {
 					x : centerPosition.x + 7 * 16 * Math.pow(Math.sin(f), 3),
 					y : centerPosition.y - 7 * (13 * Math.cos(f) - 5 * Math.cos(2*f) - 2 * Math.cos(3*f) - Math.cos(4*f))
 				};
 			};
-			
+
 			this.firefliesLayers[i].focusOnFire(this.fire);
 		}
-		
+
 		/* Hook up drawing methods to the animator. */
 		this.animator.addRenderFunction(this.fire, this.fire.render);
-		
+
 		for (var i = 0; i < this.firefliesLayers.length; i++) {
 			this.animator.addRenderFunction(this.firefliesLayers[i], this.firefliesLayers[i].render);
 		}
-		
+
 		this.addMouseListener = function (container) {
-			
+
 			if (scene.mouse && scene.mouseListener) {
 				scene.mouse.removeMouseListener(scene.mouseListener);
 			}
@@ -81,23 +78,23 @@ define([
 			scene.mouseListener.onMouseUp = scene.onMouseUp;
 			scene.mouseListener.onMouseClick = scene.onMouseClick;
 			scene.mouseListener.onMouseStop = scene.onMouseStop;
-			
+
 			scene.mouse.addMouseListener(scene.mouseListener);
 		};
 
 		this.onMouseOver = function (event) {
 			scene.fire.onMouseOver(event);
-			
+
 			for (var i = 0; i < scene.firefliesLayers.length; i++) {
 				scene.firefliesLayers[i].onMouseOver(event);
 			}
-			
+
 			scene.checkFirefliesLayers();
 		};
 
 		this.onMouseOut = function (event) {
 			scene.fire.onMouseOut(event);
-			
+
 			for (var i = 0; i < scene.firefliesLayers.length; i++) {
 				scene.firefliesLayers[i].onMouseOut(event);
 			}
@@ -107,7 +104,7 @@ define([
 
 		this.onMouseMove = function (event) {
 			scene.fire.onMouseMove(event);
-			
+
 			for (var i = 0; i < scene.firefliesLayers.length; i++) {
 				scene.firefliesLayers[i].onMouseMove(event);
 			}
@@ -118,7 +115,7 @@ define([
 		this.onMouseDown = function (event) {
 			if (event.which === scene.mouseListener.LEFT_BUTTON || event.mouse.isTouching) {
 				scene.fire.onMouseDown(event);
-				
+
 				for (var i = 0; i < scene.firefliesLayers.length; i++) {
 					scene.firefliesLayers[i].onMouseDown(event);
 				}
@@ -129,7 +126,7 @@ define([
 
 		this.onMouseUp = function (event) {
 			scene.fire.onMouseUp(event);
-			
+
 			for (var i = 0; i < scene.firefliesLayers.length; i++) {
 				scene.firefliesLayers[i].onMouseUp(event);
 			}
@@ -139,7 +136,7 @@ define([
 
 		this.onMouseClick = function (event) {
 			scene.fire.onMouseClick(event);
-			
+
 			for (var i = 0; i < scene.firefliesLayers.length; i++) {
 				scene.firefliesLayers[i].onMouseClick(event);
 			}
@@ -149,16 +146,16 @@ define([
 
 		this.onMouseStop = function (event) {
 			scene.fire.onMouseStop(event);
-			
+
 			for (var i = 0; i < scene.firefliesLayers.length; i++) {
 				scene.firefliesLayers[i].onMouseStop(event);
 			}
-			
+
 			scene.checkFirefliesLayers();
 		};
 
 		this.startScene = function () {
-			
+
 			/* Start the fireflies layer, which starts generating fireflies. */
 			for (var i = 0; i < scene.firefliesLayers.length; i++) {
 				scene.firefliesLayers[i].startFireFliesLayer();
@@ -169,7 +166,7 @@ define([
 		};
 
 		this.checkFirefliesLayers = function () {
-			
+
 			for(var i = 0; i < scene.firefliesLayers.length; i++) {
 				if (!scene.firefliesLayers[i].allFirefliesAttracted()) {
 					return false;

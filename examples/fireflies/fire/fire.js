@@ -10,48 +10,47 @@ define([
 
 		/* DIV container. */
 		this.container = container;
-		
+
 		/* Layer index. */
 		this.layerIndex = index;
-		
+
 		/* Amount of fire particles. */
 		this.numOfFireParticles = numOfParticles;
-		
+
 		/* Amount of spark particles. */
 		this.numOfSparkParticles = numOfParticles / 4;
-		
+
 		/* Fire particles. */
 		this.fireParticles = [];
 		for (var i = 0; i < this.numOfFireParticles; i++) {
 			this.fireParticles[i] = new FireParticle();
 		}
-		
+
 		/* Spark particles. */
 		this.sparkParticles = [];
-		
+
 		for (var i = 0; i < this.numOfSparkParticles; i++) {
 			this.sparkParticles[i] = new SparkParticle();
 		}
 
 		/* a void position. */
 		this.faultPosition = { x : -10000, y : -10000 };
-		
+
 		/* Fire Position. */
 		this.firePosition = { x : -10000, y : -10000 };
-		
+
 		/* Whether the fire is lighted up. */
 		this.fireOn = false;
 
 		/* Whether the fire is sparkling. */
 		this.isSparkling = false;
 		this.sparklePosition = { x : -10000, y : -10000 };
-		
+
 		/* The time spend to sparkle in terms of milli seconds. */
 		this.sparklingTime = 120;
-		
+
 		/* Create the canvas. */
 		this.canvasView = new CanvasView(container, animator);
-		this.canvasView.canvas.id = 'fireCanvas';
 		this.canvasView.canvas.style.zIndex = index.toString();
 
 		this.onMouseOver = function (event) {
@@ -84,11 +83,11 @@ define([
 		};
 
 		this.onMouseClick = function (event) {
-			
+
 		};
 
 		this.onMouseStop = function (event) {
-			
+
 		};
 
 		this.sparkle = function (position) {
@@ -101,14 +100,14 @@ define([
 				/* switch it off after the sparkling time is spent. */
 				setTimeout(function () { fire.isSparkling = false; fire.sparklePosition = { x : fire.faultPosition.x, y : fire.faultPosition.y }; }, fire.sparklingTime);
 			}
-			
+
 			for (var i = 0; i < fire.sparkParticles.length; i++) {
 				fire.sparkParticles[i].position = { x : position.x, y : position.y };
 			}
 		};
 
 		this.update = function (timeDiff) {
-			
+
 			/* Update the fire according to the mouse position. */
 			for (var i = 0; i < fire.fireParticles.length; i++) {
 				fire.fireParticles[i].update(fire.firePosition, timeDiff);
@@ -127,13 +126,13 @@ define([
 			fire.update(timeDiff);
 
 			this.canvasView.draw(function (context, width, height) {
-			
+
 				/* Clear the canvas screen. */
 				context.clearRect(0, 0, width, height);
-				
+
 				/* Set the color overlapping to become brighter. */
 				context.globalCompositeOperation = "lighter";
-				
+
 				/* Paint the fire. */
 				for (var i = 0; i < fire.fireParticles.length; i++) {
 					context.beginPath();
@@ -145,11 +144,11 @@ define([
 					gradient.addColorStop(1, "rgba(" + fireParticle.rgbString + ", 0)");
 					context.fillStyle = gradient;
 					context.arc(fireParticle.position.x, fireParticle.position.y, fireParticle.radius, 2 * Math.PI, false);
-					
+
 					context.closePath();
 					context.fill();
 				}
-				
+
 				/* Paint the sparks. */
 				for (var i = 0; i < fire.sparkParticles.length; i++) {
 					context.beginPath();
@@ -161,7 +160,7 @@ define([
 					gradient.addColorStop(1, "rgba(0, 0, 0, 0)");
 					context.fillStyle = gradient;
 					context.arc(sparkParticle.position.x, sparkParticle.position.y, sparkParticle.radius, 2 * Math.PI, false);
-					
+
 					context.closePath();
 					context.fill();
 				}
