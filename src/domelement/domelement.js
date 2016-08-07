@@ -34,6 +34,13 @@ define([
       return domElement;
 		};
 
+    domElement.onMouseMove = function (mouseMove) {
+      domElement.addEventListener("mousemove", function (event) {
+        mouseMove(event);
+      }, false);
+      return domElement;
+    };
+
     domElement.hasClass = function (classname) {
       return ClassManager.hasClass(domElement, classname);
     };
