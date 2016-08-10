@@ -4,17 +4,14 @@ define([
  	"./fireflieslayer",
  	"js-studio/animator/animator",
  	"js-studio/mouse/mouse",
- 	"js-studio/mouse/mouselistener"
-], function (Module, Fire, FirefliesLayer, Animator, Mouse, MouseListener) {
+ 	"js-studio/mouse/mouselistener",
+	"js-studio/cssloader/cssloader"
+], function (Module, Fire, FirefliesLayer, Animator, Mouse, MouseListener, CSSLoader) {
 
-	var uri = Module.uri;
-	var currentDirectory = uri.substring(0, uri.lastIndexOf("/") + 1);
-
-	/**** SCENE STYLING. ****/
-	var style = new DOMElement("link", { rel: "stylesheet", type: "text/css", href: currentDirectory + "firefliesscene.css" });
+	var currentDirectory = Module.uri.replace("firefliesscene.js", "");
 
 	/* Insert the scene styling into the the header of the web page. */
-	document.getElementsByTagName("head")[0].appendChild(style);
+	CSSLoader.load(currentDirectory + "firefliesscene.css");
 
 	return function (container) {
 
