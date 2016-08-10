@@ -27,8 +27,10 @@ define([
 		this.playButton.addEventListener("mousedown", function () {
 			if (scene.playButton.hasClass("paused")) {
 				scene.video.play();
+				scene.canvasView.resume();
 			} else {
 				scene.video.pause();
+				scene.canvasView.pause();
 			}
 			scene.playButton.toggleClass("paused");
 		}, false);
