@@ -8,7 +8,7 @@ body {
 }
 
 #menuButton {
-	display: none;
+	display: block;
 	position: absolute;
 	top: 0px;
 	left: 0px;
@@ -26,10 +26,6 @@ body {
 	-webkit-transition: 0.5s;
 }
 
-#menuButton.show {
-	display: block;
-}
-
 #menuButton:hover {
 	opacity: 1;
 }
@@ -41,7 +37,7 @@ body {
 }
 
 #menuContainer {
-	display: none;
+	display: block;
 	position: absolute;
 	top: 0px;
 	left: -120px;
@@ -51,10 +47,6 @@ body {
 	transition: 0.5s;
 	-webkit-transition: 0.5s;
 	z-index: 1;
-}
-
-#menuContainer.show {
-	display: block;
 }
 
 #menuContainer.expanded {

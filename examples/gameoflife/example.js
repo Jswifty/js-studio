@@ -8,5 +8,4 @@ require(["./gameoflifescene"], function(Scene) {
 
 	var gameoflife = new Scene(body);
 	gameoflife.startScene();
-	gameoflife.setShowControlMenu(true);
 });
