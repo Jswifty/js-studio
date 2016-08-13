@@ -4,17 +4,14 @@ define([
 	"js-studio/canvasasciifier/canvasasciifier",
 	"js-studio/canvasview/canvasview",
 	"js-studio/usermediamanager/usermediamanager",
-	"js-studio/domelement/domelement"
-], function (Module, CodeRain, Asciifier, CanvasView, UserMediaManager, DOMElement) {
+	"js-studio/domelement/domelement",
+	"js-studio/cssloader/cssloader"
+], function (Module, CodeRain, Asciifier, CanvasView, UserMediaManager, DOMElement, CSSLoader) {
 
-	var uri = Module.uri;
-	var currentDirectory = uri.substring(0, uri.lastIndexOf("/") + 1);
-
-	/**** SCENE STYLING. ****/
-	var style = new DOMElement("link", { rel: "stylesheet", type: "text/css", href: currentDirectory + "matrixscene.css" });
+	var currentDirectory = Module.uri.replace("matrixscene.js", "");
 
 	/* Insert the scene styling into the the header of the web page. */
-	document.getElementsByTagName("head")[0].appendChild(style);
+	CSSLoader.load(currentDirectory + "matrixscene.css");
 
 	return function (container) {
 
@@ -24,7 +21,7 @@ define([
 		container.className = "matrixScene";
 
 		this.playButton = new DOMElement("div", { class: "matrixPlayButton" });
-		this.playButton.addEventListener("mousedown", function () {
+		this.playButton.onMouseDown(function () {
 			if (scene.playButton.hasClass("paused")) {
 				scene.video.play();
 				scene.canvasView.resume();
@@ -33,13 +30,13 @@ define([
 				scene.canvasView.pause();
 			}
 			scene.playButton.toggleClass("paused");
-		}, false);
+		});
 		container.appendChild(this.playButton);
 
 		this.requestCameraButton = new DOMElement("div", { class: "matrixRequestCameraButton" });
-		this.requestCameraButton.addEventListener("mousedown", function () {
+		this.requestCameraButton.onMouseDown(function () {
 			scene.requestUserCamera();
-		}, false);
+		});
 		container.appendChild(this.requestCameraButton);
 
 		/* Create a video element for streaming. */

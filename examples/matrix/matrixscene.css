@@ -15,6 +15,7 @@
 	background: url("images/pause.png") no-repeat center;
 	background-size: contain;
 	z-index: 1;
+	cursor: pointer;
 }
 
 .matrixPlayButton.paused {
@@ -31,4 +32,5 @@
 	background: url("images/camera.png") no-repeat center;
 	background-size: contain;
 	z-index: 1;
+	cursor: pointer;
 }
