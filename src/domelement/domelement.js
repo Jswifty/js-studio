@@ -7,6 +7,11 @@ define([
     properties = properties || {};
 
 		var domElement = document.createElement(type);
+    domElement.mousePressed = false;
+    domElement.mouseDownListeners = [];
+    domElement.mouseUpListeners = [];
+    domElement.mouseMoveListeners = [];
+    domElement.mouseDragListeners = [];
 
     for (property in properties) {
       if (properties.hasOwnProperty(property)) {
@@ -20,24 +25,84 @@ define([
       }
     }
 
+    function addMouseDownListener () {
+      domElement.addEventListener("mousedown", function (event) {
+        domElement.mousePressed = true;
+
+        for (var i = 0; i < domElement.mouseDownListeners.length; i++) {
+          domElement.mouseDownListeners[i](event);
+        }
+      }, false);
+    };
+
+    function addMouseUpListener () {
+      domElement.addEventListener("mouseup", function (event) {
+        domElement.mousePressed = false;
+
+        for (var i = 0; i < domElement.mouseUpListeners.length; i++) {
+          domElement.mouseUpListeners[i](event);
+        }
+      }, false);
+    };
+
+    function addMouseMoveListener () {
+      domElement.addEventListener("mousemove", function (event) {
+
+        for (var i = 0; i < domElement.mouseMoveListeners.length; i++) {
+          domElement.mouseMoveListeners[i](event);
+        }
+
+        if (domElement.mousePressed === true) {
+          for (var j = 0; j < domElement.mouseDragListeners.length; j++) {
+            domElement.mouseDragListeners[j](event);
+          }
+        }
+      }, false);
+    };
+
 		domElement.onMouseDown = function (mouseDown) {
-			domElement.addEventListener("mousedown", function (event) {
-				mouseDown(event);
-			}, false);
+      if (domElement.mouseDownListeners.length === 0) {
+        addMouseDownListener();
+      }
+
+      domElement.mouseDownListeners.push(mouseDown);
+
       return domElement;
 		};
 
 		domElement.onMouseUp = function (mouseUp) {
-			domElement.addEventListener("mouseup", function (event) {
-				mouseUp(event);
-			}, false);
+      if (domElement.mouseUpListeners.length === 0) {
+        addMouseUpListener();
+      }
+
+      domElement.mouseUpListeners.push(mouseUp);
+
       return domElement;
 		};
 
     domElement.onMouseMove = function (mouseMove) {
-      domElement.addEventListener("mousemove", function (event) {
-        mouseMove(event);
-      }, false);
+      if (domElement.mouseMoveListeners.length === 0) {
+        addMouseMoveListener();
+      }
+
+      domElement.mouseMoveListeners.push(mouseMove);
+
+      return domElement;
+    };
+
+    domElement.onMouseDrag = function (mouseDrag) {
+      if (domElement.mouseDownListeners.length === 0) {
+        addMouseDownListener();
+      }
+      if (domElement.mouseUpListeners.length === 0) {
+        addMouseUpListener();
+      }
+      if (domElement.mouseMoveListeners.length === 0) {
+        addMouseMoveListener();
+      }
+
+      domElement.mouseDragListeners.push(mouseDrag);
+
       return domElement;
     };
 
