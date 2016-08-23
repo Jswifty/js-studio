@@ -1,5 +1,41 @@
 define(function () {
 
+	var documentMoveListeners = [];
+	var documentMoveEvent = document.onmousemove || function () {};
+	var documentUpEvent = document.onmouseup || function () {};
+
+	document.onmousemove = function (event) {
+		if (event === null || event === undefined) {
+			var event = window.event;
+		}
+
+		documentMoveEvent(event);
+
+		for (var i = 0; i < documentMoveListeners.length; i++) {
+			var moveListener = documentMoveListeners[i];
+
+			if (event.target !== moveListener.mouse.listenElement) {
+				moveListener.moveEvent.call(moveListener.mouse, event);
+			}
+		}
+	};
+
+	document.onmouseup = function (event) {
+		if (event == null || event === undefined) {
+			var event = window.event;
+		}
+
+		documentUpEvent(event);
+
+		for (var i = 0; i < documentMoveListeners.length; i++) {
+			var moveListener = documentMoveListeners[i];
+
+			if (event.target !== moveListener.mouse.listenElement) {
+				moveListener.upEvent.call(moveListener.mouse, event);
+			}
+		}
+	};
+
 	return function (container) {
 
 		var mouse = this;
@@ -82,7 +118,7 @@ define(function () {
 
 			/* Update the mouse position. */
 			mouse.previousPosition = mouse.position != null ? { x : mouse.position.x, y : mouse.position.y } : null;
-			mouse.position = newPosition != null ? { x : newPosition.x, y : newPosition.y } : null;
+			mouse.position = newPosition !== null ? { x : newPosition.x, y : newPosition.y } : null;
 
 			/* Update the time-stamp. */
 			mouse.lastUpdateTime = currentTime;
@@ -192,8 +228,9 @@ define(function () {
 					event.preventDefault();
 				}
 
-				/* Update the mouse position. */
-				mouse.updatePosition({ x: event.layerX, y: event.layerY });
+				/* Update the mouse relative position. */
+				var elementRect = mouse.listenElement.getBoundingClientRect();
+				mouse.updatePosition({ x: event.clientX - elementRect.x, y: event.clientY - elementRect.y });
 
 				/* Update the mouse down flag and time-stamp. */
 				mouse.isMouseDown = true;
@@ -201,6 +238,8 @@ define(function () {
 
 				/* Perform action for down event. */
 				mouse.onMouseDown(event);
+
+				mouse.addDocumentMoveListener();
 			}
 		};
 
@@ -217,8 +256,9 @@ define(function () {
 					event.preventDefault();
 				}
 
-				/* Update the mouse position. */
-				mouse.updatePosition({ x: event.layerX, y: event.layerY });
+				/* Update the mouse relative position. */
+				var elementRect = mouse.listenElement.getBoundingClientRect();
+				mouse.updatePosition({ x: event.clientX - elementRect.x, y: event.clientY - elementRect.y });
 
 				/* Update the mouse down flag. */
 				mouse.isMouseDown = false;
@@ -229,6 +269,8 @@ define(function () {
 
 				/* Perform action for up event. */
 				mouse.onMouseUp(event);
+
+				mouse.removeDocumentMoveListener();
 			}
 		};
 
@@ -245,8 +287,9 @@ define(function () {
 					event.preventDefault();
 				}
 
-				/* Update the mouse position. */
-				mouse.updatePosition({ x: event.layerX, y: event.layerY });
+				/* Update the mouse relative position. */
+				var elementRect = mouse.listenElement.getBoundingClientRect();
+				mouse.updatePosition({ x: event.clientX - elementRect.x, y: event.clientY - elementRect.y });
 
 				/* Re-initiate the stopping thread, calling the mouse stop in 0.05s. */
 				clearTimeout(mouse.stoppingThread);
@@ -265,8 +308,9 @@ define(function () {
 				/* Put mouse as a reference in the event. */
 				event.mouse = mouse;
 
-				/* Update the mouse position. */
-				mouse.updatePosition({ x: event.layerX, y: event.layerY });
+				/* Update the mouse relative position. */
+				var elementRect = mouse.listenElement.getBoundingClientRect();
+				mouse.updatePosition({ x: event.clientX - elementRect.x, y: event.clientY - elementRect.y });
 
 				/* Perform action for stop event */
 				mouse.onMouseStop(event);
@@ -281,8 +325,9 @@ define(function () {
 				/* Put mouse as a reference in the event. */
 				event.mouse = mouse;
 
-				/* Update the mouse position. */
-				mouse.updatePosition({ x: event.layerX, y: event.layerY });
+				/* Update the mouse relative position. */
+				var elementRect = mouse.listenElement.getBoundingClientRect();
+				mouse.updatePosition({ x: event.clientX - elementRect.x, y: event.clientY - elementRect.y });
 
 				/* Perform action for stop event */
 				mouse.onMouseClick(event);
@@ -302,8 +347,9 @@ define(function () {
 				event.preventDefault();
 			}
 
-			/* Update the mouse position. */
-			mouse.updatePosition({ x: event.changedTouches[0].layerX, y: event.changedTouches[0].layerY });
+			/* Update the mouse relative position. */
+			var elementRect = mouse.listenElement.getBoundingClientRect();
+			mouse.updatePosition({ x: event.changedTouches[0].clientX - elementRect.x, y: event.changedTouches[0].clientY - elementRect.y });
 
 			/* Update the mouse down flag and time-stamp. */
 			mouse.isMouseDown = true;
@@ -324,8 +370,9 @@ define(function () {
 				event.preventDefault();
 			}
 
-			/* Update the mouse position. */
-			mouse.updatePosition({ x: event.changedTouches[0].layerX, y: event.changedTouches[0].layerY });
+			/* Update the mouse relative position. */
+			var elementRect = mouse.listenElement.getBoundingClientRect();
+			mouse.updatePosition({ x: event.changedTouches[0].clientX - elementRect.x, y: event.changedTouches[0].clientY - elementRect.y });
 
 			/* Update the mouse down flag. */
 			mouse.isMouseDown = false;
@@ -353,8 +400,9 @@ define(function () {
 				event.preventDefault();
 			}
 
-			/* Update the mouse position. */
-			mouse.updatePosition({ x: event.changedTouches[0].layerX, y: event.changedTouches[0].layerY });
+			/* Update the mouse relative position. */
+			var elementRect = mouse.listenElement.getBoundingClientRect();
+			mouse.updatePosition({ x: event.changedTouches[0].clientX - elementRect.x, y: event.changedTouches[0].clientY - elementRect.y });
 
 			/* Re-initiate the stopping thread, calling the mouse stop in 0.05s. */
 			clearTimeout(mouse.stoppingThread);
@@ -425,6 +473,18 @@ define(function () {
 			setTimeout(function () { mouse.isTouching = false; }, 0);
 		};
 
+		this.addDocumentMoveListener = function () {
+			mouse.documentMoveListener = { mouse: mouse, moveEvent: mouse.moveEventMethod, upEvent: mouse.upEventMethod };
+			documentMoveListeners.push(mouse.documentMoveListener);
+		};
+
+		this.removeDocumentMoveListener = function () {
+			for (var i = documentMoveListeners.length - 1; i >= 0; i--) {
+				if (documentMoveListeners[i] === mouse.documentMoveListener) {
+					documentMoveListeners.splice(i, 1);
+				}
+			}
+		};
 
 		/** When the mouse is outside of the target element and a mouse's button is released. */
 		this.documentUpMethod = function (event) {

@@ -1,17 +1,14 @@
 define([
-  "../classmanager/classmanager"
-], function (ClassManager) {
+  "js-studio/mouse/mouse",
+  "js-studio/mouse/mouselistener",
+  "js-studio/classmanager/classmanager"
+], function (Mouse, MouseListener, ClassManager) {
 
 	return function (type, properties) {
     type = type || "div";
     properties = properties || {};
 
 		var domElement = document.createElement(type);
-    domElement.mousePressed = false;
-    domElement.mouseDownListeners = [];
-    domElement.mouseUpListeners = [];
-    domElement.mouseMoveListeners = [];
-    domElement.mouseDragListeners = [];
 
     for (property in properties) {
       if (properties.hasOwnProperty(property)) {
@@ -25,84 +22,81 @@ define([
       }
     }
 
-    function addMouseDownListener () {
-      domElement.addEventListener("mousedown", function (event) {
-        domElement.mousePressed = true;
+    function addMouseListener () {
+      if (domElement.mouse === undefined) {
+        domElement.mouseDownListeners = [];
+        domElement.mouseUpListeners = [];
+        domElement.mouseMoveListeners = [];
+        domElement.mouseDragListeners = [];
+        domElement.mouseOutListeners = [];
+        domElement.mouseOverListeners = [];
 
-        for (var i = 0; i < domElement.mouseDownListeners.length; i++) {
-          domElement.mouseDownListeners[i](event);
-        }
-      }, false);
-    };
+        domElement.mouse = new Mouse(domElement);
 
-    function addMouseUpListener () {
-      domElement.addEventListener("mouseup", function (event) {
-        domElement.mousePressed = false;
-
-        for (var i = 0; i < domElement.mouseUpListeners.length; i++) {
-          domElement.mouseUpListeners[i](event);
-        }
-      }, false);
-    };
-
-    function addMouseMoveListener () {
-      domElement.addEventListener("mousemove", function (event) {
-
-        for (var i = 0; i < domElement.mouseMoveListeners.length; i++) {
-          domElement.mouseMoveListeners[i](event);
-        }
-
-        if (domElement.mousePressed === true) {
-          for (var j = 0; j < domElement.mouseDragListeners.length; j++) {
-            domElement.mouseDragListeners[j](event);
+        domElement.mouseListener = new MouseListener();
+        domElement.mouseListener.onMouseDown = function (event) {
+          for (var i = 0; i < domElement.mouseDownListeners.length; i++) {
+            domElement.mouseDownListeners[i](event);
           }
-        }
-      }, false);
+        };
+        domElement.mouseListener.onMouseUp = function (event) {
+          for (var i = 0; i < domElement.mouseUpListeners.length; i++) {
+            domElement.mouseUpListeners[i](event);
+          }
+        };
+        domElement.mouseListener.onMouseMove = function (event) {
+          for (var i = 0; i < domElement.mouseMoveListeners.length; i++) {
+            domElement.mouseMoveListeners[i](event);
+          }
+
+          if (event.mouse.isMouseDown === true) {
+            for (var j = 0; j < domElement.mouseDragListeners.length; j++) {
+              domElement.mouseDragListeners[j](event);
+            }
+          }
+        };
+        domElement.mouseListener.onMouseOut = function (event) {
+          for (var i = 0; i < domElement.mouseOutListeners.length; i++) {
+            domElement.mouseOutListeners[i](event);
+          }
+        };
+        domElement.mouseListener.onMouseOver = function (event) {
+          for (var i = 0; i < domElement.mouseOverListeners.length; i++) {
+            domElement.mouseOverListeners[i](event);
+          }
+        };
+
+        domElement.mouse.addMouseListener(domElement.mouseListener);
+      }
     };
 
 		domElement.onMouseDown = function (mouseDown) {
-      if (domElement.mouseDownListeners.length === 0) {
-        addMouseDownListener();
-      }
-
+      addMouseListener();
       domElement.mouseDownListeners.push(mouseDown);
-
       return domElement;
 		};
 
 		domElement.onMouseUp = function (mouseUp) {
-      if (domElement.mouseUpListeners.length === 0) {
-        addMouseUpListener();
-      }
-
+      addMouseListener();
       domElement.mouseUpListeners.push(mouseUp);
-
       return domElement;
 		};
 
     domElement.onMouseMove = function (mouseMove) {
-      if (domElement.mouseMoveListeners.length === 0) {
-        addMouseMoveListener();
-      }
-
+      addMouseListener();
       domElement.mouseMoveListeners.push(mouseMove);
-
       return domElement;
     };
 
     domElement.onMouseDrag = function (mouseDrag) {
-      if (domElement.mouseDownListeners.length === 0) {
-        addMouseDownListener();
-      }
-      if (domElement.mouseUpListeners.length === 0) {
-        addMouseUpListener();
-      }
-      if (domElement.mouseMoveListeners.length === 0) {
-        addMouseMoveListener();
-      }
-
+      addMouseListener();
       domElement.mouseDragListeners.push(mouseDrag);
+      return domElement;
+    };
 
+    domElement.onMouseOut = function (mouseOut) {
+      addMouseListener();
+      domElement.mouseOutListeners.push(mouseOut);
       return domElement;
     };
 
