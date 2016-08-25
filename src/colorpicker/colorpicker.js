@@ -80,20 +80,55 @@ define([
 		hueBannerThumb.style.top = "0%";
 		hueBanner.appendChild(hueBannerThumb);
 
-		if (ColorUtils.isValidColor(color)) {
-			var hsv = ColorUtils.rgbToHSV(color.r, color.g, color.b);
-			hueBannerThumb.style.top = (hsv.h / 360 * 100) + "%";
-			colorBoardPointer.style.top = ((1 - hsv.v) * 100) + "%";
-			colorBoardPointer.style.left = (hsv.s * 100) + "%";
-		}
+		var alphaBanner = new DOMElement("div", { class: "alphaBanner" });
+		var updateAlpha = function (event) {
+			var bannerHeight = alphaBanner.offsetHeight;
+			var position = event.mouse.position.y;
+			var percentage =  Math.max(0, Math.min(100, position / bannerHeight * 100));
+
+			alphaBannerThumb.style.top = percentage + "%";
+
+			changeColor();
+		};
+		alphaBanner.onMouseDown(updateAlpha);
+		alphaBanner.onMouseDrag(updateAlpha);
+		colorPickerPanel.appendChild(alphaBanner);
+
+		var alphaBannerOverlay = new DOMElement("div", { class: "alphaBannerOverlay" });
+		alphaBanner.appendChild(alphaBannerOverlay);
+
+		var alphaBannerThumb = new DOMElement("div", { class: "alphaBannerThumb" });
+		alphaBannerThumb.style.top = "0%";
+		alphaBanner.appendChild(alphaBannerThumb);
+
+		colorPicker.setColor = function (color) {
+			if (ColorUtils.isValidColor(color)) {
+				var hsv = ColorUtils.rgbToHSV(color.r, color.g, color.b);
+				color.a = color.a || 1;
+
+				colorPalette.style.background = "rgba(" + color.r + ", " + color.g + ", " + color.b + ", " + color.a + ")";
+				hueBannerThumb.style.top = (hsv.h / 360 * 100) + "%";
+				colorBoard.style.background = "rgb(" + color.r + ", " + color.g + ", " + color.b + ")";
+				colorBoardPointer.style.top = ((1 - hsv.v) * 100) + "%";
+				colorBoardPointer.style.left = (hsv.s * 100) + "%";
+				alphaBanner.style.background = "rgb(" + color.r + ", " + color.g + ", " + color.b + ")";
+				alphaBannerThumb.style.top = ((1 - color.a) * 100) + "%";
+			}
+		};
+
+		colorPicker.setColor(color);
 
 		function changeColor () {
 			var hue = parseFloat(hueBannerThumb.style.top) / 100 * 360;
 			var saturation = parseFloat(colorBoardPointer.style.left) / 100;
 			var value = 1 - (parseFloat(colorBoardPointer.style.top) / 100);
+			var alpha = 1 - (parseFloat(alphaBannerThumb.style.top) / 100);
 			var color = ColorUtils.hsvToRGB(hue, saturation, value);
+			color.a = alpha;
 
-			colorPalette.style.background = "rgba(" + color.r + ", " + color.g + ", " + color.b + ", " + 1 + ")";
+			alphaBanner.style.background = "rgb(" + color.r + ", " + color.g + ", " + color.b + ")";
+			colorPalette.style.background = "rgba(" + color.r + ", " + color.g + ", " + color.b + ", " + color.a + ")";
+
 			colorPicker.colorChanged(color);
 		};
 

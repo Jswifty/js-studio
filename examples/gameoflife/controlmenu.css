@@ -40,9 +40,10 @@ body {
 	display: block;
 	position: absolute;
 	top: 0px;
-	left: -120px;
-	width: 120px;
+	left: -180px;
+	width: 150px;
 	height: 100%;
+	padding: 0px 15px;
 	background: rgba(0, 0, 0, 0.8);
 	transition: 0.5s;
 	-webkit-transition: 0.5s;
@@ -55,15 +56,15 @@ body {
 
 #menu {
 	position: absolute;
-	padding-top: 80px;
-	width: 100%;
+	padding-top: 60px;
 	height: auto;
 	text-align: left;
 }
 
 #playButton {
-	width: 100%;
+	width: 40px;
 	height: 40px;
+	margin: auto;
 	border: none;
 	background: url("images/pause.png") no-repeat center;
 	background-size: contain;
@@ -99,21 +100,60 @@ body {
 #drawModeContainer {
 	display: inline-block;
 	width: 100%;
+	margin: 10px 0px;
+	text-align: center;
 }
 
 #drawButton {
-	float: left;
 	background: url("images/draw.png") no-repeat center;
 }
 
 #eraseButton {
-	float: right;
 	background: url("images/erase.png") no-repeat center;
 }
 
-#drawButton, #eraseButton {
+#lifeSpanContainer {
+
+}
+
+#lifeSpanButton {
 	height: 40px;
-	width: 40%;
+	width: 40px;
+	margin: 5px auto;
+	background: url("images/infinity.png") no-repeat center;
+	background-size: contain;
+	cursor: pointer;
+}
+
+#lifeSpanButton.selected {
+	background: url("images/lifespan.png") no-repeat center;
+	background-size: contain;
+}
+
+#lifeSpan {
+	width: 100%;
+	height: 20px;
+	margin-top: 5px;
+	text-align: center;
+	color: white;
+	letter-spacing: 2px;
+	font-size: 16px;
+	font-weight: bold;
+	line-height: 20px;
+}
+
+#lifeSpan.disabled {
+	color: transparent;
+}
+
+#lifeSpanSlider {
+	margin: 5px 5%;
+}
+
+#drawButton, #eraseButton {
+	display: inline-block;
+	height: 40px;
+	width: 35%;
 	margin: 5px;
 	background-size: contain;
 	border: none;
@@ -123,6 +163,10 @@ body {
 
 #drawButton.selected, #eraseButton.selected {
 	opacity: 1;
+}
+
+#lifeSpanColor {
+	margin: auto;
 }
 
 #patternContainer {

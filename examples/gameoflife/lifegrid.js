@@ -11,13 +11,9 @@ define([
 		this.rows = rows || 400;
 		this.columns = columns || 400;
 
-		this.color = {
-			r: 255,
-			g: 125,
-			b: 0
-		};
+		this.color = { r: 255, g: 125, b: 0 };
 
-		this.deadAge = 0;
+		this.lifeSpan = 500;
 
 		this.drawMode = true;
 
@@ -29,9 +25,9 @@ define([
 
 		/* Create a CanvasView to draw the life grid. */
 		this.canvasView = new CanvasView(container);
-		this.canvasView.canvas.style.boxShadow = "0px 0px 15px white";
+		this.canvasView.canvas.style.boxShadow = "0px 0px 5px 2px white";
 		this.canvasView.onResize = function () {
-			var length = Math.min(container.offsetWidth, container.offsetHeight);
+			var length = Math.min(container.offsetWidth, container.offsetHeight) - 20;
 			var canvas = lifeGrid.canvasView.canvas;
 
 			canvas.width = length;
@@ -87,10 +83,19 @@ define([
 
 		this.setSpeed = function (speed) {
 			lifeGrid.timeInterval = speed > 0 ? 1 / speed : 0;
+			lifeGrid.timeBuffer = 0;
 		};
 
 		this.setDrawMode = function (drawMode) {
 			lifeGrid.drawMode = drawMode;
+		};
+
+		this.setLifeSpan = function (lifeSpan) {
+			lifeGrid.lifeSpan = parseInt(lifeSpan, 10);
+		};
+
+		this.setColor = function (color) {
+			lifeGrid.color = color;
 		};
 
 		this.getCell = function (y, x) {
@@ -106,29 +111,30 @@ define([
 		};
 
 		this.updateCellState = function (y, x, grid) {
-			var numOfLiveNeighbours = 0;
 			var cellAge = grid[y][x];
 
-			for (var sideY = Math.max(0, y - 1); sideY <= y + 1 && sideY < lifeGrid.rows; sideY++) {
-				for (var sideX = Math.max(0, x - 1); sideX <= x + 1 && sideX < lifeGrid.columns; sideX++) {
-					if ((sideY !== y || sideX !== x) && grid[sideY][sideX] > 0) {
-						numOfLiveNeighbours++;
+			if (lifeGrid.lifeSpan > 0 && cellAge >= lifeGrid.lifeSpan) {
+				return 0;
+			} else {
+				var numOfLiveNeighbours = 0;
+
+				for (var sideY = Math.max(0, y - 1); sideY <= y + 1 && sideY < lifeGrid.rows; sideY++) {
+					for (var sideX = Math.max(0, x - 1); sideX <= x + 1 && sideX < lifeGrid.columns; sideX++) {
+						if ((sideY !== y || sideX !== x) && grid[sideY][sideX] > 0) {
+							numOfLiveNeighbours++;
+						}
 					}
 				}
-			}
 
-			if (numOfLiveNeighbours === 3) {
-        cellAge += 1;
-      } else if (numOfLiveNeighbours !== 2) {
-        cellAge = 0;
-      }
+				if (numOfLiveNeighbours === 3) {
+	        cellAge += 1;
+	      } else if (numOfLiveNeighbours !== 2) {
+	        cellAge = 0;
+	      }
 
-      if (cellAge > 0) {
-        cellAge++;
-      }
-
-			if (lifeGrid.deadAge > 0 && cellAge >= lifeGrid.deadAge) {
-				cellAge = 0;
+	      if (cellAge > 0) {
+	        cellAge++;
+	      }
 			}
 
       return cellAge;
@@ -177,7 +183,7 @@ define([
 
 				lifeGrid.drawShadowCells(context, cellWidth, cellHeight);
 
-				context.fillStyle = "rgba(" + lifeGrid.color.r + ", " + lifeGrid.color.g + ", " + lifeGrid.color.b + ", 1)";
+				context.fillStyle = "rgba(" + lifeGrid.color.r + ", " + lifeGrid.color.g + ", " + lifeGrid.color.b + ", " + lifeGrid.color.a + ")";
 
 				for (var y = 0; y < lifeGrid.rows; y++) {
 					for (var x = 0; x < lifeGrid.columns; x++) {
@@ -212,6 +218,8 @@ define([
 			lifeGrid.reset();
 			lifeGrid.drawMode = status.drawMode;
 			lifeGrid.setSpeed(status.updating === true ? status.speed : 0);
+			lifeGrid.setLifeSpan(status.lifeSpan || 0);
+			lifeGrid.setColor(status.color || { r: 255, g: 125, b: 0 });
 		};
 
 		this.canvasView.animator.addRenderFunction(this, this.render);

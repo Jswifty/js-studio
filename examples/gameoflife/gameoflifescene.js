@@ -24,7 +24,9 @@ define([
 			paused: false,
 			updating: true,
 			speed: 30,
-			drawMode: true
+			drawMode: true,
+			lifeSpan: 5,
+			color: { r: 255, g: 125, b: 0, a: 1 }
 		};
 
 		/* Create a life grid with the given dimensions, which draws the grid and updates it. */
@@ -37,6 +39,12 @@ define([
 		});
 		this.controlMenu.onDrawModeChanged(function (drawMode) {
 			scene.lifeGrid.setDrawMode(drawMode);
+		});
+		this.controlMenu.onLifeSpanChanged(function (lifeSpan) {
+			scene.lifeGrid.setLifeSpan(lifeSpan);
+		});
+		this.controlMenu.onColorChanged(function (color) {
+			scene.lifeGrid.setColor(color);
 		});
 
 		this.startScene = function () {
