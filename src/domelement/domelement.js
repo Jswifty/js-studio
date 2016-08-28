@@ -30,6 +30,8 @@ define([
         domElement.mouseDragListeners = [];
         domElement.mouseOutListeners = [];
         domElement.mouseOverListeners = [];
+        domElement.mouseClickListeners = [];
+        domElement.mouseRightClickListeners = [];
 
         domElement.mouse = new Mouse(domElement);
 
@@ -42,6 +44,16 @@ define([
         domElement.mouseListener.onMouseUp = function (event) {
           for (var i = 0; i < domElement.mouseUpListeners.length; i++) {
             domElement.mouseUpListeners[i](event);
+          }
+
+          if (event.which === 1) {
+            for (var i = 0; i < domElement.mouseClickListeners.length; i++) {
+              domElement.mouseClickListeners[i](event);
+            }
+          } else if (event.which === 3) {
+            for (var i = 0; i < domElement.mouseRightClickListeners.length; i++) {
+              domElement.mouseRightClickListeners[i](event);
+            }
           }
         };
         domElement.mouseListener.onMouseMove = function (event) {
@@ -97,6 +109,18 @@ define([
     domElement.onMouseOut = function (mouseOut) {
       addMouseListener();
       domElement.mouseOutListeners.push(mouseOut);
+      return domElement;
+    };
+
+    domElement.onMouseClick = function (mouseClick) {
+      addMouseListener();
+      domElement.mouseClickListeners.push(mouseClick);
+      return domElement;
+    };
+
+    domElement.onMouseRightClick = function (mouseRightClick) {
+      addMouseListener();
+      domElement.mouseRightClickListeners.push(mouseRightClick);
       return domElement;
     };
 

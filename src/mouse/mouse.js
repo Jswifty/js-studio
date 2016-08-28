@@ -36,6 +36,14 @@ define(function () {
 		}
 	};
 
+	function getOffsetPosition (domElement) {
+		var elementRect = domElement.getBoundingClientRect();
+		elementRect.x = elementRect.x || elementRect.left;
+		elementRect.y = elementRect.y || elementRect.top;
+
+		return { x: elementRect.x || elementRect.left, y: elementRect.y || elementRect.top };
+	};
+
 	return function (container) {
 
 		var mouse = this;
@@ -229,8 +237,8 @@ define(function () {
 				}
 
 				/* Update the mouse relative position. */
-				var elementRect = mouse.listenElement.getBoundingClientRect();
-				mouse.updatePosition({ x: event.clientX - elementRect.x, y: event.clientY - elementRect.y });
+				var offsetPosition = getOffsetPosition(mouse.listenElement);
+				mouse.updatePosition({ x: event.clientX - offsetPosition.x, y: event.clientY - offsetPosition.y });
 
 				/* Update the mouse down flag and time-stamp. */
 				mouse.isMouseDown = true;
@@ -257,8 +265,8 @@ define(function () {
 				}
 
 				/* Update the mouse relative position. */
-				var elementRect = mouse.listenElement.getBoundingClientRect();
-				mouse.updatePosition({ x: event.clientX - elementRect.x, y: event.clientY - elementRect.y });
+				var offsetPosition = getOffsetPosition(mouse.listenElement);
+				mouse.updatePosition({ x: event.clientX - offsetPosition.x, y: event.clientY - offsetPosition.y });
 
 				/* Update the mouse down flag. */
 				mouse.isMouseDown = false;
@@ -288,8 +296,8 @@ define(function () {
 				}
 
 				/* Update the mouse relative position. */
-				var elementRect = mouse.listenElement.getBoundingClientRect();
-				mouse.updatePosition({ x: event.clientX - elementRect.x, y: event.clientY - elementRect.y });
+				var offsetPosition = getOffsetPosition(mouse.listenElement);
+				mouse.updatePosition({ x: event.clientX - offsetPosition.x, y: event.clientY - offsetPosition.y });
 
 				/* Re-initiate the stopping thread, calling the mouse stop in 0.05s. */
 				clearTimeout(mouse.stoppingThread);
@@ -309,8 +317,8 @@ define(function () {
 				event.mouse = mouse;
 
 				/* Update the mouse relative position. */
-				var elementRect = mouse.listenElement.getBoundingClientRect();
-				mouse.updatePosition({ x: event.clientX - elementRect.x, y: event.clientY - elementRect.y });
+				var offsetPosition = getOffsetPosition(mouse.listenElement);
+				mouse.updatePosition({ x: event.clientX - offsetPosition.x, y: event.clientY - offsetPosition.y });
 
 				/* Perform action for stop event */
 				mouse.onMouseStop(event);
@@ -326,8 +334,8 @@ define(function () {
 				event.mouse = mouse;
 
 				/* Update the mouse relative position. */
-				var elementRect = mouse.listenElement.getBoundingClientRect();
-				mouse.updatePosition({ x: event.clientX - elementRect.x, y: event.clientY - elementRect.y });
+				var offsetPosition = getOffsetPosition(mouse.listenElement);
+				mouse.updatePosition({ x: event.clientX - offsetPosition.x, y: event.clientY - offsetPosition.y });
 
 				/* Perform action for stop event */
 				mouse.onMouseClick(event);
@@ -348,8 +356,8 @@ define(function () {
 			}
 
 			/* Update the mouse relative position. */
-			var elementRect = mouse.listenElement.getBoundingClientRect();
-			mouse.updatePosition({ x: event.changedTouches[0].clientX - elementRect.x, y: event.changedTouches[0].clientY - elementRect.y });
+			var offsetPosition = getOffsetPosition(mouse.listenElement);
+			mouse.updatePosition({ x: event.changedTouches[0].clientX - offsetPosition.x, y: event.changedTouches[0].clientY - offsetPosition.y });
 
 			/* Update the mouse down flag and time-stamp. */
 			mouse.isMouseDown = true;
@@ -371,8 +379,8 @@ define(function () {
 			}
 
 			/* Update the mouse relative position. */
-			var elementRect = mouse.listenElement.getBoundingClientRect();
-			mouse.updatePosition({ x: event.changedTouches[0].clientX - elementRect.x, y: event.changedTouches[0].clientY - elementRect.y });
+			var offsetPosition = getOffsetPosition(mouse.listenElement);
+			mouse.updatePosition({ x: event.changedTouches[0].clientX - offsetPosition.x, y: event.changedTouches[0].clientY - offsetPosition.y });
 
 			/* Update the mouse down flag. */
 			mouse.isMouseDown = false;
@@ -401,8 +409,8 @@ define(function () {
 			}
 
 			/* Update the mouse relative position. */
-			var elementRect = mouse.listenElement.getBoundingClientRect();
-			mouse.updatePosition({ x: event.changedTouches[0].clientX - elementRect.x, y: event.changedTouches[0].clientY - elementRect.y });
+			var offsetPosition = getOffsetPosition(mouse.listenElement);
+			mouse.updatePosition({ x: event.changedTouches[0].clientX - offsetPosition.x, y: event.changedTouches[0].clientY - offsetPosition.y });
 
 			/* Re-initiate the stopping thread, calling the mouse stop in 0.05s. */
 			clearTimeout(mouse.stoppingThread);
