@@ -20,14 +20,10 @@ body {
 	background: url("images/settings.png") no-repeat center;
 	background-size: contain;
 	cursor: pointer;
-	opacity: 0.8;
+	opacity: 1;
 	z-index: 2;
 	transition: 0.5s;
 	-webkit-transition: 0.5s;
-}
-
-#menuButton:hover {
-	opacity: 1;
 }
 
 #menuButton.opened {
@@ -56,7 +52,7 @@ body {
 
 #menu {
 	position: absolute;
-	padding-top: 60px;
+	padding-top: 50px;
 	height: auto;
 	text-align: left;
 }
@@ -76,7 +72,7 @@ body {
 	background-size: contain;
 }
 
-#playSpeed {
+#playSpeed, #lifeSpan, #ambientRadius {
 	width: 100%;
 	height: 20px;
 	margin-top: 5px;
@@ -88,18 +84,19 @@ body {
 	line-height: 20px;
 }
 
-#playSpeed.paused {
+#playSpeed.disabled, #lifeSpan.disabled, #ambientRadius.disabled {
 	color: transparent;
 }
 
-#speedSlider {
-	width: 90%;
+#speedSlider, #lifeSpanSlider, #ambientRadiusSlider {
 	margin: 5px 5%;
 }
 
-#drawModeContainer {
-	display: inline-block;
-	width: 100%;
+#speedSlider.disabled, #lifeSpanSlider.disabled, #ambientRadiusSlider.disabled {
+	visibility: hidden;
+}
+
+#playModeContainer, #drawModeContainer, #lifeSpanContainer, #colorContainer, #cellShapeContainer {
 	margin: 10px 0px;
 	text-align: center;
 }
@@ -110,10 +107,6 @@ body {
 
 #eraseButton {
 	background: url("images/erase.png") no-repeat center;
-}
-
-#lifeSpanContainer {
-
 }
 
 #lifeSpanButton {
@@ -128,26 +121,6 @@ body {
 #lifeSpanButton.selected {
 	background: url("images/lifespan.png") no-repeat center;
 	background-size: contain;
-}
-
-#lifeSpan {
-	width: 100%;
-	height: 20px;
-	margin-top: 5px;
-	text-align: center;
-	color: white;
-	letter-spacing: 2px;
-	font-size: 16px;
-	font-weight: bold;
-	line-height: 20px;
-}
-
-#lifeSpan.disabled {
-	color: transparent;
-}
-
-#lifeSpanSlider {
-	margin: 5px 5%;
 }
 
 #drawButton, #eraseButton {
@@ -165,22 +138,35 @@ body {
 	opacity: 1;
 }
 
-#lifeSpanColor {
-	margin: auto;
-}
-
-#patternContainer {
+#birthColor, #deathColor {
 	display: inline-block;
-	width: 100%;
-	margin-top: 10px;
+	margin: 10px 20px;
 }
 
-#patternTitleLabel {
-	font-size: 18px;
-	margin: 0px 10px;
-	padding-right: 20px;
-	color: white;
-	border-bottom: 1px solid white;
+#deathColor.disabled {
+	display: none;
+}
+
+#cellShapeWrapper {
+	display: inline-block;
+	width: 20px;
+	height: 20px;
+	margin: 20px;
+}
+
+#cellShape {
+	width: 100%;
+	height: 100%;
+	background: white;
+}
+
+#cellShape.ambientGlow {
+	border-radius: 20px;
+	box-shadow: 0px 0px 5px 5px white;
+	border-color: white;
+	width: 0.1px;
+	height: 0.1px;
+	margin: 10px;
 }
 
 input[type=range]::-moz-range-track {

@@ -17,12 +17,13 @@ define([
 		this.speedChanged = function () {};
 		this.drawModeChanged = function () {};
 		this.lifeSpanChanged = function () {};
-		this.colorChanged = function () {};
+		this.birthColorChanged = function () {};
+		this.deathColorChanged = function () {};
+		this.cellShapeChanged = function () {};
 
 		var menuButton = new DOMElement("div", { id: "menuButton" });
-		menuButton.onMouseDown(function () {
-		  menuButton.toggleClass("opened");
-		  menuContainer.toggleClass("expanded");
+		menuButton.onMouseClick(function () {
+			controlMenu.setMenuOpened();
 		});
 		container.appendChild(menuButton);
 
@@ -32,17 +33,21 @@ define([
 		var menu = new DOMElement("div", { id: "menu" });
 		menuContainer.appendChild(menu);
 
+		var playModeContainer = new DOMElement("div", { id: "playModeContainer" });
+		menu.appendChild(playModeContainer);
+
 		var playButton = new DOMElement("div", { id: "playButton" });
-		playButton.onMouseDown(function () {
+		playButton.onMouseClick(function () {
 		  playButton.toggleClass("paused");
-		  playSpeed.toggleClass("paused");
+		  playSpeed.toggleClass("disabled");
+			speedSlider.toggleClass("disabled");
 
 			controlMenu.speedChanged(playButton.hasClass("paused") !== true ? speedSlider.value : 0);
 		});
-		menu.appendChild(playButton);
+		playModeContainer.appendChild(playButton);
 
 		var playSpeed = new DOMElement("div", { id: "playSpeed" });
-		menu.appendChild(playSpeed);
+		playModeContainer.appendChild(playSpeed);
 
 		var speedSlider = new DOMElement("input", { id: "speedSlider", type: "range", min: "1", max: "60", value: "30" });
 		var updateSpeed = function () {
@@ -51,13 +56,13 @@ define([
 		};
 		speedSlider.onMouseDrag(updateSpeed);
 		speedSlider.onchange = updateSpeed;
-		menu.appendChild(speedSlider);
+		playModeContainer.appendChild(speedSlider);
 
 		var drawModeContainer = new DOMElement("div", { id: "drawModeContainer" });
 		menu.appendChild(drawModeContainer);
 
 		var drawButton = new DOMElement("div", { id: "drawButton", class: "selected" });
-		drawButton.onMouseDown(function () {
+		drawButton.onMouseClick(function () {
 		  drawButton.addClass("selected");
 		  eraseButton.removeClass("selected");
 
@@ -66,7 +71,7 @@ define([
 		drawModeContainer.appendChild(drawButton);
 
 		var eraseButton = new DOMElement("div", { id: "eraseButton" });
-		eraseButton.onMouseDown(function () {
+		eraseButton.onMouseClick(function () {
 		  eraseButton.addClass("selected");
 		  drawButton.removeClass("selected");
 
@@ -78,9 +83,11 @@ define([
 		menu.appendChild(lifeSpanContainer);
 
 		var lifeSpanButton = new DOMElement("div", { id: "lifeSpanButton" });
-		lifeSpanButton.onMouseDown(function () {
+		lifeSpanButton.onMouseClick(function () {
 		  lifeSpanButton.toggleClass("selected");
 			lifeSpan.toggleClass("disabled");
+			lifeSpanSlider.toggleClass("disabled");
+			deathColor.toggleClass("disabled");
 			controlMenu.lifeSpanChanged(lifeSpanButton.hasClass("selected") === true ? lifeSpanSlider.value : 0);
 		});
 		lifeSpanContainer.appendChild(lifeSpanButton);
@@ -97,12 +104,74 @@ define([
 		lifeSpanSlider.onchange = updateLifeSpan;
 		lifeSpanContainer.appendChild(lifeSpanSlider);
 
-		var colorPicker = new ColorPicker();
-		colorPicker.id = "lifeSpanColor";
-		colorPicker.colorChanged = function (color) {
-			controlMenu.colorChanged(color);
+		var colorContainer = new DOMElement("div", { id: "colorContainer" });
+		menu.appendChild(colorContainer);
+
+		var birthColor = new ColorPicker({
+			id: "birthColor",
+			colorChanged: function (color) {
+				controlMenu.birthColorChanged(color);
+			},
+			panelOpened: function () {
+				deathColor.showPanel(false);
+			}
+		});
+		colorContainer.appendChild(birthColor);
+
+		var deathColor = new ColorPicker({
+			id: "deathColor",
+			colorChanged: function (color) {
+				controlMenu.deathColorChanged(color);
+			},
+			panelOpened: function () {
+				birthColor.showPanel(false);
+			}
+		});
+		colorContainer.appendChild(deathColor);
+
+		var cellShapeContainer = new DOMElement("div", { id: "cellShapeContainer" });
+		menu.appendChild(cellShapeContainer);
+
+		var cellShapeWrapper = new DOMElement("div", { id: "cellShapeWrapper" });
+		cellShapeWrapper.onMouseClick(function () {
+			cellShape.toggleClass("ambientGlow");
+			ambientRadius.toggleClass("disabled");
+			ambientRadiusSlider.toggleClass("disabled");
+
+			var useAmbientGlow = cellShape.hasClass("ambientGlow") === true;
+			var shadowRadius = 5 * ambientRadiusSlider.value;
+
+			cellShape.style.boxShadow = useAmbientGlow ? "0px 0px " + shadowRadius + "px " + shadowRadius + "px white" : "";
+			controlMenu.cellShapeChanged(useAmbientGlow ? ambientRadiusSlider.value : 0);
+		});
+		cellShapeContainer.appendChild(cellShapeWrapper);
+
+		var cellShape = new DOMElement("div", { id: "cellShape" });
+		cellShapeWrapper.appendChild(cellShape);
+
+		var ambientRadius = new DOMElement("div", { id: "ambientRadius", class: "disabled" });
+		cellShapeContainer.appendChild(ambientRadius);
+		var ambientRadiusSlider = new DOMElement("input", { id: "ambientRadiusSlider", class: "disabled", type: "range", step: "1", min: "1", max: "10", value: "1" });
+		var updateAmbientRadius = function () {
+			var useAmbientGlow = cellShape.hasClass("ambientGlow") === true;
+			var shadowRadius = 5 * ambientRadiusSlider.value;
+
+			ambientRadius.innerHTML = ambientRadiusSlider.value;
+
+			cellShape.style.boxShadow = useAmbientGlow ? "0px 0px " + shadowRadius + "px " + shadowRadius + "px white" : "";
+			controlMenu.cellShapeChanged(useAmbientGlow ? ambientRadiusSlider.value : 0);
 		};
-		menu.appendChild(colorPicker);
+		ambientRadiusSlider.onMouseDrag(updateAmbientRadius);
+		ambientRadiusSlider.onchange = updateAmbientRadius;
+		cellShapeContainer.appendChild(ambientRadiusSlider);
+
+		this.setMenuOpened = function (opened) {
+			menuButton.toggleClass("opened", opened);
+			menuContainer.toggleClass("expanded", opened);
+
+			birthColor.showPanel(false);
+			deathColor.showPanel(false);
+		};
 
 		this.onSpeedChanged = function (speedChanged) {
 			controlMenu.speedChanged = speedChanged;
@@ -116,22 +185,38 @@ define([
 			controlMenu.lifeSpanChanged = lifeSpanChanged;
 		};
 
-		this.onColorChanged = function (colorChanged) {
-			controlMenu.colorChanged = colorChanged;
+		this.onBirthColorChanged = function (birthColorChanged) {
+			controlMenu.birthColorChanged = birthColorChanged;
+		};
+
+		this.onDeathColorChanged = function (deathColorChanged) {
+			controlMenu.deathColorChanged = deathColorChanged;
+		};
+
+		this.onCellShapeChanged = function (cellShapeChanged) {
+			controlMenu.cellShapeChanged = cellShapeChanged;
 		};
 
 		this.updateStatus = function (status) {
 			playButton.toggleClass("paused", status.updating !== true);
-			playSpeed.toggleClass("paused", status.updating !== true);
+			playSpeed.toggleClass("disabled", status.updating !== true);
+			speedSlider.toggleClass("disabled", status.updating !== true);
 			speedSlider.value = status.speed || 30;
 			playSpeed.innerHTML = "x " + (speedSlider.value / 30).toFixed(2);
 			drawButton.toggleClass("selected", status.drawMode !== false);
 			eraseButton.toggleClass("selected", status.drawMode === false);
 			lifeSpanButton.toggleClass("selected", status.lifeSpan > 0);
 			lifeSpan.toggleClass("disabled", !(status.lifeSpan > 0));
+			lifeSpanSlider.toggleClass("disabled", !(status.lifeSpan > 0));
 			lifeSpanSlider.value = status.lifeSpan || 500;
 			lifeSpan.innerHTML = lifeSpanSlider.value;
-			colorPicker.setColor(status.color);
+			birthColor.setColor(status.birthColor);
+			deathColor.setColor(status.deathColor);
+			cellShape.toggleClass("ambientGlow", status.ambientRadius > 0);
+			ambientRadius.toggleClass("disabled", !(status.ambientRadius > 0));
+			ambientRadiusSlider.toggleClass("disabled", !(status.ambientRadius > 0));
+			ambientRadiusSlider.value = status.ambientRadius || 0;
+			ambientRadius.innerHTML = ambientRadiusSlider.value;
 		};
 	};
 });

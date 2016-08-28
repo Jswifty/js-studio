@@ -4,6 +4,8 @@ define([
 	"js-studio/canvasview/canvasview"
 ], function (Mouse, MouseListener, CanvasView) {
 
+	var PI2 = Math.PI * 2;
+
 	return function (container, rows, columns, speed) {
 
 		var lifeGrid = this;
@@ -11,11 +13,14 @@ define([
 		this.rows = rows || 400;
 		this.columns = columns || 400;
 
-		this.color = { r: 255, g: 125, b: 0 };
+		this.birthColor = { r: 0, g: 255, b: 0, a: 1 };
+		this.deathColor = { r: 255, g: 125, b: 0, a: 1 };
+
+		this.drawMode = true;
 
 		this.lifeSpan = 500;
 
-		this.drawMode = true;
+		this.ambientGlow = 0;
 
 		this.timeInterval = 1 / (speed || 30);
 		this.timeBuffer = 0;
@@ -94,9 +99,17 @@ define([
 			lifeGrid.lifeSpan = parseInt(lifeSpan, 10);
 		};
 
-		this.setColor = function (color) {
-			lifeGrid.color = color;
+		this.setBirthColor = function (color) {
+			lifeGrid.birthColor = color;
 		};
+
+		this.setDeathColor = function (color) {
+			lifeGrid.deathColor = color;
+		};
+
+		this.setAmbientGlow = function (ambientGlow) {
+			lifeGrid.ambientGlow = ambientGlow;
+		}
 
 		this.getCell = function (y, x) {
 			return lifeGrid.grid[y][x];
@@ -178,12 +191,14 @@ define([
 			lifeGrid.canvasView.draw(function (context, width, height) {
 				context.clearRect(0, 0, width, height);
 
+				if (lifeGrid.ambientGlow > 0) {
+					context.globalCompositeOperation = "lighter";
+				}
+
 				var cellWidth = width / lifeGrid.columns;
 				var cellHeight = height / lifeGrid.rows;
 
 				lifeGrid.drawShadowCells(context, cellWidth, cellHeight);
-
-				context.fillStyle = "rgba(" + lifeGrid.color.r + ", " + lifeGrid.color.g + ", " + lifeGrid.color.b + ", " + lifeGrid.color.a + ")";
 
 				for (var y = 0; y < lifeGrid.rows; y++) {
 					for (var x = 0; x < lifeGrid.columns; x++) {
@@ -208,7 +223,39 @@ define([
 
 		this.drawCell = function (cellAge, y, x, context, cellWidth, cellHeight) {
 			if (cellAge > 0) {
-				context.fillRect(x * cellWidth, y * cellHeight, cellWidth, cellHeight);
+				var red = lifeGrid.birthColor.r;
+				var green = lifeGrid.birthColor.g;
+				var blue = lifeGrid.birthColor.b;
+				var alpha = lifeGrid.birthColor.a;
+
+				if (lifeGrid.lifeSpan > 0) {
+					var delta = cellAge / lifeGrid.lifeSpan;
+
+					red += Math.round((lifeGrid.deathColor.r - red) * delta);
+					green += Math.round((lifeGrid.deathColor.g - green) * delta);
+					blue += Math.round((lifeGrid.deathColor.b - blue) * delta);
+					alpha += Math.round((lifeGrid.deathColor.a - alpha) * delta);
+				}
+
+				if (lifeGrid.ambientGlow > 0) {
+					var centerX = (x + 0.5) * cellWidth;
+					var centerY = (y + 0.5) * cellHeight;
+					var radius = cellWidth * lifeGrid.ambientGlow;
+					var gradient = context.createRadialGradient(centerX ,centerY , 0, centerX, centerY, radius);
+					gradient.addColorStop(0, "rgba(255, 255, 255, " + alpha + ")");
+					gradient.addColorStop(0.1, "rgba(255, 255, 255, " + (0.8 * alpha) + ")");
+					gradient.addColorStop(0.4, "rgba(" + red + ", " + green + ", " + blue + ", " + (0.2 * alpha) + ")");
+					gradient.addColorStop(1, "rgba(" + red + ", " + green + ", " + blue + ", 0)");
+
+					context.beginPath();
+          context.fillStyle = gradient;
+					context.arc(centerX, centerY, radius, PI2, false);
+					context.closePath();
+          context.fill();
+				} else {
+					context.fillStyle = "rgba(" + red + ", " + green + ", " + blue + ", " + alpha + ")";
+					context.fillRect(x * cellWidth, y * cellHeight, cellWidth, cellHeight);
+				}
 			}
 		};
 
@@ -219,7 +266,8 @@ define([
 			lifeGrid.drawMode = status.drawMode;
 			lifeGrid.setSpeed(status.updating === true ? status.speed : 0);
 			lifeGrid.setLifeSpan(status.lifeSpan || 0);
-			lifeGrid.setColor(status.color || { r: 255, g: 125, b: 0 });
+			lifeGrid.setBirthColor(status.birthColor || { r: 0, g: 255, b: 0, a: 1 });
+			lifeGrid.setDeathColor(status.deathColor || { r: 255, g: 0, b: 0, a: 1 });
 		};
 
 		this.canvasView.animator.addRenderFunction(this, this.render);

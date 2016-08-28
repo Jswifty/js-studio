@@ -26,7 +26,8 @@ define([
 			speed: 30,
 			drawMode: true,
 			lifeSpan: 5,
-			color: { r: 255, g: 125, b: 0, a: 1 }
+			birthColor: { r: 0, g: 255, b: 0, a: 1 },
+			deathColor: { r: 255, g: 0, b: 0, a: 1 }
 		};
 
 		/* Create a life grid with the given dimensions, which draws the grid and updates it. */
@@ -43,9 +44,16 @@ define([
 		this.controlMenu.onLifeSpanChanged(function (lifeSpan) {
 			scene.lifeGrid.setLifeSpan(lifeSpan);
 		});
-		this.controlMenu.onColorChanged(function (color) {
-			scene.lifeGrid.setColor(color);
+		this.controlMenu.onBirthColorChanged(function (color) {
+			scene.lifeGrid.setBirthColor(color);
 		});
+		this.controlMenu.onDeathColorChanged(function (color) {
+			scene.lifeGrid.setDeathColor(color);
+		});
+		this.controlMenu.onCellShapeChanged(function (ambientGlow) {
+			scene.lifeGrid.setAmbientGlow(ambientGlow);
+		});
+
 
 		this.startScene = function () {
 			scene.lifeGrid.start();
