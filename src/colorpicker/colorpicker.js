@@ -12,22 +12,30 @@ define([
 	/* Insert the scene styling into the the header of the web page. */
 	CSSLoader.load(currentDirectory + "colorpicker.css");
 
-	return function (color) {
+	return function (options) {
 
-		var colorPicker = new DOMElement("div", { class: "colorPicker" });
-		colorPicker.colorChanged = function () {};
+		var colorPicker = new DOMElement("div", { id: options && options.id, class: "colorPicker" });
+		colorPicker.colorChanged = options.colorChanged || function () {};
+		colorPicker.panelOpened = options.panelOpened || function () {};
 		colorPicker.showPanel = function (show) {
-			colorPickerPanel.toggleClass("show", show);
+			colorPickerDialog.toggleClass("show", show);
+
+			if (colorPickerDialog.hasClass("show") === true) {
+				colorPicker.panelOpened();
+			}
 		};
 
 		var colorPalette = new DOMElement("div", { class: "colorPalette" });
-		colorPalette.onMouseDown(function () {
+		colorPalette.onMouseClick(function () {
 			colorPicker.showPanel();
 		});
 		colorPicker.appendChild(colorPalette);
 
+		var colorPickerDialog = new DOMElement("div", { class: "colorPickerDialog" });
+		colorPicker.appendChild(colorPickerDialog);
+
 		var colorPickerPanel = new DOMElement("div", { class: "colorPickerPanel" });
-		colorPicker.appendChild(colorPickerPanel);
+		colorPickerDialog.appendChild(colorPickerPanel);
 
 		var colorBoard = new DOMElement("div", { class: "colorBoard" });
 		colorBoard.style.background = "rgb(255, 0, 0)";
@@ -43,6 +51,10 @@ define([
 
 		var colorBoardOverlay = new DOMElement("div", { class: "colorBoardOverlay" });
 		var colorBoardMouseHander = function (event) {
+			if (event.which !== 1) {
+				return;
+			}
+
 			var x = event.mouse.position.x;
 			var y = event.mouse.position.y;
 			var width = colorBoardOverlay.offsetWidth;
@@ -62,6 +74,10 @@ define([
 		var hueBanner = new DOMElement("div", { class: "hueBanner" });
 		colorPickerPanel.appendChild(hueBanner);
 		var updateHue = function (event) {
+			if (event.which !== 1) {
+				return;
+			}
+
 			var bannerHeight = hueBanner.offsetHeight;
 			var position = event.mouse.position.y;
 			var percentage =  Math.max(0, Math.min(100, position / bannerHeight * 100));
@@ -82,11 +98,15 @@ define([
 
 		var alphaBanner = new DOMElement("div", { class: "alphaBanner" });
 		var updateAlpha = function (event) {
-			var bannerHeight = alphaBanner.offsetHeight;
-			var position = event.mouse.position.y;
-			var percentage =  Math.max(0, Math.min(100, position / bannerHeight * 100));
+			if (event.which !== 1) {
+				return;
+			}
 
-			alphaBannerThumb.style.top = percentage + "%";
+			var bannerWidth = alphaBanner.offsetWidth;
+			var position = event.mouse.position.x;
+			var percentage =  Math.max(0, Math.min(100, position / bannerWidth * 100));
+
+			alphaBannerThumb.style.left = percentage + "%";
 
 			changeColor();
 		};
@@ -98,7 +118,7 @@ define([
 		alphaBanner.appendChild(alphaBannerOverlay);
 
 		var alphaBannerThumb = new DOMElement("div", { class: "alphaBannerThumb" });
-		alphaBannerThumb.style.top = "0%";
+		alphaBannerThumb.style.left = "0%";
 		alphaBanner.appendChild(alphaBannerThumb);
 
 		colorPicker.setColor = function (color) {
@@ -112,17 +132,19 @@ define([
 				colorBoardPointer.style.top = ((1 - hsv.v) * 100) + "%";
 				colorBoardPointer.style.left = (hsv.s * 100) + "%";
 				alphaBanner.style.background = "rgb(" + color.r + ", " + color.g + ", " + color.b + ")";
-				alphaBannerThumb.style.top = ((1 - color.a) * 100) + "%";
+				alphaBannerThumb.style.left = (color.a * 100) + "%";
 			}
 		};
 
-		colorPicker.setColor(color);
+		if (options.color !== undefined) {
+			colorPicker.setColor(options.color);
+		}
 
 		function changeColor () {
 			var hue = parseFloat(hueBannerThumb.style.top) / 100 * 360;
 			var saturation = parseFloat(colorBoardPointer.style.left) / 100;
 			var value = 1 - (parseFloat(colorBoardPointer.style.top) / 100);
-			var alpha = 1 - (parseFloat(alphaBannerThumb.style.top) / 100);
+			var alpha = parseFloat(alphaBannerThumb.style.left) / 100;
 			var color = ColorUtils.hsvToRGB(hue, saturation, value);
 			color.a = alpha;
 
