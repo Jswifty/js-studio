@@ -1,0 +1,23 @@
+.slider {
+  position: relative;
+  border-radius: 4px;
+  padding: 4px;
+  margin: 10px;
+  background: darkgray;
+}
+
+.slider.vertical {
+  height: 100%;
+  width: 0px;
+}
+
+.slider > .sliderThumb {
+  position: absolute;
+  height: 14px;
+  width: 14px;
+  margin: -8px;
+  border: 1px solid black;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+}
