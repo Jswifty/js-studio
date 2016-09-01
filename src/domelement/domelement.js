@@ -1,8 +1,12 @@
 define([
   "js-studio/mouse/mouse",
   "js-studio/mouse/mouselistener",
+  "js-studio/keyboard/keyboard",
+  "js-studio/keyboard/keylistener",
   "js-studio/classmanager/classmanager"
-], function (Mouse, MouseListener, ClassManager) {
+], function (Mouse, MouseListener, Keyboard, KeyListener, ClassManager) {
+
+  var currentTabIndex = 1;
 
 	return function (type, properties) {
     type = type || "div";
@@ -12,12 +16,16 @@ define([
 
     for (property in properties) {
       if (properties.hasOwnProperty(property)) {
-        if (property === "class") {
-          domElement.className = properties[property];
-        } else if (property === "html") {
-          domElement.innerHTML = properties[property];
-        } else {
-          domElement[property] = properties[property];
+        var propertyValue = properties[property];
+
+        if (propertyValue !== undefined) {
+          if (property === "class") {
+            domElement.className = properties[property];
+          } else if (property === "html") {
+            domElement.innerHTML = properties[property];
+          } else {
+            domElement[property] = properties[property];
+          }
         }
       }
     }
@@ -82,6 +90,32 @@ define([
       }
     };
 
+    function addKeyListener () {
+      if (domElement.keyboard === undefined) {
+        domElement.tabIndex = domElement.currentTabIndex;
+        domElement.currentTabIndex++;
+
+        domElement.keyDownListeners = [];
+        domElement.keyUpListeners = [];
+
+        domElement.keyboard = new Keyboard(domElement);
+
+        domElement.keyListener = new KeyListener();
+        domElement.keyListener.onKeyDown = function (event) {
+          for (var i = 0; i < domElement.keyDownListeners.length; i++) {
+            domElement.keyDownListeners[i](event);
+          }
+        };
+        domElement.keyListener.onKeyUp = function (event) {
+          for (var i = 0; i < domElement.keyUpListeners.length; i++) {
+            domElement.keyUpListeners[i](event);
+          }
+        };
+
+        domElement.keyboard.addKeyListener(domElement.keyListener);
+      }
+    };
+
 		domElement.onMouseDown = function (mouseDown) {
       addMouseListener();
       domElement.mouseDownListeners.push(mouseDown);
@@ -121,6 +155,17 @@ define([
     domElement.onMouseRightClick = function (mouseRightClick) {
       addMouseListener();
       domElement.mouseRightClickListeners.push(mouseRightClick);
+      return domElement;
+    };
+
+    domElement.onKeyDown = function (keyDown) {
+      addKeyListener();
+      domElement.keyDownListeners.push(keyDown);
+      return domElement;
+    };
+    domElement.onKeyUp = function (keyUp) {
+      addKeyListener();
+      domElement.keyUpListeners.push(keyUp);
       return domElement;
     };
 
