@@ -48,7 +48,7 @@ define([
 		colorBoardGradient.appendChild(colorBoardPointer);
 
 		var colorBoardOverlay = new DOMElement("div", { class: "colorBoardOverlay" });
-		var colorBoardMouseHander = function (event) {
+		function colorBoardMouseEvent (event) {
 			if (event.which !== 1) {
 				return;
 			}
@@ -65,13 +65,20 @@ define([
 
 			changeColor();
 		};
-		colorBoardOverlay.onMouseDrag(colorBoardMouseHander);
-		colorBoardOverlay.onMouseDown(colorBoardMouseHander);
+		colorBoardOverlay.onMouseDrag(colorBoardMouseEvent);
+		colorBoardOverlay.onMouseDown(colorBoardMouseEvent);
 		colorBoard.appendChild(colorBoardOverlay);
 
 		var hueBanner = new DOMElement("div", { class: "hueBanner" });
 		colorPickerPanel.appendChild(hueBanner);
-		var updateHue = function (event) {
+		function onHueChanged (percentage) {
+			var hueColor = ColorUtils.hsvToRGB(percentage / 100 * 360, 1, 1);
+
+			hueBannerThumb.style.top = percentage + "%";
+			colorBoard.style.background = "rgb(" + hueColor.r + ", " + hueColor.g + ", " + hueColor.b + ")";
+			changeColor();
+		};
+		function hueMouseEvent (event) {
 			if (event.which !== 1) {
 				return;
 			}
@@ -80,22 +87,29 @@ define([
 			var position = event.mouse.position.y;
 			var percentage =  Math.max(0, Math.min(100, position / bannerHeight * 100));
 
-			var hueColor = ColorUtils.hsvToRGB(percentage / 100 * 360, 1, 1);
-
-			hueBannerThumb.style.top = percentage + "%";
-			colorBoard.style.background = "rgb(" + hueColor.r + ", " + hueColor.g + ", " + hueColor.b + ")";
-
-			changeColor();
+			onHueChanged(percentage);
 		};
-		hueBanner.onMouseDown(updateHue);
-		hueBanner.onMouseDrag(updateHue);
+		function hueKeyEvent (event) {
+			var keyCode = event.which || event.keyCode;
 
+			/* up key is pressed */
+			if (keyCode === 38) {
+				onHueChanged(parseInt(hueBannerThumb.style.top) - 1);
+			}
+			/* down key is pressed */
+			else if (keyCode === 40) {
+				onHueChanged(parseInt(hueBannerThumb.style.top) + 1);
+			}
+	 	};
+		hueBanner.onMouseDown(hueMouseEvent);
+		hueBanner.onMouseDrag(hueMouseEvent);
+		hueBanner.onKeyDown(hueKeyEvent);
 		var hueBannerThumb = new DOMElement("div", { class: "hueBannerThumb" });
 		hueBannerThumb.style.top = "0%";
 		hueBanner.appendChild(hueBannerThumb);
 
 		var alphaBanner = new DOMElement("div", { class: "alphaBanner" });
-		var updateAlpha = function (event) {
+		function alphaMouseEvent (event) {
 			if (event.which !== 1) {
 				return;
 			}
@@ -105,11 +119,25 @@ define([
 			var percentage =  Math.max(0, Math.min(100, position / bannerWidth * 100));
 
 			alphaBannerThumb.style.left = percentage + "%";
-
 			changeColor();
 		};
-		alphaBanner.onMouseDown(updateAlpha);
-		alphaBanner.onMouseDrag(updateAlpha);
+		function alphaKeyEvent (event) {
+			var keyCode = event.which || event.keyCode;
+
+			/* left key is pressed */
+			if (keyCode === 37) {
+				alphaBannerThumb.style.left = (parseInt(alphaBannerThumb.style.left) - 1) + "%";
+				changeColor();
+			}
+			/* right key is pressed */
+			else if (keyCode === 39) {
+				alphaBannerThumb.style.left = (parseInt(alphaBannerThumb.style.left) + 1) + "%";
+				changeColor();
+			}
+		};
+		alphaBanner.onMouseDown(alphaMouseEvent);
+		alphaBanner.onMouseDrag(alphaMouseEvent);
+		alphaBanner.onKeyDown(alphaKeyEvent);
 		colorPickerPanel.appendChild(alphaBanner);
 
 		var alphaBannerOverlay = new DOMElement("div", { class: "alphaBannerOverlay" });
