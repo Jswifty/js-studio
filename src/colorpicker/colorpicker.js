@@ -13,13 +13,11 @@ define([
 	CSSLoader.load(currentDirectory + "colorpicker.css");
 
 	return function (options) {
-
 		var colorPicker = new DOMElement("div", { id: options && options.id, class: "colorPicker" });
 		colorPicker.colorChanged = options.colorChanged || function () {};
 		colorPicker.panelOpened = options.panelOpened || function () {};
 		colorPicker.showPanel = function (show) {
 			colorPickerDialog.toggleClass("show", show);
-
 			if (colorPickerDialog.hasClass("show") === true) {
 				colorPicker.panelOpened();
 			}
