@@ -26,37 +26,20 @@ define([
 		/* Fire layer, which creates a canvas. */
 		this.fire = new Fire(0, 50, container, this.animator);
 
+		this.performHeartTimer = undefined;
+		this.performingTime = 5000;
+
 		/* Fireflies layers, which creates a canvas for each layer. */
 		var numOfFireflies = 100;
-		var numOfFirefliesLayers = 2;
+		var numOfLayers = 2;
 
 		this.firefliesLayers = [];
 
-		for (var i = 0; i < numOfFirefliesLayers; i++) {
+		for (var i = 0; i < numOfLayers; i++) {
+			var numOfFirefliesInLayer = numOfFireflies / numOfLayers;
 
-			var numOfLayerFireflies = numOfFireflies / numOfFirefliesLayers;
-
-			this.firefliesLayers[i] = new FirefliesLayer(i, numOfLayerFireflies, container, this.animator);
-
-			this.firefliesLayers[i].getHeartPosition = function (layerIndex, fireflyIndex, centerPosition) {
-
-				var firefliesIndex = fireflyIndex + (layerIndex * numOfLayerFireflies);
-				var f = (firefliesIndex - numOfFireflies / 2) / numOfFireflies * 2 * Math.PI;
-
-				return {
-					x : centerPosition.x + 7 * 16 * Math.pow(Math.sin(f), 3),
-					y : centerPosition.y - 7 * (13 * Math.cos(f) - 5 * Math.cos(2*f) - 2 * Math.cos(3*f) - Math.cos(4*f))
-				};
-			};
-
+			this.firefliesLayers[i] = new FirefliesLayer(i, numOfLayers, numOfFirefliesInLayer, container, this.animator);
 			this.firefliesLayers[i].focusOnFire(this.fire);
-		}
-
-		/* Hook up drawing methods to the animator. */
-		this.animator.addRenderFunction(this.fire, this.fire.render);
-
-		for (var i = 0; i < this.firefliesLayers.length; i++) {
-			this.animator.addRenderFunction(this.firefliesLayers[i], this.firefliesLayers[i].render);
 		}
 
 		this.addMouseListener = function (container) {
@@ -85,8 +68,6 @@ define([
 			for (var i = 0; i < scene.firefliesLayers.length; i++) {
 				scene.firefliesLayers[i].onMouseOver(event);
 			}
-
-			scene.checkFirefliesLayers();
 		};
 
 		this.onMouseOut = function (event) {
@@ -95,8 +76,6 @@ define([
 			for (var i = 0; i < scene.firefliesLayers.length; i++) {
 				scene.firefliesLayers[i].onMouseOut(event);
 			}
-
-			scene.checkFirefliesLayers();
 		};
 
 		this.onMouseMove = function (event) {
@@ -106,7 +85,9 @@ define([
 				scene.firefliesLayers[i].onMouseMove(event);
 			}
 
-			scene.checkFirefliesLayers();
+			if (event.mouse.isMouseDown === true) {
+				scene.checkFirefliesLayers();
+			}
 		};
 
 		this.onMouseDown = function (event) {
@@ -128,7 +109,7 @@ define([
 				scene.firefliesLayers[i].onMouseUp(event);
 			}
 
-			scene.checkFirefliesLayers();
+			scene.checkFirefliesLayers(scene.performingTime);
 		};
 
 		this.onMouseClick = function (event) {
@@ -137,8 +118,6 @@ define([
 			for (var i = 0; i < scene.firefliesLayers.length; i++) {
 				scene.firefliesLayers[i].onMouseClick(event);
 			}
-
-			scene.checkFirefliesLayers();
 		};
 
 		this.onMouseStop = function (event) {
@@ -147,8 +126,6 @@ define([
 			for (var i = 0; i < scene.firefliesLayers.length; i++) {
 				scene.firefliesLayers[i].onMouseStop(event);
 			}
-
-			scene.checkFirefliesLayers();
 		};
 
 		this.startScene = function () {
@@ -162,17 +139,33 @@ define([
 			scene.animator.start();
 		};
 
-		this.checkFirefliesLayers = function () {
+		this.checkFirefliesLayers = function (performingTime) {
+			if (scene.allFirefliesAttracted() === true) {
+				for (var i = 0; i < scene.firefliesLayers.length; i++) {
+					scene.firefliesLayers[i].performHeart(true);
+				}
 
-			for(var i = 0; i < scene.firefliesLayers.length; i++) {
+				clearTimeout(scene.performHeartTimer);
+
+				if (performingTime !== undefined) {
+					scene.performHeartTimer = setTimeout(function () {
+
+						for (var i = 0; i < scene.firefliesLayers.length; i++) {
+							scene.firefliesLayers[i].performHeart(false);
+						}
+					}, performingTime);
+				}
+			}
+		};
+
+		this.allFirefliesAttracted = function () {
+			for (var i = 0; i < scene.firefliesLayers.length; i++) {
 				if (!scene.firefliesLayers[i].allFirefliesAttracted()) {
 					return false;
 				}
 			}
 
-			for(var i = 0; i < scene.firefliesLayers.length; i++) {
-				scene.firefliesLayers[i].performHeart();
-			}
+			return true;
 		};
 	};
 });

@@ -44,14 +44,22 @@ define([
 			canvasView.canvas.height = canvasView.container.offsetHeight;
 		};
 
-		/** Perform draw on the canvas based on the given draw function. */
-		this.draw = function (drawFunction) {
-			drawFunction(canvasView.getCanvas2DContext(), canvasView.getWidth(), canvasView.getHeight());
+		/** Set a rendering method on the canvas, the method will have the canvas' context, width and height. */
+		this.setRender = function (drawFunction) {
+			if (canvasView.renderID !== undefined) {
+				canvasView.removeRenderFunction(canvasView.renderID);
+			}
+
+			var renderFunction = function () {
+				drawFunction(canvasView.getCanvas2DContext(), canvasView.getWidth(), canvasView.getHeight());
+			};
+
+			canvasView.renderID = canvasView.addRenderFunction(canvasView, renderFunction);
 		};
 
 		/** Add a drawing method to the animator. */
-		this.addRenderFunction = function (renderFunction) {
-			return canvasView.animator.addRenderFunction(canvasView, renderFunction);
+		this.addRenderFunction = function (renderObject, renderFunction) {
+			return canvasView.animator.addRenderFunction(renderObject, renderFunction);
 		};
 
 		/** Remove a drawing method from the animator. */

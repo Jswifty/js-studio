@@ -52,13 +52,8 @@ define([
 		/* Rain object for rain effect. */
 		this.codeRain = new CodeRain(50, 0.3);
 
-		/* Hook up drawing methods to the canvas view. */
-		this.canvasView.addRenderFunction(function () {
-
-			var context = scene.canvasView.getCanvas2DContext();
-			var width = scene.canvasView.getWidth();
-			var height = scene.canvasView.getHeight();
-
+		/* Hook up rendering methods to the canvas view. */
+		this.canvasView.setRender(function (context, width, height) {
 			context.clearRect(0, 0, width, height);
 			context.drawImage(scene.video, 0, 0, width, height);
 			scene.codeRain.draw(context, width, height, scene.asciifier.textWidth);
@@ -69,6 +64,7 @@ define([
 				scene.video.src = window.URL.createObjectURL(stream);
 				scene.codeRain.stop();
 				scene.video.play();
+				scene.requestCameraButton.addClass("hidden");
 			}, function (error) {
 				alert("Failed to request user camera.");
 			}, { video: true });
