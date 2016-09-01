@@ -1,40 +1,25 @@
 define(function () {
+	var documentMouseListeners = [];
 
-	var documentMoveListeners = [];
-	var documentMoveEvent = document.onmousemove || function () {};
-	var documentUpEvent = document.onmouseup || function () {};
+	document.addEventListener("mousemove", function (event) {
+		for (var i = 0; i < documentMouseListeners.length; i++) {
+			var mouseListener = documentMouseListeners[i];
 
-	document.onmousemove = function (event) {
-		if (event === null || event === undefined) {
-			var event = window.event;
-		}
-
-		documentMoveEvent(event);
-
-		for (var i = 0; i < documentMoveListeners.length; i++) {
-			var moveListener = documentMoveListeners[i];
-
-			if (event.target !== moveListener.mouse.listenElement) {
-				moveListener.moveEvent.call(moveListener.mouse, event);
+			if (event.target !== mouseListener.mouse.listenElement) {
+				mouseListener.moveEvent.call(mouseListener.mouse, event);
 			}
 		}
-	};
+	});
 
-	document.onmouseup = function (event) {
-		if (event == null || event === undefined) {
-			var event = window.event;
-		}
+	document.addEventListener("mouseup", function (event) {
+		for (var i = 0; i < documentMouseListeners.length; i++) {
+			var mouseListener = documentMouseListeners[i];
 
-		documentUpEvent(event);
-
-		for (var i = 0; i < documentMoveListeners.length; i++) {
-			var moveListener = documentMoveListeners[i];
-
-			if (event.target !== moveListener.mouse.listenElement) {
-				moveListener.upEvent.call(moveListener.mouse, event);
+			if (event.target !== mouseListener.mouse.listenElement) {
+				mouseListener.upEvent.call(mouseListener.mouse, event);
 			}
 		}
-	};
+	});
 
 	function getOffsetPosition (domElement) {
 		var elementRect = domElement.getBoundingClientRect();
@@ -45,7 +30,6 @@ define(function () {
 	};
 
 	return function (container) {
-
 		var mouse = this;
 
 		/* Time delay determined to be a mouse click, by default is 0.15 second. */
@@ -110,7 +94,6 @@ define(function () {
 
 		/** Update the Position of the mouse. */
 		this.updatePosition = function (newPosition) {
-
 			/* Get the current time. */
 			var currentTime = Date.now();
 
@@ -183,7 +166,6 @@ define(function () {
 
 		/** When the mouse comes into the parent container. */
 		this.overEventMethod = function (event) {
-
 			if (mouse.isTouching === false) {
 
 				/* Put mouse as a reference in the event. */
@@ -204,9 +186,7 @@ define(function () {
 
 		/** When the mouse moves out from the parent container. */
 		this.outEventMethod = function (event) {
-
 			if (mouse.isTouching === false) {
-
 				/* Put mouse as a reference in the event. */
 				event.mouse = mouse;
 
@@ -225,9 +205,7 @@ define(function () {
 
 		/** When the mouse is pressed. */
 		this.downEventMethod = function (event) {
-
 			if (mouse.isTouching === false) {
-
 				/* Put mouse as a reference in the event. */
 				event.mouse = mouse;
 
@@ -247,15 +225,13 @@ define(function () {
 				/* Perform action for down event. */
 				mouse.onMouseDown(event);
 
-				mouse.addDocumentMoveListener();
+				mouse.addDocumentMouseListener();
 			}
 		};
 
 		/** When the mouse's button is released. */
 		this.upEventMethod = function (event) {
-
 			if (mouse.isTouching === false) {
-
 				/* Put mouse as a reference in the event. */
 				event.mouse = mouse;
 
@@ -278,15 +254,13 @@ define(function () {
 				/* Perform action for up event. */
 				mouse.onMouseUp(event);
 
-				mouse.removeDocumentMoveListener();
+				mouse.removeDocumentMouseListener();
 			}
 		};
 
 		/** When the mouse is moving. */
 		this.moveEventMethod = function (event) {
-
 			if (mouse.isTouching === false) {
-
 				/* Put mouse as a reference in the event. */
 				event.mouse = mouse;
 
@@ -310,9 +284,7 @@ define(function () {
 
 		/** When the mouse has stop moving in the container. */
 		this.stopEventMethod = function (event) {
-
 			if (mouse.isTouching === false) {
-
 				/* Put mouse as a reference in the event. */
 				event.mouse = mouse;
 
@@ -327,9 +299,7 @@ define(function () {
 
 		/** When the mouse clicks. */
 		this.clickEventMethod = function (event) {
-
 			if (mouse.isTouching === false) {
-
 				/* Put mouse as a reference in the event. */
 				event.mouse = mouse;
 
@@ -344,7 +314,6 @@ define(function () {
 
 		/** When a contact is made on the touch surface. */
 		this.touchStartMethod = function (event) {
-
 			mouse.isTouching = true;
 
 			/* Put mouse as a reference in the event. */
@@ -369,7 +338,6 @@ define(function () {
 
 		/** When a contact is remove on the touch surface. */
 		this.touchEndMethod = function (event) {
-
 			/* Put mouse as a reference in the event. */
 			event.mouse = mouse;
 
@@ -397,7 +365,6 @@ define(function () {
 
 		/** When a touch point moves across the touch surface. */
 		this.touchMoveMethod = function (event) {
-
 			mouse.isTouching = true;
 
 			/* Put mouse as a reference in the event. */
@@ -422,7 +389,6 @@ define(function () {
 
 		/** When a contact enters the bound-to element on the touch surface. */
 		this.touchEnterMethod = function (event) {
-
 			mouse.isTouching = true;
 
 			/* Put mouse as a reference in the event. */
@@ -442,7 +408,6 @@ define(function () {
 
 		/** When a contact leaves the bound-to element on the touch surface. */
 		this.touchLeaveMethod = function (event) {
-
 			/* Put mouse as a reference in the event. */
 			event.mouse = mouse;
 
@@ -463,7 +428,6 @@ define(function () {
 		/** When a contact gets cancelled. This can occur if the user has moved
 		 *	the touch point outside the browser UI or into a plugin or if an alert modal pops up. */
 		this.touchCancelMethod = function (event) {
-
 			/* Put mouse as a reference in the event. */
 			event.mouse = mouse;
 
@@ -481,28 +445,21 @@ define(function () {
 			setTimeout(function () { mouse.isTouching = false; }, 0);
 		};
 
-		this.addDocumentMoveListener = function () {
-			mouse.documentMoveListener = { mouse: mouse, moveEvent: mouse.moveEventMethod, upEvent: mouse.upEventMethod };
-			documentMoveListeners.push(mouse.documentMoveListener);
+		this.addDocumentMouseListener = function () {
+			mouse.documentMouseListener = { mouse: mouse, moveEvent: mouse.moveEventMethod, upEvent: mouse.upEventMethod };
+			documentMouseListeners.push(mouse.documentMouseListener);
 		};
 
-		this.removeDocumentMoveListener = function () {
-			for (var i = documentMoveListeners.length - 1; i >= 0; i--) {
-				if (documentMoveListeners[i] === mouse.documentMoveListener) {
-					documentMoveListeners.splice(i, 1);
+		this.removeDocumentMouseListener = function () {
+			for (var i = documentMouseListeners.length - 1; i >= 0; i--) {
+				if (documentMouseListeners[i] === mouse.documentMouseListener) {
+					documentMouseListeners.splice(i, 1);
 				}
 			}
 		};
 
-		/** When the mouse is outside of the target element and a mouse's button is released. */
-		this.documentUpMethod = function (event) {
-			/* Update the mouse down flag. */
-			mouse.isMouseDown = false;
-		};
-
 		/** Add a mouse listener to the mouse. */
 		this.addMouseListener = function (mouseListener) {
-
 			/* Check if the input object is an instance of MouseListener. */
 			if (mouseListener.onMouseOver && mouseListener.onMouseOut && mouseListener.onMouseDown && mouseListener.onMouseUp &&
 				mouseListener.onMouseMove && mouseListener.onMouseStop && mouseListener.onMouseClick) {
@@ -512,7 +469,6 @@ define(function () {
 
 		/** Remove a mouse listener from the mouse. */
 		this.removeMouseListener = function (mouseListener) {
-
 			/* Check if the input object is an instance of MouseListener. */
 			if (mouseListener.onMouseOver && mouseListener.onMouseOut && mouseListener.onMouseDown && mouseListener.onMouseUp &&
 				mouseListener.onMouseMove && mouseListener.onMouseStop && mouseListener.onMouseClick) {
@@ -528,12 +484,10 @@ define(function () {
 
 		/** Append the mouse to the a DOM element and event functions to it. */
 		this.attachToElement = function (element) {
-
 			/* Store a reference of the DOM element. */
 			mouse.listenElement = element;
 
 			/* Engage the essential mouse events to each corresponding handler. */
-			document.documentElement.addEventListener("mouseup", mouse.documentUpMethod, false);
 			mouse.listenElement.addEventListener("mouseover", mouse.overEventMethod, false);
 			mouse.listenElement.addEventListener("mouseout", mouse.outEventMethod, false);
 			mouse.listenElement.addEventListener("mousedown", mouse.downEventMethod, false);
@@ -550,10 +504,7 @@ define(function () {
 
 		/** Disengage the mouse from DOM element and event functions from it. */
 		this.detachFromElement = function () {
-
 			/* Disengage all the mouse events from each corresponding handler. */
-			document.documentElement.removeEventListener("mouseup", mouse.documentUpMethod, false);
-
 			if (mouse.listenElement !== null && mouse.listenElement !== undefined) {
 				mouse.listenElement.removeEventListener("mouseover", mouse.overEventMethod, false);
 				mouse.listenElement.removeEventListener("mouseout", mouse.outEventMethod, false);

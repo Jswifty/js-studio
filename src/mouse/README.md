@@ -9,14 +9,14 @@ It also captures details of the input over time in terms of location and motion.
 /* Get the container for the mouse. */
 var Container = document.getElementById("Container");
 
-/* Create a mouse instance, with the element as its container. 
+/* Create a mouse instance, with the element as its container.
  * This is to allow the mouse to monitor all mouse events from the container. */
 var mouse = new Mouse(Container);
 ```
 
-## Mouseistener
-```Mouseistener``` is an object class which handles events triggered from ```Mouse```.
-Each instance of ```Mouseistener``` is required to be added into a ```Mouse``` object.
+## MouseListener
+```MouseListener``` is an object class which handles events triggered from ```Mouse```.
+Each instance of ```MouseListener``` is required to be added into a ```Mouse``` object.
 
 ## Usage
 ```javascript
