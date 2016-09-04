@@ -44,27 +44,27 @@ define([
         domElement.mouse = new Mouse(domElement);
 
         domElement.mouseListener = new MouseListener();
-        domElement.mouseListener.onMouseDown = function (event) {
+        domElement.mouseListener.onMouseDown(function (event) {
           for (var i = 0; i < domElement.mouseDownListeners.length; i++) {
             domElement.mouseDownListeners[i](event);
           }
-        };
-        domElement.mouseListener.onMouseUp = function (event) {
+        });
+        domElement.mouseListener.onMouseUp(function (event) {
           for (var i = 0; i < domElement.mouseUpListeners.length; i++) {
             domElement.mouseUpListeners[i](event);
           }
 
-          if (event.which === 1) {
+          if (event.mouse.isLeftButton === true) {
             for (var i = 0; i < domElement.mouseClickListeners.length; i++) {
               domElement.mouseClickListeners[i](event);
             }
-          } else if (event.which === 3) {
+          } else if (event.mouse.isRightButton === true) {
             for (var i = 0; i < domElement.mouseRightClickListeners.length; i++) {
               domElement.mouseRightClickListeners[i](event);
             }
           }
-        };
-        domElement.mouseListener.onMouseMove = function (event) {
+        });
+        domElement.mouseListener.onMouseMove(function (event) {
           for (var i = 0; i < domElement.mouseMoveListeners.length; i++) {
             domElement.mouseMoveListeners[i](event);
           }
@@ -74,17 +74,17 @@ define([
               domElement.mouseDragListeners[j](event);
             }
           }
-        };
-        domElement.mouseListener.onMouseOut = function (event) {
+        });
+        domElement.mouseListener.onMouseOut(function (event) {
           for (var i = 0; i < domElement.mouseOutListeners.length; i++) {
             domElement.mouseOutListeners[i](event);
           }
-        };
-        domElement.mouseListener.onMouseOver = function (event) {
+        });
+        domElement.mouseListener.onMouseOver(function (event) {
           for (var i = 0; i < domElement.mouseOverListeners.length; i++) {
             domElement.mouseOverListeners[i](event);
           }
-        };
+        });
 
         domElement.mouse.addMouseListener(domElement.mouseListener);
       }
@@ -92,8 +92,8 @@ define([
 
     function addKeyListener () {
       if (domElement.keyboard === undefined) {
-        domElement.tabIndex = domElement.currentTabIndex;
-        domElement.currentTabIndex++;
+        domElement.tabIndex = currentTabIndex;
+        currentTabIndex++;
 
         domElement.keyDownListeners = [];
         domElement.keyUpListeners = [];
@@ -101,16 +101,16 @@ define([
         domElement.keyboard = new Keyboard(domElement);
 
         domElement.keyListener = new KeyListener();
-        domElement.keyListener.onKeyDown = function (event) {
+        domElement.keyListener.onKeyDown(function (event) {
           for (var i = 0; i < domElement.keyDownListeners.length; i++) {
             domElement.keyDownListeners[i](event);
           }
-        };
-        domElement.keyListener.onKeyUp = function (event) {
+        });
+        domElement.keyListener.onKeyUp(function (event) {
           for (var i = 0; i < domElement.keyUpListeners.length; i++) {
             domElement.keyUpListeners[i](event);
           }
-        };
+        });
 
         domElement.keyboard.addKeyListener(domElement.keyListener);
       }

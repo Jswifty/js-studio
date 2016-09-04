@@ -1,85 +1,49 @@
 define(function () {
-	
+
 	return function () {
-	
 		var mouseListener = this;
 
-		/* Mouse Buttons */
-		this.LEFT_BUTTON = 1;
-		this.MIDDLE_BUTTON = 2;
-		this.RIGHT_BUTTON = 3;
-		
-		/**** The following are all handler methods for overriding. ****/
+		this.overEvent = function (event) {};
+		this.outEvent = function (event) {};
+		this.downEvent = function (event) {};
+		this.upEvent = function (event) {};
+		this.moveEvent = function (event) {};
+		this.stopEvent = function (event) {};
+		this.clickEvent = function (event) {};
 
-		/** Perform action for over event */
-		this.onMouseOver = function (event) {
-			// console.log("mouse in");
-		};
-		
-		/** Perform action for out event */
-		this.onMouseOut = function (event) {
-			// console.log("mouse out");
-		};
-		
-		/** Perform action for down event */
-		this.onMouseDown = function (event) {
-			switch (event.which) {
-				case mouseListener.LEFT_BUTTON:
-					// console.log("mouse left button down ");
-					break;
-				case mouseListener.MIDDLE_BUTTON:
-					// console.log("mouse middle button down ");
-					break;
-				case mouseListener.RIGHT_BUTTON:
-					// console.log("mouse right button down ");
-					break;
-				default:
-					break;
-			}
+		/** Perform action for over event. */
+		this.onMouseOver = function (overEvent) {
+			mouseListener.overEvent = overEvent || mouseListener.overEvent;
 		};
 
-		/** Perform action for up event */
-		this.onMouseUp = function (event) {
-			switch (event.which) {
-				case mouseListener.LEFT_BUTTON:
-					// console.log("mouse left button up ");
-					break;
-				case mouseListener.MIDDLE_BUTTON:
-					// console.log("mouse middle button up ");
-					break;
-				case mouseListener.RIGHT_BUTTON:
-					// console.log("mouse right button up ");
-					break;
-				default:
-					break;
-			}
+		/** Perform action for out event. */
+		this.onMouseOut = function (outEvent) {
+			mouseListener.outEvent = outEvent || mouseListener.outEvent;
 		};
 
-		/** Perform action for move event */
-		this.onMouseMove = function (event) {
-			// console.log("mouse move));
-		};
-		
-		/** Perform action for stop event */
-		this.onMouseStop = function (event) {
-			// console.log("mouse stop");
+		/** Perform action for down event. */
+		this.onMouseDown = function (downEvent) {
+			mouseListener.downEvent = downEvent || mouseListener.downEvent;
 		};
 
-		/** Perform action for click event */
-		this.onMouseClick = function (event) {
-			switch (event.which) {
-				case mouseListener.LEFT_BUTTON:
-					// console.log(" left click on " + event.mouse.position.x + ", " + event.mouse.position.y);
-					break;
-				case mouseListener.MIDDLE_BUTTON:
-					// console.log(" middle click ");
-					break;
-				case mouseListener.RIGHT_BUTTON:
-					// console.log(" right click ");
-					break;
-				default:
-					break;
-			}
+		/** Perform action for up event. */
+		this.onMouseUp = function (upEvent) {
+			mouseListener.upEvent = upEvent || mouseListener.upEvent;
+		};
+
+		/** Perform action for move event. */
+		this.onMouseMove = function (moveEvent) {
+			mouseListener.moveEvent = moveEvent || mouseListener.moveEvent;
+		};
+
+		/** Perform action for stop event. */
+		this.onMouseStop = function (stopEvent) {
+			mouseListener.stopEvent = stopEvent || mouseListener.stopEvent;
+		};
+
+		/** Perform action for click event. */
+		this.onMouseClick = function (clickEvent) {
+			mouseListener.clickEvent = clickEvent || mouseListener.clickEvent;
 		};
 	};
 });

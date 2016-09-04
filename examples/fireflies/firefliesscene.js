@@ -14,7 +14,6 @@ define([
 	CSSLoader.load(currentDirectory + "firefliesscene.css");
 
 	return function (container) {
-
 		var scene = this;
 
 		/* Apply the scene's styling onto the container. */
@@ -43,7 +42,6 @@ define([
 		}
 
 		this.addMouseListener = function (container) {
-
 			if (scene.mouse && scene.mouseListener) {
 				scene.mouse.removeMouseListener(scene.mouseListener);
 			}
@@ -51,81 +49,67 @@ define([
 			scene.mouse = new Mouse(container);
 
 			scene.mouseListener = new MouseListener();
-			scene.mouseListener.onMouseOver = scene.onMouseOver;
-			scene.mouseListener.onMouseOut = scene.onMouseOut;
-			scene.mouseListener.onMouseMove = scene.onMouseMove;
-			scene.mouseListener.onMouseDown = scene.onMouseDown;
-			scene.mouseListener.onMouseUp = scene.onMouseUp;
-			scene.mouseListener.onMouseClick = scene.onMouseClick;
-			scene.mouseListener.onMouseStop = scene.onMouseStop;
-
-			scene.mouse.addMouseListener(scene.mouseListener);
-		};
-
-		this.onMouseOver = function (event) {
-			scene.fire.onMouseOver(event);
-
-			for (var i = 0; i < scene.firefliesLayers.length; i++) {
-				scene.firefliesLayers[i].onMouseOver(event);
-			}
-		};
-
-		this.onMouseOut = function (event) {
-			scene.fire.onMouseOut(event);
-
-			for (var i = 0; i < scene.firefliesLayers.length; i++) {
-				scene.firefliesLayers[i].onMouseOut(event);
-			}
-		};
-
-		this.onMouseMove = function (event) {
-			scene.fire.onMouseMove(event);
-
-			for (var i = 0; i < scene.firefliesLayers.length; i++) {
-				scene.firefliesLayers[i].onMouseMove(event);
-			}
-
-			if (event.mouse.isMouseDown === true) {
-				scene.checkFirefliesLayers();
-			}
-		};
-
-		this.onMouseDown = function (event) {
-			if (event.which === scene.mouseListener.LEFT_BUTTON || event.mouse.isTouching) {
-				scene.fire.onMouseDown(event);
+			scene.mouseListener.onMouseOver(function (event) {
+				scene.fire.onMouseOver(event);
 
 				for (var i = 0; i < scene.firefliesLayers.length; i++) {
-					scene.firefliesLayers[i].onMouseDown(event);
+					scene.firefliesLayers[i].onMouseOver(event);
+				}
+			});
+			scene.mouseListener.onMouseOut(function (event) {
+				scene.fire.onMouseOut(event);
+
+				for (var i = 0; i < scene.firefliesLayers.length; i++) {
+					scene.firefliesLayers[i].onMouseOut(event);
+				}
+			});
+			scene.mouseListener.onMouseMove(function (event) {
+				scene.fire.onMouseMove(event);
+
+				for (var i = 0; i < scene.firefliesLayers.length; i++) {
+					scene.firefliesLayers[i].onMouseMove(event);
 				}
 
-				scene.checkFirefliesLayers();
-			}
-		};
+				if (event.mouse.isMouseDown === true) {
+					scene.checkFirefliesLayers();
+				}
+			});
+			scene.mouseListener.onMouseDown(function (event) {
+				if (event.mouse.isLeftButton === true || event.mouse.isTouching === true) {
+					scene.fire.onMouseDown(event);
 
-		this.onMouseUp = function (event) {
-			scene.fire.onMouseUp(event);
+					for (var i = 0; i < scene.firefliesLayers.length; i++) {
+						scene.firefliesLayers[i].onMouseDown(event);
+					}
 
-			for (var i = 0; i < scene.firefliesLayers.length; i++) {
-				scene.firefliesLayers[i].onMouseUp(event);
-			}
+					scene.checkFirefliesLayers();
+				}
+			});
+			scene.mouseListener.onMouseUp(function (event) {
+				scene.fire.onMouseUp(event);
 
-			scene.checkFirefliesLayers(scene.performingTime);
-		};
+				for (var i = 0; i < scene.firefliesLayers.length; i++) {
+					scene.firefliesLayers[i].onMouseUp(event);
+				}
 
-		this.onMouseClick = function (event) {
-			scene.fire.onMouseClick(event);
+				scene.checkFirefliesLayers(scene.performingTime);
+			});
+			scene.mouseListener.onMouseClick(function (event) {
+				scene.fire.onMouseClick(event);
 
-			for (var i = 0; i < scene.firefliesLayers.length; i++) {
-				scene.firefliesLayers[i].onMouseClick(event);
-			}
-		};
+				for (var i = 0; i < scene.firefliesLayers.length; i++) {
+					scene.firefliesLayers[i].onMouseClick(event);
+				}
+			});
+			scene.mouseListener.onMouseStop(function (event) {
+				scene.fire.onMouseStop(event);
 
-		this.onMouseStop = function (event) {
-			scene.fire.onMouseStop(event);
+				for (var i = 0; i < scene.firefliesLayers.length; i++) {
+					scene.firefliesLayers[i].onMouseStop(event);
+				}
+			});
 
-			for (var i = 0; i < scene.firefliesLayers.length; i++) {
-				scene.firefliesLayers[i].onMouseStop(event);
-			}
+			scene.mouse.addMouseListener(scene.mouseListener);
 		};
 
 		this.startScene = function () {

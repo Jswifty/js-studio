@@ -1,4 +1,10 @@
 define(function () {
+
+	/* Mouse Buttons */
+	var LEFT_BUTTON = 1;
+	var MIDDLE_BUTTON = 2;
+	var RIGHT_BUTTON = 3;
+
 	var documentMouseListeners = [];
 
 	document.addEventListener("mousemove", function (event) {
@@ -118,56 +124,55 @@ define(function () {
 		/** Perform action for over event */
 		this.onMouseOver = function (event) {
 			for (var i = 0; i < mouse.listeners.length; i++) {
-				mouse.listeners[i].onMouseOver(event);
+				mouse.listeners[i].overEvent(event);
 			}
 		};
 
 		/** Perform action for out event */
 		this.onMouseOut = function (event) {
 			for (var i = 0; i < mouse.listeners.length; i++) {
-				mouse.listeners[i].onMouseOut(event);
+				mouse.listeners[i].outEvent(event);
 			}
 		};
 
 		/** Perform action for down event */
 		this.onMouseDown = function (event) {
 			for (var i = 0; i < mouse.listeners.length; i++) {
-				mouse.listeners[i].onMouseDown(event);
+				mouse.listeners[i].downEvent(event);
 			}
 		};
 
 		/** Perform action for up event */
 		this.onMouseUp = function (event) {
 			for (var i = 0; i < mouse.listeners.length; i++) {
-				mouse.listeners[i].onMouseUp(event);
+				mouse.listeners[i].upEvent(event);
 			}
 		};
 
 		/** Perform action for move event */
 		this.onMouseMove = function (event) {
 			for (var i = 0; i < mouse.listeners.length; i++) {
-				mouse.listeners[i].onMouseMove(event);
+				mouse.listeners[i].moveEvent(event);
 			}
 		};
 
 		/** Perform action for stop event */
 		this.onMouseStop = function (event) {
 			for (var i = 0; i < mouse.listeners.length; i++) {
-				mouse.listeners[i].onMouseStop(event);
+				mouse.listeners[i].stopEvent(event);
 			}
 		};
 
 		/** Perform action for click event */
 		this.onMouseClick = function (event) {
 			for (var i = 0; i < mouse.listeners.length; i++) {
-				mouse.listeners[i].onMouseClick(event);
+				mouse.listeners[i].clickEvent(event);
 			}
 		};
 
 		/** When the mouse comes into the parent container. */
 		this.overEventMethod = function (event) {
 			if (mouse.isTouching === false) {
-
 				/* Put mouse as a reference in the event. */
 				event.mouse = mouse;
 
@@ -209,6 +214,11 @@ define(function () {
 				/* Put mouse as a reference in the event. */
 				event.mouse = mouse;
 
+				/* Populate flags indicating which buton is pressed. */
+				mouse.isLeftButton = event.which === LEFT_BUTTON;
+				mouse.isMiddleButton = event.which === MIDDLE_BUTTON;
+				mouse.isRightButton = event.which === RIGHT_BUTTON;
+
 				/* Skip the default behaviours upon this event. */
 				if (mouse.preventDefault) {
 					event.preventDefault();
@@ -234,6 +244,11 @@ define(function () {
 			if (mouse.isTouching === false) {
 				/* Put mouse as a reference in the event. */
 				event.mouse = mouse;
+
+				/* Populate flags indicating which buton is pressed. */
+				mouse.isLeftButton = event.which === LEFT_BUTTON;
+				mouse.isMiddleButton = event.which === MIDDLE_BUTTON;
+				mouse.isRightButton = event.which === RIGHT_BUTTON;
 
 				/* Skip the default behaviours upon this event. */
 				if (mouse.preventDefault) {
@@ -302,6 +317,11 @@ define(function () {
 			if (mouse.isTouching === false) {
 				/* Put mouse as a reference in the event. */
 				event.mouse = mouse;
+
+				/* Populate flags indicating which buton is pressed. */
+				mouse.isLeftButton = event.which === LEFT_BUTTON;
+				mouse.isMiddleButton = event.which === MIDDLE_BUTTON;
+				mouse.isRightButton = event.which === RIGHT_BUTTON;
 
 				/* Update the mouse relative position. */
 				var offsetPosition = getOffsetPosition(mouse.listenElement);
@@ -461,8 +481,8 @@ define(function () {
 		/** Add a mouse listener to the mouse. */
 		this.addMouseListener = function (mouseListener) {
 			/* Check if the input object is an instance of MouseListener. */
-			if (mouseListener.onMouseOver && mouseListener.onMouseOut && mouseListener.onMouseDown && mouseListener.onMouseUp &&
-				mouseListener.onMouseMove && mouseListener.onMouseStop && mouseListener.onMouseClick) {
+			if (mouseListener.overEvent && mouseListener.outEvent && mouseListener.downEvent && mouseListener.upEvent &&
+				mouseListener.moveEvent && mouseListener.stopEvent && mouseListener.clickEvent) {
 				mouse.listeners.push(mouseListener);
 			}
 		};
@@ -470,8 +490,8 @@ define(function () {
 		/** Remove a mouse listener from the mouse. */
 		this.removeMouseListener = function (mouseListener) {
 			/* Check if the input object is an instance of MouseListener. */
-			if (mouseListener.onMouseOver && mouseListener.onMouseOut && mouseListener.onMouseDown && mouseListener.onMouseUp &&
-				mouseListener.onMouseMove && mouseListener.onMouseStop && mouseListener.onMouseClick) {
+			if (mouseListener.overEvent && mouseListener.outEvent && mouseListener.downEvent && mouseListener.upEvent &&
+				mouseListener.moveEvent && mouseListener.stopEvent && mouseListener.clickEvent) {
 
 				/* Attempt to find the index of the given listener and then remove it. */
 				for (var i = mouse.listeners.length - 1; i >= 0; i--) {

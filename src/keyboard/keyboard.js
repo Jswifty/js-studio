@@ -1,31 +1,39 @@
 define(function () {
-	var documentKeyListeners = [];
 
-  document.addEventListener("keydown", function (event) {
-    for (var i = 0; i < documentKeyListeners.length; i++) {
-      var keyListener = documentKeyListeners[i];
+	function addKeyCode (keyCodes, keyCode) {
+		for (var i = 0; i < keyCodes.length; i++) {
+			if (keyCodes[i] === keyCode) {
+				return;
+			}
+		}
 
-      if (event.target !== keyListener.keyboard.listenElement) {
-        keyListener.moveEvent.call(keyListener.keyboard, event);
-      }
-    }
-  });
+		keyCodes.push(keyCode);
+	};
 
-  document.addEventListener("keyup", function (event) {
-    for (var i = 0; i < documentKeyListeners.length; i++) {
-      var keyListener = documentKeyListeners[i];
-
-      if (event.target !== keyListener.keyboard.listenElement) {
-        keyListener.upEvent.call(keyListener.keyboard, event);
-      }
-    }
-  });
+	function removeKeyCode (keyCodes, keyCode) {
+		for (var i = keyCodes.length - 1; i >= 0; i--) {
+			if (keyCodes[i] === keyCode) {
+				keyCodes.splice(i, 1);
+			}
+		}
+	};
 
   return function (container) {
     var keyboard = this;
 
+		this.UP = 38;
+		this.DOWN = 40;
+		this.LEFT = 37;
+		this.RIGHT = 39;
+
     /* Whether the keyboard skips the default behaviours upon the listen element. */
 		this.preventDefault = false;
+
+		/* The list of key codes of the keys that this keyboard has been pressed. */
+		this.keyCodesPressed = [];
+
+		/* Whether the keyboard skips any further key down event after the first one. */
+		this.skipRepeatKeyDownEvent = false;
 
 		/* The list of listeners this keyboard is appended to. Each keyboard event will trigger the corresponding method of each listeners. */
 		this.listeners = [];
@@ -33,14 +41,14 @@ define(function () {
     /** Perform action for key press event */
     this.onKeyDown = function (event) {
       for (var i = 0; i < keyboard.listeners.length; i++) {
-        keyboard.listeners[i].onKeyDown(event);
+        keyboard.listeners[i].downEvent(event);
       }
     };
 
     /** Perform action for key up event */
     this.onKeyUp = function (event) {
       for (var i = 0; i < keyboard.listeners.length; i++) {
-        keyboard.listeners[i].onKeyUp(event);
+        keyboard.listeners[i].upEvent(event);
       }
     };
 
@@ -48,6 +56,9 @@ define(function () {
 		this.downEventMethod = function (event) {
       /* Put keyboard as a reference in the event. */
       event.keyboard = keyboard;
+
+			keyboard.keyCode = event.which || event.keyCode;
+			addKeyCode(keyboard.keyCodesPressed, keyboard.keyCode);
 
       /* Perform action for down event. */
       keyboard.onKeyDown(event);
@@ -58,14 +69,25 @@ define(function () {
       /* Put keyboard as a reference in the event. */
       event.keyboard = keyboard;
 
+			keyboard.keyCode = event.which || event.keyCode;
+			removeKeyCode(keyboard.keyCodesPressed, keyboard.keyCode);
+
       /* Perform action for down event. */
       keyboard.onKeyUp(event);
     };
 
+		this.hasKeyPressed = function (keyCode) {
+			return contains(keyboard.keyCodesPressed, keyCode);
+		};
+
+		this.getLastKeyPressed = function () {
+			return keyboard.keyCodesPressed.length > 0 ? keyboard.keyCodesPressed[keyboard.keyCodesPressed.length - 1] : null;
+		};
+
     /** Add a key listener to the keyboard. */
     this.addKeyListener = function (keyListener) {
       /* Check if the input object is an instance of KeyListener. */
-      if (keyListener.onKeyDown && keyListener.onKeyUp) {
+      if (keyListener.downEvent && keyListener.upEvent) {
         keyboard.listeners.push(keyListener);
       }
     };
@@ -73,7 +95,7 @@ define(function () {
     /** Remove a key listener from the keyboard. */
     this.removeKeyListener = function (keyListener) {
       /* Check if the input object is an instance of KeyListener. */
-      if (keyListener.onKeyDown && keyListener.onKeyUp) {
+      if (keyListener.downEvent && keyListener.upEvent) {
 
         /* Attempt to find the index of the given listener and then remove it. */
         for (var i = keyboard.listeners.length - 1; i >= 0; i--) {
@@ -109,6 +131,11 @@ define(function () {
 		/** Toggle value for keyboard prevent default on all events. */
 		this.setPreventDefault = function (preventDefault) {
 			keyboard.preventDefault = preventDefault;
+		};
+
+		/** Toggle value for keyboard skipping further key down events. */
+		this.setSkipRepeatKeyDownEvent = function (skipRepeatKeyDownEvent) {
+			keyboard.skipRepeatKeyDownEvent = skipRepeatKeyDownEvent;
 		};
 
 		/* Append the canvas to the DIV container. */

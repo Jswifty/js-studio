@@ -1,7 +1,8 @@
 define([
 	"../animator/animator",
-	"../animator/animatorlistener"
-], function (Animator, AnimatorListener) {
+	"../animator/animatorlistener",
+	"../domelement/domelement"
+], function (Animator, AnimatorListener, DOMElement) {
 
 	return function (container, animator) {
 
@@ -11,9 +12,8 @@ define([
 		this.container = container;
 
 		/* Create the canvas. */
-		this.canvas = document.createElement("canvas");
+		this.canvas = new DOMElement("canvas", { html: "Your browser does not support HTML5 canvas." });
 		this.canvas.style.position = "absolute";
-		this.canvas.innerHTML = "Your browser does not support HTML5 canvas.";
 
 		/* Create an Animator instance. */
 		this.animator = animator || new Animator();

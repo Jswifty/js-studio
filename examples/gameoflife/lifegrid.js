@@ -61,14 +61,14 @@ define([
 
 		/* Create a Mouse and setup a mouse listener to map mouse behaviour to the life grid. */
 		this.mouse = new Mouse(this.canvasView.canvas);
-		this.mouseListener = new MouseListener();
-		this.mouseListener.onMouseOver = this.mouseListener.onMouseOut = this.mouseListener.onMouseMove = this.mouseListener.onMouseDown = function (event) {
+
+		function mouseEvent (event) {
 			var mouse = event.mouse;
 			var position = mouse.position;
 
 			var shadawCells = [];
 
-			if (position && position.x && position.y) {
+			if (mouse.isLeftButton === true && position && position.x && position.y) {
 				var pointX = Math.floor(position.x / lifeGrid.canvasView.getWidth() * lifeGrid.columns);
 				var pointY = Math.floor(position.y / lifeGrid.canvasView.getHeight() * lifeGrid.rows);
 
@@ -89,6 +89,13 @@ define([
 
 			lifeGrid.setShadowCells(shadawCells);
 		};
+
+		this.mouseListener = new MouseListener();
+		this.mouseListener.onMouseOver(mouseEvent);
+		this.mouseListener.onMouseOut(mouseEvent);
+		this.mouseListener.onMouseMove(mouseEvent);
+		this.mouseListener.onMouseDown(mouseEvent);
+
 		this.mouse.addMouseListener(this.mouseListener);
 
 		this.start = function () {
