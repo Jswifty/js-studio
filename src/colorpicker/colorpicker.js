@@ -72,6 +72,8 @@ define([
 		var hueBanner = new DOMElement("div", { class: "hueBanner" });
 		colorPickerPanel.appendChild(hueBanner);
 		function onHueChanged (percentage) {
+			percentage = Math.max(0, Math.min(100, percentage));
+
 			var hueColor = ColorUtils.hsvToRGB(percentage / 100 * 360, 1, 1);
 
 			hueBannerThumb.style.top = percentage + "%";
@@ -85,7 +87,7 @@ define([
 
 			var bannerHeight = hueBanner.offsetHeight;
 			var position = event.mouse.position.y;
-			var percentage =  Math.max(0, Math.min(100, position / bannerHeight * 100));
+			var percentage = position / bannerHeight * 100;
 
 			onHueChanged(percentage);
 		};
@@ -109,6 +111,12 @@ define([
 		hueBanner.appendChild(hueBannerThumb);
 
 		var alphaBanner = new DOMElement("div", { class: "alphaBanner" });
+		function onAlphaChanged (percentage) {
+			percentage = Math.max(0, Math.min(100, percentage));
+
+			alphaBannerThumb.style.left = percentage + "%";
+			changeColor();
+		};
 		function alphaMouseEvent (event) {
 			if (event.which !== 1) {
 				return;
@@ -116,23 +124,20 @@ define([
 
 			var bannerWidth = alphaBanner.offsetWidth;
 			var position = event.mouse.position.x;
-			var percentage =  Math.max(0, Math.min(100, position / bannerWidth * 100));
+			var percentage = position / bannerWidth * 100;
 
-			alphaBannerThumb.style.left = percentage + "%";
-			changeColor();
+			onAlphaChanged(percentage);
 		};
 		function alphaKeyEvent (event) {
 			var keyCode = event.which || event.keyCode;
 
 			/* left key is pressed */
 			if (keyCode === 37) {
-				alphaBannerThumb.style.left = (parseInt(alphaBannerThumb.style.left) - 1) + "%";
-				changeColor();
+				onAlphaChanged(parseInt(alphaBannerThumb.style.left) - 1);
 			}
 			/* right key is pressed */
 			else if (keyCode === 39) {
-				alphaBannerThumb.style.left = (parseInt(alphaBannerThumb.style.left) + 1) + "%";
-				changeColor();
+				onAlphaChanged(parseInt(alphaBannerThumb.style.left) + 1);
 			}
 		};
 		alphaBanner.onMouseDown(alphaMouseEvent);

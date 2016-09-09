@@ -2,9 +2,8 @@ define([
   "js-studio/mouse/mouse",
   "js-studio/mouse/mouselistener",
   "js-studio/keyboard/keyboard",
-  "js-studio/keyboard/keylistener",
   "js-studio/classmanager/classmanager"
-], function (Mouse, MouseListener, Keyboard, KeyListener, ClassManager) {
+], function (Mouse, MouseListener, Keyboard, ClassManager) {
 
   var currentTabIndex = 1;
 
@@ -90,29 +89,12 @@ define([
       }
     };
 
-    function addKeyListener () {
+    function addKeyboard () {
       if (domElement.keyboard === undefined) {
         domElement.tabIndex = currentTabIndex;
         currentTabIndex++;
 
-        domElement.keyDownListeners = [];
-        domElement.keyUpListeners = [];
-
         domElement.keyboard = new Keyboard(domElement);
-
-        domElement.keyListener = new KeyListener();
-        domElement.keyListener.onKeyDown(function (event) {
-          for (var i = 0; i < domElement.keyDownListeners.length; i++) {
-            domElement.keyDownListeners[i](event);
-          }
-        });
-        domElement.keyListener.onKeyUp(function (event) {
-          for (var i = 0; i < domElement.keyUpListeners.length; i++) {
-            domElement.keyUpListeners[i](event);
-          }
-        });
-
-        domElement.keyboard.addKeyListener(domElement.keyListener);
       }
     };
 
@@ -159,13 +141,13 @@ define([
     };
 
     domElement.onKeyDown = function (keyDown) {
-      addKeyListener();
-      domElement.keyDownListeners.push(keyDown);
+      addKeyboard();
+      domElement.keyboard.onKeyDown(keyDown);
       return domElement;
     };
     domElement.onKeyUp = function (keyUp) {
-      addKeyListener();
-      domElement.keyUpListeners.push(keyUp);
+      addKeyboard();
+      domElement.keyboard.onKeyUp(keyUp);
       return domElement;
     };
 
