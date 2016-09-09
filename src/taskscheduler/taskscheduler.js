@@ -5,23 +5,24 @@ define(function () {
 		var taskScheduler = this;
 
 		/* The current task that the task scheuduler is running. */
-		this.currentTask = null;
+		taskScheduler.currentTask = null;
 
 		/* The last task of the task linked list. */
-		this.lastTask = null;
+		taskScheduler.lastTask = null;
 
 		/* The status of the task scheduler. */
-		this.isRunning = false;
-		this.progress = -1;
-		this.tasksTotal = 0;
+		taskScheduler.isRunning = false;
+		taskScheduler.progress = -1;
+		taskScheduler.tasksTotal = 0;
 
 		/* Whether a cancel request has be sent to stop it from running. */
-		this.requestCancel = false;
+		taskScheduler.requestCancel = false;
 
 		/* The list of listeners this task scheduler is appended to. Each task event will trigger the corresponding method of each listeners. */
-		this.listeners = [];
+		taskScheduler.taskStartEvents = [];
+		taskScheduler.finishEvents = [];
 
-		this.addTask = function (task) {
+		taskScheduler.addTask = function (task) {
 			/* Create a new instance of the task. */
 			var newTask = {
 				caller: task.caller || window,
@@ -44,10 +45,10 @@ define(function () {
 			/* Sum up the numebr of tasks. */
 			taskScheduler.tasksTotal++;
 
-			return this;
+			return taskScheduler;
 		}
 
-		this.run = function () {
+		taskScheduler.run = function () {
 			taskScheduler.isRunning = true;
 			taskScheduler.progress++;
 
@@ -65,7 +66,7 @@ define(function () {
 
 							task.params[task.callbackIndex] = (function () {
 								return function () {
-									callbackFunction.apply(this, arguments);
+									callbackFunction.apply(taskScheduler, arguments);
 									taskScheduler.runNextTask();
 								};
 							})();
@@ -80,7 +81,7 @@ define(function () {
 			}
 		};
 
-		this.runNextTask = function () {
+		taskScheduler.runNextTask = function () {
 			if (taskScheduler.currentTask !== null && taskScheduler.currentTask !== undefined) {
 				taskScheduler.currentTask = taskScheduler.currentTask.next;
 			}
@@ -89,11 +90,11 @@ define(function () {
 		};
 
 		/* Update the current status of the progress and the current task. */
-		this.updateStatus = function () {
+		taskScheduler.updateStatus = function () {
 			if (taskScheduler.currentTask !== null && taskScheduler.currentTask !== undefined) {
 				/* listener task event */
-				for (var i = 0; i < taskScheduler.listeners.length; i++) {
-					taskScheduler.listeners[i].onTaskStart(taskScheduler.currentTask, taskScheduler.progress, taskScheduler.tasksTotal);
+				for (var i = 0; i < taskScheduler.taskStartEvents.length; i++) {
+					taskScheduler.taskStartEvents[i](taskScheduler.currentTask, taskScheduler.progress, taskScheduler.tasksTotal);
 				}
 			} else {
 				taskScheduler.isRunning = false;
@@ -103,51 +104,30 @@ define(function () {
 				taskScheduler.tasksTotal = 0;
 
 				/* listener complete event */
-				for (var i = 0; i < taskScheduler.listeners.length; i++) {
-					taskScheduler.listeners[i].finishCallback();
+				for (var i = 0; i < taskScheduler.finishEvents.length; i++) {
+					taskScheduler.finishEvents[i]();
 				}
 			}
 		};
 
-		this.stop = function () {
+		taskScheduler.stop = function () {
 			taskScheduler.requestCancel = true;
 		};
 
-		this.cancel = function () {
+		taskScheduler.cancel = function () {
 			taskScheduler.currentTask = null;
 			taskScheduler.updateStatus();
 			taskScheduler.requestCancel = false;
 		};
 
-		/** Add a task scheduler listener to the task scheduler. */
-		this.addTaskSchedulerListener = function (taskSchedulerListener) {
-			if (taskSchedulerListener !== undefined &&
-				(typeof taskSchedulerListener.onTaskStart === "function" ||
-				 typeof taskSchedulerListener.finishCallback === "function")) {
-
-				/* Make sure the input object qualifies as an instance of TaskSchedulerListener. */
-				if (typeof taskSchedulerListener.onTaskStart !== "function") {
-					taskSchedulerListener.onTaskStart = function() {};
-				}
-
-				if (typeof taskSchedulerListener.finishCallback !== "function") {
-					taskSchedulerListener.finishCallback = function() {};
-				}
-
-				taskScheduler.listeners.push(taskSchedulerListener);
-			}
+		taskScheduler.onTaskStart = function (taskStartEvent) {
+			taskStartEvent = taskStartEvent || function () {};
+			taskScheduler.taskStartEvents.push(taskStartEvent);
 		};
 
-		/** Remove a task scheduler listener from the task scheduler. */
-		this.removeTaskSchedulerListener = function (taskSchedulerListener) {
-			/* Attempt to find the index of the given listener and then remove it. */
-			for (var i = taskScheduler.listeners.length - 1; i >= 0; i--) {
-				if (taskScheduler.listeners[i] === taskSchedulerListener) {
-					taskScheduler.listeners.splice(i, 1);
-				}
-			}
+		taskScheduler.onFinish = function (finishEvent) {
+			finishEvent = finishEvent || function () {};
+			taskScheduler.finishEvents.push(finishEvent);
 		};
-
-		this.addTaskSchedulerListener(listener);
 	};
 });
