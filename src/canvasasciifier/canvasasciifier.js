@@ -5,44 +5,38 @@ define(function () {
 		var asciifier = this;
 
 		/* Store the canvas element. */
-		this.canvas = canvas;
+		asciifier.canvas = canvas;
 
 		/* Parse the configurations from the parameter. */
 		config = config || {};
 
-		this.invert = config.invert || false;
-		this.asciiData = config.asciiData || [" ", ".", ",", ";", "|", "*", "%", "@", "X", "#", "W", "M"];
-		this.asciiIntervals = 255 / this.asciiData.length;
+		asciifier.invert = config.invert || false;
+		asciifier.asciiData = config.asciiData || [" ", ".", ",", ";", "|", "*", "%", "@", "X", "#", "W", "M"];
+		asciifier.asciiIntervals = 255 / asciifier.asciiData.length;
 
 		/* Create the pre text area. */
-		this.textpre = document.createElement("pre");
-		this.textpre.style.font = config.font || "bold 10px/7px Courier New, Courier, Andale Mono, monospace";
-		this.textpre.style.position = "absolute";
-		this.textpre.style.height = "auto";
-		this.textpre.style.width = "auto";
-		this.textpre.style.margin = "0px";
-		this.textpre.style.background = config.background || "none";
-		this.textpre.style.color = config.color || "black";
+		asciifier.textpre = document.createElement("pre");
+		asciifier.textpre.style.font = config.font || "bold 10px/7px Courier New, Courier, Andale Mono, monospace";
+		asciifier.textpre.style.position = "absolute";
+		asciifier.textpre.style.height = "auto";
+		asciifier.textpre.style.width = "auto";
+		asciifier.textpre.style.margin = "0px";
+		asciifier.textpre.style.background = config.background || "none";
+		asciifier.textpre.style.color = config.color || "black";
 
-		canvas.parentElement.appendChild(this.textpre);
+		canvas.parentElement.appendChild(asciifier.textpre);
 
 		/* Setup a 10 x 10 prea text area for calculating the true font size. */
-		this.dummyTextpre = document.createElement("pre");
-		this.dummyTextpre.style.font = config.font || "bold 10px/7px Courier New, Courier, Andale Mono, monospace";
-		this.dummyTextpre.style.position = "absolute";
-		this.dummyTextpre.style.visibility = "hidden";
-		this.dummyTextpre.innerHTML = "..........\n..........\n..........\n..........\n..........\n..........\n..........\n..........\n..........\n..........";
+		asciifier.dummyTextpre = document.createElement("pre");
+		asciifier.dummyTextpre.style.font = config.font || "bold 10px/7px Courier New, Courier, Andale Mono, monospace";
+		asciifier.dummyTextpre.style.position = "absolute";
+		asciifier.dummyTextpre.style.visibility = "hidden";
+		asciifier.dummyTextpre.innerHTML = "..........\n..........\n..........\n..........\n..........\n..........\n..........\n..........\n..........\n..........";
 
-		canvas.parentElement.appendChild(this.dummyTextpre);
-
-		/** Perform action for window resize event. */
-		this.onResize = function () {
-			asciifier.update();
-		};
+		canvas.parentElement.appendChild(asciifier.dummyTextpre);
 
 		/** Perform an update on all the ascii text area by capturing the canvas' image data. */
-		this.update = function () {
-
+		asciifier.update = function () {
 			asciifier.textWidth = asciifier.textWidth || asciifier.dummyTextpre.offsetWidth / 10;
 			asciifier.textHeight = asciifier.textHeight || asciifier.dummyTextpre.offsetHeight / 10;
 
@@ -89,15 +83,15 @@ define(function () {
 		};
 
 		/* Fetch resize method of the canvas and window. */
-		canvas.addEventListener("resize", asciifier.onResize);
-		window.addEventListener("resize", asciifier.onResize);
+		canvas.addEventListener("resize", asciifier.update);
+		window.addEventListener("resize", asciifier.update);
 
 		/* Update the pre text area dimensions to fit the given container. */
-		this.onResize();
+		asciifier.update();
 
 		/* If the canvas is animating by an animator, plug in the update function to the rendering function. */
 		if (animator !== undefined && animator.addRenderFunction !== undefined) {
-			animator.addRenderFunction(this, this.update);
+			animator.addRenderFunction(asciifier, asciifier.update);
 		}
 	};
 });

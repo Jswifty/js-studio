@@ -32,69 +32,69 @@ define(function () {
 
 		/* The rendering references is an map object consists of list of literal keys (renderIDs) mapped
 		 * to an object and a corresponding rendering function. */
-		this.renderReferences = {};
+		animator.renderReferences = {};
 
 		/* The number of render IDs being generated and registered. */
-		this.renderIDCount = 0;
+		animator.renderIDCount = 0;
 
 		/* The required frame rate of the animation in terms of frames per seconds, by default is 60 FPS. */
-		this.FPS = 60;
+		animator.FPS = 60;
 
 		/* The minimum frame rate available for animation, by default is 10 FPS. */
-		this.minFPS = 10;
+		animator.minFPS = 10;
 
 		/* The maximum frame rate available for animation, by default is 60 FPS. */
-		this.maxFPS = 60;
+		animator.maxFPS = 60;
 
 		/* The maximum time difference allowed for animation, which is 0.1 second. */
-		this.maxTimeDiff = 1 / this.minFPS;
+		animator.maxTimeDiff = 1 / animator.minFPS;
 
 		/* The minimum time difference allowed for animation, which is roughly 0.017 second. */
-		this.minTimeDiff = 1 / this.maxFPS;
+		animator.minTimeDiff = 1 / animator.maxFPS;
 
 		/* The actual frame rate of the animation in terms of frames per seconds. */
-		this.actualFPS = 0;
+		animator.actualFPS = 0;
 
 		/* The starting time of the animation. */
-		this.startTime = 0;
+		animator.startTime = 0;
 
 		/* The previous time which the animate functions were called. */
-		this.previousAnimateTime = 0;
+		animator.previousAnimateTime = 0;
 
 		/* The current time which the animate functions are called. */
-		this.newAnimateTime = 0;
+		animator.newAnimateTime = 0;
 
 		/* The flag for determining whether the animator is paused. */
-		this.isPaused = false;
+		animator.isPaused = false;
 
 		/* The flag for determining whether the animator is commanded to pause externally. */
-		this.isPauseRequested = false;
+		animator.isPauseRequested = false;
 
 		/* The flag for determining whether the animations are allowed to exceed the FPS range. */
-		this.allowExceedFPSRange = false;
+		animator.allowExceedFPSRange = false;
 
 		/* The flag for determining whether the animations are to be time based,
 		 * which means each render is based on the time difference from the previous render.
 		 * If the animations are set not to be time-based, then the render function will always
 		 * have the standard FPS time difference as the parameter value. */
-		this.isTimeBased = true;
+		animator.isTimeBased = true;
 
 		/* The flag for determining whether the animations should be paused when the browser window loses focus. */
-		this.pauseOnHidden = false;
+		animator.pauseOnHidden = false;
 
 		/* The flag for determining whether the animations should be resume when the browser window gains focus. */
-		this.resumeOnShown = false;
+		animator.resumeOnShown = false;
 
 		/* The flag for determining whether the animations is currently requesting in order to avoid multiple requests. */
-		this.requesting = false;
+		animator.requesting = false;
 
-		/* The list of listeners this animator is appended to. Each animator event will trigger the corresponding method of each listeners. */
-		this.listeners = [];
+		/* The list of animator events. Each animator event will trigger the corresponding method of each listeners. */
+		animator.pauseEvents = [];
+		animator.resumeEvents = [];
 
 		/** Add a rendering function with the owner object which executes the function. Returns the rendering ID of this reference.
 			Returns a renderID for future reference. */
-		this.addRenderFunction = function (renderingObject, renderingFunction) {
-
+		animator.addRenderFunction = function (renderingObject, renderingFunction) {
 			/* Create a new render ID for this object. */
 			var renderID = animator.generateRenderID();
 
@@ -105,8 +105,7 @@ define(function () {
 		};
 
 		/** Remove the rendering reference by the given reference ID. */
-		this.removeRenderFunction = function (renderID) {
-
+		animator.removeRenderFunction = function (renderID) {
 			/* Check if the render ID does exist. */
 			if (renderID !== undefined && animator.renderReferences[renderID] !== undefined) {
 
@@ -116,13 +115,12 @@ define(function () {
 		};
 
 		/** Clear all rendering functions from all the objects. */
-		this.clearRenderFunctions = function () {
+		animator.clearRenderFunctions = function () {
 			animator.renderReferences = {};
 		};
 
 		/** Set a specific frame rate for the animation. */
-		this.setFPS = function (newFPS) {
-
+		animator.setFPS = function (newFPS) {
 			animator.FPS = newFPS;
 
 			if (!animator.allowExceedFPSRange) {
@@ -132,8 +130,7 @@ define(function () {
 		};
 
 		/** Start the animation loop. */
-		this.start = function () {
-
+		animator.start = function () {
 			var timestamp = Date.now();
 
 			/* Record the time-stamp of the starting animation. */
@@ -148,11 +145,9 @@ define(function () {
 		};
 
 		/** The iteration of the animation loop, each call depends on the animation frame of the browser. */
-		this.animate = function () {
-
+		animator.animate = function () {
 			/* Check if the animations are paused or the frame rate is equal or below 0. */
 			if (animator.requesting === false && animator.isPaused === false && animator.FPS > 0) {
-
 				/* Set a time delay to compromise the desired FPS.
 				 * Since the requestAnimFrame callback method will cause a delay of roughly 4 milli seconds,
 				 * delay is reduced by that amount of time. */
@@ -172,8 +167,7 @@ define(function () {
 		};
 
 		/** Execute all the rendering functions. */
-		this.render = function () {
-
+		animator.render = function () {
 			/* Update the two time-stamps with the new time-stamp of the animation. */
 			animator.previousAnimateTime = animator.newAnimateTime;
 			animator.newAnimateTime = Date.now();
@@ -181,7 +175,6 @@ define(function () {
 			var timeDiff = 1 / animator.FPS;
 
 			if (animator.isTimeBased) {
-
 				/* Calculate the time difference between the previous time-stamp in terms of seconds. */
 				timeDiff = (animator.newAnimateTime - animator.previousAnimateTime) / 1000;
 
@@ -194,7 +187,6 @@ define(function () {
 
 			/* Execute all the registered rendering functions. */
 			for (var renderID in animator.renderReferences) {
-
 				var renderObject = animator.renderReferences[renderID].renderObject;
 				var renderFunction = animator.renderReferences[renderID].renderFunction;
 
@@ -203,46 +195,50 @@ define(function () {
 		};
 
 		/** Perform action for pause event */
-		this.onPause = function () {
-			for (var i = 0; i < animator.listeners.length; i++) {
-				animator.listeners[i].onAnimatorPause();
+		animator.firePauseEvent = function () {
+			for (var i = 0; i < animator.pauseEvents.length; i++) {
+				animator.pauseEvents[i]();
 			}
 		};
 
 		/** Perform action for resume event */
-		this.onResume = function () {
-			for (var i = 0; i < animator.listeners.length; i++) {
-				animator.listeners[i].onAnimatorResume();
+		animator.fireResumeEvent = function () {
+			for (var i = 0; i < animator.resumeEvents.length; i++) {
+				animator.resumeEvents[i]();
 			}
 		};
 
-		/** Pause the animation loop. */
-		this.pause = function (quietMode) {
+		animator.onPause = function (pauseEvent) {
+			pauseEvent = pauseEvent || function () {};
+			animator.pauseEvents.push(pauseEvent);
+		};
 
+		animator.onResume = function (resumeEvent) {
+			resumeEvent = resumeEvent || function () {};
+			animator.resumeEvents.push(resumeEvent);
+		};
+
+		/** Pause the animation loop. */
+		animator.pause = function (quietMode) {
 			if (quietMode !== true) {
 				animator.isPauseRequested = true;
 			}
 
 			if (animator.isPaused === false) {
-
 				animator.isPaused = true;
-
-				animator.onPause();
+				animator.firePauseEvent();
 			}
 		};
 
 		/** Resume the animation loop. */
-		this.resume = function (quietMode) {
-
+		animator.resume = function (quietMode) {
 			if (quietMode !== true) {
 				animator.isPauseRequested = false;
 			}
 
 			if (animator.isPauseRequested === false && animator.isPaused === true) {
-
 				animator.isPaused = false;
-
-				animator.onResume();
+				animator.fireResumeEvent();
 
 				/* Record the previous animation time-stamp as the starting animation. */
 				animator.previousAnimateTime = Date.now();
@@ -253,35 +249,8 @@ define(function () {
 			}
 		};
 
-		/** Add a animator listener to the animator. */
-		this.addAnimatorListener = function (animatorListener) {
-
-			/* Make sure the input object qualifies as an instance of AnimatorListener. */
-			if (!animatorListener.onAnimatorPause || typeof animatorListener.onAnimatorPause !== "function") {
-				animatorListener.onAnimatorPause = function() {};
-			}
-
-			if (!animatorListener.onAnimatorResume || typeof animatorListener.onAnimatorResume !== "function") {
-				animatorListener.onAnimatorResume = function() {};
-			}
-
-			animator.listeners.push(animatorListener);
-		};
-
-		/** Remove a animator listener from the animator. */
-		this.removeAnimatorListener = function (animatorListener) {
-
-			/* Attempt to find the index of the given listener and then remove it. */
-			for (var i = animator.listeners.length - 1; i >= 0; i--) {
-				if (animator.listeners[i] === animatorListener) {
-					animator.listeners.splice(i, 1);
-				}
-			}
-		};
-
 		/** Generate a new rendering ID for an unregistered rendering object. */
-		this.generateRenderID = function () {
-
+		animator.generateRenderID = function () {
 			var newID = "render_" + animator.renderIDCount;
 			animator.renderIDCount++;
 
@@ -289,8 +258,7 @@ define(function () {
 		};
 
 		/** Perform action for window hidden event. */
-		this.onWindowHidden = function () {
-
+		animator.onWindowHidden = function () {
 			animator.isFoused = false;
 
 			if (animator.pauseOnHidden) {
@@ -299,8 +267,7 @@ define(function () {
 		};
 
 		/** Perform action for window show event. */
-		this.onWindowShow = function () {
-
+		animator.onWindowShow = function () {
 			animator.isFoused = true;
 
 			if (animator.resumeOnShown) {
@@ -309,8 +276,7 @@ define(function () {
 		};
 
 		/** Perform action for window change event, either hidden or show */
-		this.onWindowChange = function (isWindowHidden) {
-
+		animator.onWindowChange = function (isWindowHidden) {
 			if (isWindowHidden === true) {
 				animator.onWindowHidden();
 			} else if (isWindowHidden === false) {

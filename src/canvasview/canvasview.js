@@ -1,8 +1,7 @@
 define([
 	"../animator/animator",
-	"../animator/animatorlistener",
 	"../domelement/domelement"
-], function (Animator, AnimatorListener, DOMElement) {
+], function (Animator, DOMElement) {
 
 	return function (container, animator) {
 
@@ -69,16 +68,16 @@ define([
 		/** Perform action for animator pause event.
 		 *	This will be called when calling pause() as well. */
 		canvasView.firePauseEvent = function () {
-			for (var i = 0; i < canvasView.listeners.length; i++) {
-				canvasView.listeners[i].onCanvasViewPause();
+			for (var i = 0; i < canvasView.pauseEvents.length; i++) {
+				canvasView.pauseEvents[i]();
 			}
 		};
 
 		/** Perform action for animator pause event.
 		 *	This will be called when calling resume() as well. */
 		canvasView.fireResumeEvent = function () {
-			for (var i = 0; i < canvasView.listeners.length; i++) {
-				canvasView.listeners[i].onCanvasViewResume();
+			for (var i = 0; i < canvasView.resumeEvents.length; i++) {
+				canvasView.resumeEvents[i]();
 			}
 		};
 
@@ -119,12 +118,8 @@ define([
 		}
 
 		window.addEventListener("resize", canvasView.fireResizeEvent, false);
-
-		/* Create a Animator listener to adaptor events. */
-		canvasView.animatorListener = new AnimatorListener(canvasView.firePauseEvent, canvasView.fireResumeEvent);
-
-		/* Append the listener to the animator. */
-		canvasView.animator.addAnimatorListener(canvasView.animatorListener);
+		canvasView.animator.onPause(canvasView.firePauseEvent);
+		canvasView.animator.onResume(canvasView.fireResumeEvent);
 
 		/* Update the canvas dimensions to fit the given container. */
 		canvasView.fireResizeEvent();
