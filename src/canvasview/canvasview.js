@@ -9,108 +9,66 @@ define([
 		var canvasView = this;
 
 		/* Store the DIV container. */
-		this.container = container;
+		canvasView.container = container;
 
 		/* Create the canvas. */
-		this.canvas = new DOMElement("canvas", { html: "Your browser does not support HTML5 canvas." });
-		this.canvas.style.position = "absolute";
+		canvasView.canvas = new DOMElement("canvas", { html: "Your browser does not support HTML5 canvas." });
+		canvasView.canvas.style.position = "absolute";
 
 		/* Create an Animator instance. */
-		this.animator = animator || new Animator();
+		canvasView.animator = animator || new Animator();
 
-		/* The list of canvas view listeners this view is appended to. Each canvas view event will trigger the corresponding method of each listeners. */
-		this.listeners = [];
+		/* The list of canvas view events. Each canvas view event will trigger the corresponding method of each listeners. */
+		canvasView.resizeEvents = [];
+		canvasView.pauseEvents = [];
+		canvasView.resumeEvents = [];
 
 		/** Canvas width getter. */
-		this.getWidth = function () {
+		canvasView.getWidth = function () {
 			return canvasView.canvas.width;
 		};
 
 		/** Canvas height getter. */
-		this.getHeight = function () {
+		canvasView.getHeight = function () {
 			return canvasView.canvas.height;
 		};
 
 		/** Canvas context getter. */
-		this.getCanvas2DContext = function () {
+		canvasView.getCanvas2DContext = function () {
 			return canvasView.canvas.getContext("2d");
 		};
 
-		/** Perform action for window resize event. */
-		this.onResize = function () {
-
-			/* Set canvas dimensions. */
-			canvasView.canvas.width = canvasView.container.offsetWidth;
-			canvasView.canvas.height = canvasView.container.offsetHeight;
-		};
-
-		/** Set a rendering method on the canvas, the method will have the canvas' context, width and height. */
-		this.setRender = function (drawFunction) {
-			if (canvasView.renderID !== undefined) {
-				canvasView.removeRenderFunction(canvasView.renderID);
-			}
-
-			var renderFunction = function () {
-				drawFunction(canvasView.getCanvas2DContext(), canvasView.getWidth(), canvasView.getHeight());
-			};
-
-			canvasView.renderID = canvasView.addRenderFunction(canvasView, renderFunction);
-		};
-
-		/** Add a drawing method to the animator. */
-		this.addRenderFunction = function (renderObject, renderFunction) {
-			return canvasView.animator.addRenderFunction(renderObject, renderFunction);
-		};
-
-		/** Remove a drawing method from the animator. */
-		this.removeRenderFunction = function (renderID) {
-			canvasView.animator.removeRenderFunction(renderID);
-		};
-
 		/** Start the canvas view animation from the animator. */
-		this.start = function () {
+		canvasView.start = function () {
 			canvasView.animator.start();
 		};
 
 		/** Call the animator to pause the animation. */
-		this.pause = function () {
+		canvasView.pause = function () {
 			canvasView.animator.pause();
 		};
 
 		/** Call the animator to resume the animation. */
-		this.resume = function () {
+		canvasView.resume = function () {
 			canvasView.animator.resume();
 		};
 
-		/** Add a canvas view listener to the canvas view . */
-		this.addCanvasViewListener = function (canvasViewListener) {
+		/** Perform action for window resize event
+		 *	This will be called when canvas is being resized. */
+		canvasView.fireResizeEvent = function () {
 
-			/* Make sure the input object qualifies as an instance of CanvasViewListener. */
-			if (!canvasViewListener.onCanvasViewPause || typeof canvasViewListener.onCanvasViewPause !== "function") {
-				canvasViewListener.onCanvasViewPause = function() {};
-			}
+			/* Set canvas dimensions. */
+			canvasView.canvas.width = canvasView.container.offsetWidth;
+			canvasView.canvas.height = canvasView.container.offsetHeight;
 
-			if (!canvasViewListener.onCanvasViewResume || typeof canvasViewListener.onCanvasViewResume !== "function") {
-				canvasViewListener.onCanvasViewResume = function() {};
-			}
-
-			canvasView.listeners.push(canvasViewListener);
-		};
-
-		/** Remove a canvas view listener to the canvas view. */
-		this.removeCanvasViewListener = function (canvasViewListener) {
-
-			/* Attempt to find the index of the given listener and then remove it. */
-			for (var i = canvasView.listeners.length - 1; i >= 0; i--) {
-				if (canvasView.listeners[i] === canvasViewListener) {
-					canvasView.listeners.splice(i, 1);
-				}
+			for (var i = 0; i < canvasView.resizeEvents.length; i++) {
+				canvasView.resizeEvents[i](canvasView.canvas.width, canvasView.canvas.height);
 			}
 		};
 
 		/** Perform action for animator pause event.
 		 *	This will be called when calling pause() as well. */
-		this.onPause = function () {
+		canvasView.firePauseEvent = function () {
 			for (var i = 0; i < canvasView.listeners.length; i++) {
 				canvasView.listeners[i].onCanvasViewPause();
 			}
@@ -118,29 +76,57 @@ define([
 
 		/** Perform action for animator pause event.
 		 *	This will be called when calling resume() as well. */
-		this.onResume = function () {
+		canvasView.fireResumeEvent = function () {
 			for (var i = 0; i < canvasView.listeners.length; i++) {
 				canvasView.listeners[i].onCanvasViewResume();
 			}
 		};
 
+		/** Set a rendering method on the canvas, the method will have the canvas' context, width and height. */
+		canvasView.setRender = function (renderEvent) {
+			renderEvent = renderEvent || function () {};
+
+			if (canvasView.renderID !== undefined) {
+				canvasView.animator.removeRenderFunction(canvasView.renderID);
+			}
+
+			canvasView.renderID = canvasView.animator.addRenderFunction(canvasView, function () {
+				renderEvent(canvasView.getCanvas2DContext(), canvasView.getWidth(), canvasView.getHeight());
+			});
+		};
+
+		canvasView.onResize = function (resizeEvent) {
+			resizeEvent = resizeEvent || function () {};
+			canvasView.resizeEvents.push(resizeEvent);
+		};
+
+		canvasView.onPause = function (pauseEvent) {
+			pauseEvent = pauseEvent || function () {};
+			canvasView.pauseEvents.push(pauseEvent);
+		};
+
+		canvasView.onResume = function (resumeEvent) {
+			resumeEvent = resumeEvent || function () {};
+			canvasView.resumeEvent.push(resumeEvent);
+		};
+
 		/* Append the canvas to the DIV container. */
-		if (this.container !== undefined) {
-			this.container.appendChild(this.canvas);
+		if (canvasView.container !== undefined) {
+			canvasView.container.appendChild(canvasView.canvas);
 
 			/* Fetch resize method of the DIV container and window. */
-			this.container.addEventListener("resize", function () { canvasView.onResize(); });
+			canvasView.container.addEventListener("resize", canvasView.fireResizeEvent, false);
 		}
 
-		window.addEventListener("resize", function () { canvasView.onResize(); });
+		window.addEventListener("resize", canvasView.fireResizeEvent, false);
 
 		/* Create a Animator listener to adaptor events. */
-		this.animatorListener = new AnimatorListener(this.onPause, this.onResume);
+		canvasView.animatorListener = new AnimatorListener(canvasView.firePauseEvent, canvasView.fireResumeEvent);
 
 		/* Append the listener to the animator. */
-		this.animator.addAnimatorListener(this.animatorListener);
+		canvasView.animator.addAnimatorListener(canvasView.animatorListener);
 
 		/* Update the canvas dimensions to fit the given container. */
-		this.onResize();
+		canvasView.fireResizeEvent();
 	};
 });

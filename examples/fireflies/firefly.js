@@ -48,46 +48,49 @@ define([
 	};
 
 	/**** FIREFLY OBJECT ****/
+
 	return function () {
 
+		var firefly = this;
+
 		/* Behaviour. Initially Wander. */
-		this.behaviour = FireflyState.BEHAVIOUR.WANDER;
+		firefly.behaviour = FireflyState.BEHAVIOUR.WANDER;
 
 		/* Color. */
-		this.color = { r: 0, g: 0, b: 0 };
-		this.rgbString = toRGBString(this.color);
+		firefly.color = { r: 0, g: 0, b: 0 };
+		firefly.rgbString = toRGBString(firefly.color);
 
 		/* Behaviour Color, initially Wandering color. */
-		this.behaviourColor = FireflyState.WANDER.color();
+		firefly.behaviourColor = FireflyState.WANDER.color();
 
 		/* Brightness (Opacity). */
-		this.brightness = 0;
-		this.brightnessMin = 0;
-		this.brightnessMax = 1;
-		this.brightnessGrd = 1;
-		this.brightnessString = "0";
+		firefly.brightness = 0;
+		firefly.brightnessMin = 0;
+		firefly.brightnessMax = 1;
+		firefly.brightnessGrd = 1;
+		firefly.brightnessString = "0";
 
 		/* Radius. */
-		this.radius = radius();
+		firefly.radius = radius();
 
 		/* Speed Magnitude. */
-		this.speed = 0;
+		firefly.speed = 0;
 
 		/* Behaviour Speed, initially Wandering speed. And the acceleration for it. */
-		this.behaviourSpeed = FireflyState.WANDER.speed();
-		this.acceleration = FireflyState.WANDER.acceleration;
+		firefly.behaviourSpeed = FireflyState.WANDER.speed();
+		firefly.acceleration = FireflyState.WANDER.acceleration;
 
 		/* Velocity. */
-		this.velocity = { x: 0, y: 0 };
+		firefly.velocity = { x: 0, y: 0 };
 
 		/* Position, initially using a fault position. */
-		this.position = { x: -10000, y: -10000 };
+		firefly.position = { x: -10000, y: -10000 };
 
 		/* Direction. */
-		this.dir = 0;
-		this.dirVar = 0;
+		firefly.dir = 0;
+		firefly.dirVar = 0;
 
-		this.update = function (state, target, timeDiff, boundary) {
+		firefly.update = function (state, target, timeDiff, boundary) {
 			var targetPos = target.position;
 			var targetDir = target.direction;
 			var targetSpeed = target.speed;
@@ -97,184 +100,184 @@ define([
 			var blurRange = state.blurRange;
 
 			/* Calculate the distance between itself and the mouse position. */
-			var distance = getDistance(this.position, targetPos);
+			var distance = getDistance(firefly.position, targetPos);
 
 			/* If the firefly is within the effect range, then change its behaviour. Otherwise it will stay wander. */
 			if (distance < effectRange) {
-				this.changeBehaviour(behaviourEffect);
+				firefly.changeBehaviour(behaviourEffect);
 			} else {
-				this.changeBehaviour(FireflyState.BEHAVIOUR.WANDER);
+				firefly.changeBehaviour(FireflyState.BEHAVIOUR.WANDER);
 			}
 
 			/* Update the Direction variance, Speed and Brightness range according to its behaviour state.
 			 * Behaviour may act upon a target position, distance, direction and speed. */
-			this.behave(targetPos, blurRange, distance, targetDir, targetSpeed);
+			firefly.behave(targetPos, blurRange, distance, targetDir, targetSpeed);
 
 			/* Update Color. */
-			this.color.r += (this.color.r > this.behaviourColor.r) ? -colorVar * timeDiff : (this.color.r < this.behaviourColor.r) ? colorVar * timeDiff : 0;
-			this.color.g += (this.color.g > this.behaviourColor.g) ? -colorVar * timeDiff : (this.color.g < this.behaviourColor.g) ? colorVar * timeDiff : 0;
-			this.color.b += (this.color.b > this.behaviourColor.b) ? -colorVar * timeDiff : (this.color.b < this.behaviourColor.b) ? colorVar * timeDiff : 0;
+			firefly.color.r += (firefly.color.r > firefly.behaviourColor.r) ? -colorVar * timeDiff : (firefly.color.r < firefly.behaviourColor.r) ? colorVar * timeDiff : 0;
+			firefly.color.g += (firefly.color.g > firefly.behaviourColor.g) ? -colorVar * timeDiff : (firefly.color.g < firefly.behaviourColor.g) ? colorVar * timeDiff : 0;
+			firefly.color.b += (firefly.color.b > firefly.behaviourColor.b) ? -colorVar * timeDiff : (firefly.color.b < firefly.behaviourColor.b) ? colorVar * timeDiff : 0;
 
-			this.rgbString = toRGBString(this.color);
+			firefly.rgbString = toRGBString(firefly.color);
 
 			/* Update Brightness. */
-			this.brightnessGrd = (this.brightness >= this.brightnessMax) ? -1 : (this.brightness <= this.brightnessMin) ? 1 : this.brightnessGrd;
-			this.brightness += this.brightnessGrd * brightnessVar * timeDiff;
-			this.brightnessString = this.brightness.toFixed(2);
+			firefly.brightnessGrd = (firefly.brightness >= firefly.brightnessMax) ? -1 : (firefly.brightness <= firefly.brightnessMin) ? 1 : firefly.brightnessGrd;
+			firefly.brightness += firefly.brightnessGrd * brightnessVar * timeDiff;
+			firefly.brightnessString = firefly.brightness.toFixed(2);
 
 			/* Update Speed. */
-			this.speed += (this.speed > this.behaviourSpeed) ? -this.acceleration * timeDiff : (this.speed < this.behaviourSpeed) ? this.acceleration * timeDiff : 0;
+			firefly.speed += (firefly.speed > firefly.behaviourSpeed) ? -firefly.acceleration * timeDiff : (firefly.speed < firefly.behaviourSpeed) ? firefly.acceleration * timeDiff : 0;
 
 			/* Update direction (only in range of -180 degree to 180 degree). */
-			this.dir += this.dirVar * timeDiff;
-			this.dir = (this.dir > Math.PI) ? this.dir - 2 * Math.PI : (this.dir < -Math.PI) ? this.dir + 2 * Math.PI : this.dir;
+			firefly.dir += firefly.dirVar * timeDiff;
+			firefly.dir = (firefly.dir > Math.PI) ? firefly.dir - 2 * Math.PI : (firefly.dir < -Math.PI) ? firefly.dir + 2 * Math.PI : firefly.dir;
 
 			/* Update velocity and position. */
-			this.velocity.x = this.speed * Math.cos(this.dir);
-			this.velocity.y = this.speed * Math.sin(this.dir);
-			this.position.x += this.velocity.x * timeDiff;
-			this.position.y += this.velocity.y * timeDiff;
+			firefly.velocity.x = firefly.speed * Math.cos(firefly.dir);
+			firefly.velocity.y = firefly.speed * Math.sin(firefly.dir);
+			firefly.position.x += firefly.velocity.x * timeDiff;
+			firefly.position.y += firefly.velocity.y * timeDiff;
 
 			/* Renew firefly's speed, position and direction when it flies off the boundary. */
-			if (this.position.x < -this.radius || this.position.y < -this.radius ||
-				this.position.x > boundary.width + this.radius || this.position.y > boundary.height + this.radius) {
+			if (firefly.position.x < -firefly.radius || firefly.position.y < -firefly.radius ||
+				firefly.position.x > boundary.width + firefly.radius || firefly.position.y > boundary.height + firefly.radius) {
 
-				this.speed = FireflyState.WANDER.speed();
-				this.behaviourSpeed = this.speed;
-				this.position.x = boundary.width * Math.random();
-				this.position.y = boundary.height + this.radius;
-				this.dir = 2 * Math.PI * Math.random() - Math.PI;
+				firefly.speed = FireflyState.WANDER.speed();
+				firefly.behaviourSpeed = firefly.speed;
+				firefly.position.x = boundary.width * Math.random();
+				firefly.position.y = boundary.height + firefly.radius;
+				firefly.dir = 2 * Math.PI * Math.random() - Math.PI;
 			}
 		};
 
-		this.changeBehaviour = function (newBehaviour) {
+		firefly.changeBehaviour = function (newBehaviour) {
 
 			/* Change the behaviour only if it is a different behaviour. */
-			if (this.behaviour != newBehaviour) {
+			if (firefly.behaviour != newBehaviour) {
 
 				/* Update the behaviour state. */
-				this.behaviour = newBehaviour;
+				firefly.behaviour = newBehaviour;
 
 				/* Initiate the behaviour state. */
-				switch (this.behaviour) {
-					case FireflyState.BEHAVIOUR.WANDER: 	this.behaviourColor = FireflyState.WANDER.color();	break;
-					case FireflyState.BEHAVIOUR.ATTRACT: 	this.behaviourColor = FireflyState.ATTRACT.color();	break;
-					case FireflyState.BEHAVIOUR.FOLLOW: 	this.behaviourColor = FireflyState.FOLLOW.color();	break;
-					case FireflyState.BEHAVIOUR.FLEE: 		this.behaviourColor = FireflyState.FLEE.color();	break;
-					case FireflyState.BEHAVIOUR.ARRIVE:		this.behaviourColor = FireflyState.ARRIVE.color();	break;
+				switch (firefly.behaviour) {
+					case FireflyState.BEHAVIOUR.WANDER: 	firefly.behaviourColor = FireflyState.WANDER.color();	break;
+					case FireflyState.BEHAVIOUR.ATTRACT: 	firefly.behaviourColor = FireflyState.ATTRACT.color();	break;
+					case FireflyState.BEHAVIOUR.FOLLOW: 	firefly.behaviourColor = FireflyState.FOLLOW.color();	break;
+					case FireflyState.BEHAVIOUR.FLEE: 		firefly.behaviourColor = FireflyState.FLEE.color();	break;
+					case FireflyState.BEHAVIOUR.ARRIVE:		firefly.behaviourColor = FireflyState.ARRIVE.color();	break;
 				}
 			}
 		};
 
-		this.behave = function (targetPos, blurRange, targetDis, targetDir, targetSpeed) {
+		firefly.behave = function (targetPos, blurRange, targetDis, targetDir, targetSpeed) {
 
 			/* Create a blurred target position from the mouse position and the blurring range. */
 			var randDegree = 2 * Math.PI * Math.random();
 			var blurredPos = { x: targetPos.x + Math.cos(randDegree) * blurRange, y: targetPos.y + Math.sin(randDegree) * blurRange };
 
 			/* Process the behaviour action, which changes its Direction variance, Speed and Brightness range. */
-			switch (this.behaviour) {
-				case FireflyState.BEHAVIOUR.WANDER: 	this.wander();												break;
-				case FireflyState.BEHAVIOUR.ATTRACT: 	this.attract(blurredPos);									break;
-				case FireflyState.BEHAVIOUR.FOLLOW: 	this.follow(blurredPos, targetDis, targetDir, targetSpeed);	break;
-				case FireflyState.BEHAVIOUR.FLEE: 		this.flee(blurredPos, targetDis);							break;
-				case FireflyState.BEHAVIOUR.ARRIVE:		this.arrive(blurredPos, targetDis);								break;
+			switch (firefly.behaviour) {
+				case FireflyState.BEHAVIOUR.WANDER: 	firefly.wander();												break;
+				case FireflyState.BEHAVIOUR.ATTRACT: 	firefly.attract(blurredPos);									break;
+				case FireflyState.BEHAVIOUR.FOLLOW: 	firefly.follow(blurredPos, targetDis, targetDir, targetSpeed);	break;
+				case FireflyState.BEHAVIOUR.FLEE: 		firefly.flee(blurredPos, targetDis);							break;
+				case FireflyState.BEHAVIOUR.ARRIVE:		firefly.arrive(blurredPos, targetDis);								break;
 			}
 		};
 
 		/** Move randomly. */
-		this.wander = function () {
+		firefly.wander = function () {
 
 			/* Steer randomly. */
-			this.dirVar = FireflyState.WANDER.randomDir();
+			firefly.dirVar = FireflyState.WANDER.randomDir();
 
 			/* React slowing in speed. */
-			this.acceleration = FireflyState.WANDER.acceleration;
+			firefly.acceleration = FireflyState.WANDER.acceleration;
 
 			/* Slow speed with dim brightness. */
-			this.behaviourSpeed = FireflyState.WANDER.speed();
-			this.brightnessMin = FireflyState.WANDER.brightnessMin();
-			this.brightnessMax = FireflyState.WANDER.brightnessMax();
+			firefly.behaviourSpeed = FireflyState.WANDER.speed();
+			firefly.brightnessMin = FireflyState.WANDER.brightnessMin();
+			firefly.brightnessMax = FireflyState.WANDER.brightnessMax();
 		};
 
 		/** Move towards the target in a slow speed. */
-		this.attract = function (targetPos) {
+		firefly.attract = function (targetPos) {
 
 			/* Get the directional angle to the target. */
-			var directionToTarget = getDirection(this.position, targetPos);
+			var directionToTarget = getDirection(firefly.position, targetPos);
 
 			/* Steer towards the direction with medium force. */
-			this.steer(directionToTarget, 0.3);
+			firefly.steer(directionToTarget, 0.3);
 
 			/* React normally in speed. */
-			this.acceleration = FireflyState.ATTRACT.acceleration;
+			firefly.acceleration = FireflyState.ATTRACT.acceleration;
 
 			/* Medium speed with medium brightness. */
-			this.behaviourSpeed = FireflyState.ATTRACT.speed();
-			this.brightnessMin = FireflyState.ATTRACT.brightnessMin();
-			this.brightnessMax = FireflyState.ATTRACT.brightnessMax();
+			firefly.behaviourSpeed = FireflyState.ATTRACT.speed();
+			firefly.brightnessMin = FireflyState.ATTRACT.brightnessMin();
+			firefly.brightnessMax = FireflyState.ATTRACT.brightnessMax();
 		};
 
 		/** Follow the same direction as the target and move in a medium fast speed. */
-		this.follow = function (targetPos, targetDis, targetDir, targetSpeed) {
+		firefly.follow = function (targetPos, targetDis, targetDir, targetSpeed) {
 
 			/* A special steer force for following to make a cluster effect. */
-			var steerForce = 600 / this.speed;
+			var steerForce = 600 / firefly.speed;
 			steerForce = steerForce > 0.8 ? 0.8 : steerForce;
 
 			/* Steer towards that direction with high force. */
-			this.steer(targetDir, steerForce);
+			firefly.steer(targetDir, steerForce);
 
 			/* React quickly in speed. */
-			this.acceleration = FireflyState.FOLLOW.acceleration;
+			firefly.acceleration = FireflyState.FOLLOW.acceleration;
 
 			/* Medium speed with dependence on targetSpeed, with medium brightness. */
-			this.behaviourSpeed = targetSpeed * FireflyState.FOLLOW.speedMagnifier / (targetDis + FireflyState.FOLLOW.distanceFactor);
-			this.brightnessMin = FireflyState.FOLLOW.brightnessMin();
-			this.brightnessMax = FireflyState.FOLLOW.brightnessMax();
+			firefly.behaviourSpeed = targetSpeed * FireflyState.FOLLOW.speedMagnifier / (targetDis + FireflyState.FOLLOW.distanceFactor);
+			firefly.brightnessMin = FireflyState.FOLLOW.brightnessMin();
+			firefly.brightnessMax = FireflyState.FOLLOW.brightnessMax();
 		};
 
 		/** Move away from the target position in fast speed. */
-		this.flee = function (targetPos, targetDis) {
+		firefly.flee = function (targetPos, targetDis) {
 
 			/* Get the reversed direction to the target. */
-			var directionFromTarget = getDirection(targetPos, this.position);
+			var directionFromTarget = getDirection(targetPos, firefly.position);
 
 			/* Steer away from the direction with maximum force. */
-			this.steer(directionFromTarget, 1);
+			firefly.steer(directionFromTarget, 1);
 
 			/* React extremely quickly in speed. */
-			this.acceleration = FireflyState.FLEE.acceleration;
+			firefly.acceleration = FireflyState.FLEE.acceleration;
 
 			/* Extreme speed with great brightness. */
-			this.behaviourSpeed = FireflyState.FLEE.speed() / targetDis * FireflyState.FLEE.speedFactor;
-			this.brightnessMin = FireflyState.FLEE.brightnessMin();
-			this.brightnessMax = FireflyState.FLEE.brightnessMax();
+			firefly.behaviourSpeed = FireflyState.FLEE.speed() / targetDis * FireflyState.FLEE.speedFactor;
+			firefly.brightnessMin = FireflyState.FLEE.brightnessMin();
+			firefly.brightnessMax = FireflyState.FLEE.brightnessMax();
 		};
 
 		/** Move toward the target in fast speed, then eventually slow down as it approaches close. */
-		this.arrive = function (targetPos, targetDis) {
+		firefly.arrive = function (targetPos, targetDis) {
 
 			/* Get the directional angle to the target. */
-			var directionToTarget = getDirection(this.position, targetPos);
+			var directionToTarget = getDirection(firefly.position, targetPos);
 
 			/* Steer towards the direction with maximum force. */
-			this.steer(directionToTarget, 0.5);
+			firefly.steer(directionToTarget, 0.5);
 
 			/* React quickly in speed. */
-			this.acceleration = FireflyState.ARRIVE.acceleration;
+			firefly.acceleration = FireflyState.ARRIVE.acceleration;
 
-			this.behaviourSpeed = targetDis * FireflyState.ARRIVE.speedFactor;
-			this.brightnessMin = FireflyState.ARRIVE.brightnessMin();
-			this.brightnessMax = FireflyState.ARRIVE.brightnessMax();
+			firefly.behaviourSpeed = targetDis * FireflyState.ARRIVE.speedFactor;
+			firefly.brightnessMin = FireflyState.ARRIVE.brightnessMin();
+			firefly.brightnessMax = FireflyState.ARRIVE.brightnessMax();
 		};
 
 		/** Steer to the direction by updating the direction variance. */
-		this.steer = function (direction, steerForce) {
-			if(this.dir > direction) {
-				this.dirVar = (this.dir - direction > Math.PI) ? (direction - this.dir + 2 * Math.PI) * steerForce * steerFactor : (direction - this.dir) * steerForce * steerFactor;
+		firefly.steer = function (direction, steerForce) {
+			if(firefly.dir > direction) {
+				firefly.dirVar = (firefly.dir - direction > Math.PI) ? (direction - firefly.dir + 2 * Math.PI) * steerForce * steerFactor : (direction - firefly.dir) * steerForce * steerFactor;
 			} else {
-				this.dirVar = (direction - this.dir > Math.PI) ? (direction - this.dir - 2 * Math.PI) * steerForce * steerFactor : (direction - this.dir) * steerForce * steerFactor;
+				firefly.dirVar = (direction - firefly.dir > Math.PI) ? (direction - firefly.dir - 2 * Math.PI) * steerForce * steerFactor : (direction - this.dir) * steerForce * steerFactor;
 			}
 		};
 	};

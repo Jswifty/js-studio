@@ -8,52 +8,51 @@ define([
 
 		var fire = this;
 
-		/* DIV container. */
-		this.container = container;
+		/* Container. */
+		fire.container = container;
 
 		/* Layer index. */
-		this.layerIndex = index;
+		fire.layerIndex = index;
 
 		/* Amount of fire particles. */
-		this.numOfFireParticles = numOfParticles;
+		fire.numOfFireParticles = numOfParticles;
 
 		/* Amount of spark particles. */
-		this.numOfSparkParticles = numOfParticles / 4;
+		fire.numOfSparkParticles = numOfParticles / 4;
 
 		/* Fire particles. */
-		this.fireParticles = [];
-		for (var i = 0; i < this.numOfFireParticles; i++) {
-			this.fireParticles[i] = new FireParticle();
+		fire.fireParticles = [];
+		for (var i = 0; i < fire.numOfFireParticles; i++) {
+			fire.fireParticles[i] = new FireParticle();
 		}
 
 		/* Spark particles. */
-		this.sparkParticles = [];
+		fire.sparkParticles = [];
 
-		for (var i = 0; i < this.numOfSparkParticles; i++) {
-			this.sparkParticles[i] = new SparkParticle();
+		for (var i = 0; i < fire.numOfSparkParticles; i++) {
+			fire.sparkParticles[i] = new SparkParticle();
 		}
 
 		/* a void position. */
-		this.faultPosition = { x : -10000, y : -10000 };
+		fire.faultPosition = { x : -10000, y : -10000 };
 
 		/* Fire Position. */
-		this.firePosition = { x : -10000, y : -10000 };
+		fire.firePosition = { x : -10000, y : -10000 };
 
 		/* Whether the fire is lighted up. */
-		this.fireOn = false;
+		fire.fireOn = false;
 
 		/* Whether the fire is sparkling. */
-		this.isSparkling = false;
-		this.sparklePosition = { x : -10000, y : -10000 };
+		fire.isSparkling = false;
+		fire.sparklePosition = { x : -10000, y : -10000 };
 
 		/* The time spend to sparkle in terms of milli seconds. */
-		this.sparklingTime = 120;
+		fire.sparklingTime = 120;
 
 		/* Create the canvas. */
-		this.canvasView = new CanvasView(container, animator);
-		this.canvasView.canvas.style.zIndex = index.toString();
-		this.canvasView.setRender(function (context, width, height) {
-
+		fire.canvasView = new CanvasView(container, animator);
+		fire.canvasView.canvas.style.zIndex = index.toString();
+		fire.canvasView.setRender(function (context, width, height) {
 			/* Clear the canvas screen. */
 			context.clearRect(0, 0, width, height);
 
@@ -93,23 +92,23 @@ define([
 			}
 		});
 
-		this.onMouseOver = function (event) {
+		fire.onMouseOver = function (event) {
 			if (fire.fireOn && event.mouse.position) {
 				fire.firePosition = { x : event.mouse.position.x, y : event.mouse.position.y }
 			}
 		};
 
-		this.onMouseOut = function (event) {
+		fire.onMouseOut = function (event) {
 			fire.firePosition = { x : fire.faultPosition.x, y : fire.faultPosition.y }
 		};
 
-		this.onMouseMove = function (event) {
+		fire.onMouseMove = function (event) {
 			if (fire.fireOn && event.mouse.position) {
 				fire.firePosition = { x : event.mouse.position.x, y : event.mouse.position.y };
 			}
 		};
 
-		this.onMouseDown = function (event) {
+		fire.onMouseDown = function (event) {
 			if (event.mouse.position) {
 				fire.sparkle(event.mouse.position);
 				fire.firePosition = { x : event.mouse.position.x, y : event.mouse.position.y };
@@ -117,21 +116,20 @@ define([
 			}
 		};
 
-		this.onMouseUp = function (event) {
+		fire.onMouseUp = function (event) {
 			fire.firePosition = { x : fire.faultPosition.x, y : fire.faultPosition.y }
 			fire.fireOn = false;
 		};
 
-		this.onMouseClick = function (event) {
+		fire.onMouseClick = function (event) {
 
 		};
 
-		this.onMouseStop = function (event) {
+		fire.onMouseStop = function (event) {
 
 		};
 
-		this.sparkle = function (position) {
-
+		fire.sparkle = function (position) {
 			/* Sparkle only when it is not sparkling. */
 			if (!fire.isSparkling) {
 				/* Switch on the sparkling state. */
@@ -146,8 +144,7 @@ define([
 			}
 		};
 
-		this.update = function (timeDiff) {
-
+		fire.update = function (timeDiff) {
 			/* Update the fire according to the mouse position. */
 			for (var i = 0; i < fire.fireParticles.length; i++) {
 				fire.fireParticles[i].update(fire.firePosition, timeDiff);
@@ -159,6 +156,6 @@ define([
 			}
 		};
 
-		this.canvasView.addRenderFunction(this, this.update);
+		animator.addRenderFunction(fire, fire.update);
 	};
 });

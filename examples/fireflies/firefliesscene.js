@@ -20,28 +20,28 @@ define([
 		container.className = "firefliesScene";
 
 		/* Create an Animator. */
-		this.animator = new Animator();
+		scene.animator = new Animator();
 
 		/* Fire layer, which creates a canvas. */
-		this.fire = new Fire(0, 50, container, this.animator);
+		scene.fire = new Fire(0, 50, container, scene.animator);
 
-		this.performHeartTimer = undefined;
-		this.performingTime = 5000;
+		scene.performHeartTimer = undefined;
+		scene.performingTime = 5000;
 
 		/* Fireflies layers, which creates a canvas for each layer. */
 		var numOfFireflies = 100;
 		var numOfLayers = 2;
 
-		this.firefliesLayers = [];
+		scene.firefliesLayers = [];
 
 		for (var i = 0; i < numOfLayers; i++) {
 			var numOfFirefliesInLayer = numOfFireflies / numOfLayers;
 
-			this.firefliesLayers[i] = new FirefliesLayer(i, numOfLayers, numOfFirefliesInLayer, container, this.animator);
-			this.firefliesLayers[i].focusOnFire(this.fire);
+			scene.firefliesLayers[i] = new FirefliesLayer(i, numOfLayers, numOfFirefliesInLayer, container, scene.animator);
+			scene.firefliesLayers[i].focusOnFire(scene.fire);
 		}
 
-		this.addMouseListener = function (container) {
+		scene.addMouseListener = function (container) {
 			if (scene.mouse && scene.mouseListener) {
 				scene.mouse.removeMouseListener(scene.mouseListener);
 			}
@@ -112,8 +112,7 @@ define([
 			scene.mouse.addMouseListener(scene.mouseListener);
 		};
 
-		this.startScene = function () {
-
+		scene.startScene = function () {
 			/* Start the fireflies layer, which starts generating fireflies. */
 			for (var i = 0; i < scene.firefliesLayers.length; i++) {
 				scene.firefliesLayers[i].startFireFliesLayer();
@@ -123,7 +122,7 @@ define([
 			scene.animator.start();
 		};
 
-		this.checkFirefliesLayers = function (performingTime) {
+		scene.checkFirefliesLayers = function (performingTime) {
 			if (scene.allFirefliesAttracted() === true) {
 				for (var i = 0; i < scene.firefliesLayers.length; i++) {
 					scene.firefliesLayers[i].performHeart(true);
@@ -142,7 +141,7 @@ define([
 			}
 		};
 
-		this.allFirefliesAttracted = function () {
+		scene.allFirefliesAttracted = function () {
 			for (var i = 0; i < scene.firefliesLayers.length; i++) {
 				if (!scene.firefliesLayers[i].allFirefliesAttracted()) {
 					return false;

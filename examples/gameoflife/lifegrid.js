@@ -31,15 +31,15 @@ define([
 		/* Create a CanvasView to draw the life grid. */
 		this.canvasView = new CanvasView(container);
 		this.canvasView.canvas.style.boxShadow = "0px 0px 5px 0px white";
-		this.canvasView.onResize = function () {
-			var length = Math.min(container.offsetWidth, container.offsetHeight) - 20;
+		this.canvasView.onResize(function (width, height) {
+			var length = Math.min(width, height) - 20;
 			var canvas = lifeGrid.canvasView.canvas;
 
 			canvas.width = length;
 			canvas.height = length;
 			canvas.style.top = ((container.offsetHeight - length) / 2) + "px";
 			canvas.style.left = ((container.offsetWidth - length) / 2) + "px";
-		};
+		});
 		this.canvasView.setRender(function (context, width, height) {
 			context.clearRect(0, 0, width, height);
 
@@ -268,8 +268,8 @@ define([
 			lifeGrid.setDeathColor(status.deathColor || { r: 255, g: 0, b: 0, a: 1 });
 		};
 
-		this.canvasView.addRenderFunction(this, this.update);
-		this.canvasView.onResize();
+		this.canvasView.animator.addRenderFunction(this, this.update);
+		this.canvasView.fireResizeEvent();
 		this.reset();
 	};
 });

@@ -37,16 +37,16 @@ define(function () {
 					b: 255
 				};
 			},
-			
+
 			/* Slow speed, in terms of pixels per second. */
 			speed: function () { return 30 + 30 * Math.random(); },
-			
+
 			/* React slowly in speed, in terms of pixels per second. */
 			acceleration: 300,
-			
+
 			/* Steer Randomly. */
 			randomDir: function () { return -7.5 + 15 * Math.random(); },
-			
+
 			/* Dim brightness range. */
 			brightnessMin: function () { return  -2 + 0.5 * Math.random(); },
 			brightnessMax: function () { return  0.5 + 0.5 * Math.random(); }
@@ -63,13 +63,13 @@ define(function () {
 					b: 0
 				};
 			},
-			
+
 			/* Medium speed, in terms of pixels per second. */
 			speed: function () { return 50 + 50 * Math.random(); },
-			
+
 			/* React normally in speed, in terms of pixels per second. */
 			acceleration: 700,
-			
+
 			/* Medium brightness range. */
 			brightnessMin: function () { return  -0.4 + 0.4 * Math.random(); },
 			brightnessMax: function () { return  1 + 0.2 * Math.random(); }
@@ -86,19 +86,19 @@ define(function () {
 					b: 255
 				};
 			},
-			
+
 			/* Speed with dependence on the target speed. Therefore no standard speed applied. */
 			speed: null,
-			
+
 			/* The speed magnifier for better effect. */
 			speedMagnifier: 40,
-			
+
 			/* The distance factor for better effect. */
 			distanceFactor: 20,
-			
+
 			/* React extremely quickly in speed, in terms of pixels per second. */
 			acceleration: 2500,
-			
+
 			/* Medium brightness range. */
 			brightnessMin: function () { return  -0.2 + 0.4 * Math.random(); },
 			brightnessMax: function () { return  1 + 0.2 * Math.random(); }
@@ -115,16 +115,16 @@ define(function () {
 					b: 255
 				};
 			},
-			
+
 			/* Extreme speed, in terms of pixels per second. */
 			speed: function () { return 800 + 200 * Math.random(); },
-			
+
 			/* Speed factor for better effects. */
 			speedFactor: 100,
-			
+
 			/* React extremely quickly in speed, in terms of pixels per second. */
 			acceleration: 4000,
-			
+
 			/* Great brightness range. */
 			brightnessMin: function () { return  0 + 0.4 * Math.random(); },
 			brightnessMax: function () { return  1 + 0.2 * Math.random(); }
@@ -141,16 +141,16 @@ define(function () {
 					b: 255 * Math.random() >> 0
 				};
 			},
-			
+
 			/* Speed with dependence on the target position. Therefore no standard speed applied. */
 			speed: null,
-			
+
 			/* Speed factor for better effects. */
 			speedFactor: 2,
-			
+
 			/* React quickly in speed, in terms of pixels per second. */
 			acceleration: 800,
-			
+
 			/* Great brightness range. */
 			brightnessMin: function () { return  0 + 0.4 * Math.random(); },
 			brightnessMax: function () { return  1 + 0.2 * Math.random(); }
