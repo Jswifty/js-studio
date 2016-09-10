@@ -1,8 +1,7 @@
 define([
 	"js-studio/mouse/mouse",
-	"js-studio/mouse/mouselistener",
 	"js-studio/canvasview/canvasview"
-], function (Mouse, MouseListener, CanvasView) {
+], function (Mouse, CanvasView) {
 
 	var PI2 = Math.PI * 2;
 
@@ -10,28 +9,28 @@ define([
 
 		var lifeGrid = this;
 
-		this.rows = rows || 400;
-		this.columns = columns || 400;
+		lifeGrid.rows = rows || 400;
+		lifeGrid.columns = columns || 400;
 
-		this.birthColor = { r: 0, g: 255, b: 0, a: 1 };
-		this.deathColor = { r: 255, g: 125, b: 0, a: 1 };
+		lifeGrid.birthColor = { r: 0, g: 255, b: 0, a: 1 };
+		lifeGrid.deathColor = { r: 255, g: 125, b: 0, a: 1 };
 
-		this.drawMode = true;
+		lifeGrid.drawMode = true;
 
-		this.lifeSpan = 500;
+		lifeGrid.lifeSpan = 500;
 
-		this.ambientGlow = 0;
+		lifeGrid.ambientGlow = 0;
 
-		this.timeInterval = 1 / (speed || 30);
-		this.timeBuffer = 0;
+		lifeGrid.timeInterval = 1 / (speed || 30);
+		lifeGrid.timeBuffer = 0;
 
-		this.grid = [];
-		this.shadowCells = [];
+		lifeGrid.grid = [];
+		lifeGrid.shadowCells = [];
 
 		/* Create a CanvasView to draw the life grid. */
-		this.canvasView = new CanvasView(container);
-		this.canvasView.canvas.style.boxShadow = "0px 0px 5px 0px white";
-		this.canvasView.onResize(function (width, height) {
+		lifeGrid.canvasView = new CanvasView(container);
+		lifeGrid.canvasView.canvas.style.boxShadow = "0px 0px 5px 0px white";
+		lifeGrid.canvasView.onResize(function (width, height) {
 			var length = Math.min(width, height) - 20;
 			var canvas = lifeGrid.canvasView.canvas;
 
@@ -40,7 +39,7 @@ define([
 			canvas.style.top = ((container.offsetHeight - length) / 2) + "px";
 			canvas.style.left = ((container.offsetWidth - length) / 2) + "px";
 		});
-		this.canvasView.setRender(function (context, width, height) {
+		lifeGrid.canvasView.setRender(function (context, width, height) {
 			context.clearRect(0, 0, width, height);
 
 			if (lifeGrid.ambientGlow > 0) {
@@ -60,8 +59,7 @@ define([
 		});
 
 		/* Create a Mouse and setup a mouse listener to map mouse behaviour to the life grid. */
-		this.mouse = new Mouse(this.canvasView.canvas);
-
+		lifeGrid.mouse = new Mouse(lifeGrid.canvasView.canvas);
 		function mouseEvent (event) {
 			var mouse = event.mouse;
 			var position = mouse.position;
@@ -89,65 +87,61 @@ define([
 
 			lifeGrid.setShadowCells(shadawCells);
 		};
+		lifeGrid.mouse.onMouseOver(mouseEvent);
+		lifeGrid.mouse.onMouseOut(mouseEvent);
+		lifeGrid.mouse.onMouseMove(mouseEvent);
+		lifeGrid.mouse.onMouseDown(mouseEvent);
 
-		this.mouseListener = new MouseListener();
-		this.mouseListener.onMouseOver(mouseEvent);
-		this.mouseListener.onMouseOut(mouseEvent);
-		this.mouseListener.onMouseMove(mouseEvent);
-		this.mouseListener.onMouseDown(mouseEvent);
-
-		this.mouse.addMouseListener(this.mouseListener);
-
-		this.start = function () {
+		lifeGrid.start = function () {
 			lifeGrid.canvasView.start();
 		};
 
-		this.pause = function () {
+		lifeGrid.pause = function () {
 			lifeGrid.canvasView.pause();
 		};
 
-		this.resume = function () {
+		lifeGrid.resume = function () {
 			lifeGrid.canvasView.resume();
 		};
 
-		this.setSpeed = function (speed) {
+		lifeGrid.setSpeed = function (speed) {
 			lifeGrid.timeInterval = speed > 0 ? 1 / speed : 0;
 			lifeGrid.timeBuffer = 0;
 		};
 
-		this.setDrawMode = function (drawMode) {
+		lifeGrid.setDrawMode = function (drawMode) {
 			lifeGrid.drawMode = drawMode;
 		};
 
-		this.setLifeSpan = function (lifeSpan) {
+		lifeGrid.setLifeSpan = function (lifeSpan) {
 			lifeGrid.lifeSpan = parseInt(lifeSpan, 10);
 		};
 
-		this.setBirthColor = function (color) {
+		lifeGrid.setBirthColor = function (color) {
 			lifeGrid.birthColor = color;
 		};
 
-		this.setDeathColor = function (color) {
+		lifeGrid.setDeathColor = function (color) {
 			lifeGrid.deathColor = color;
 		};
 
-		this.setAmbientGlow = function (ambientGlow) {
+		lifeGrid.setAmbientGlow = function (ambientGlow) {
 			lifeGrid.ambientGlow = ambientGlow;
 		}
 
-		this.getCell = function (y, x) {
+		lifeGrid.getCell = function (y, x) {
 			return lifeGrid.grid[y][x];
 		};
 
-		this.setCell = function (y, x, alive) {
+		lifeGrid.setCell = function (y, x, alive) {
 			lifeGrid.grid[y][x] = alive ? Math.max(1, lifeGrid.grid[y][x]) : 0;
 		};
 
-		this.setShadowCells = function (shadowCells) {
+		lifeGrid.setShadowCells = function (shadowCells) {
 			lifeGrid.shadowCells = shadowCells;
 		};
 
-		this.reset = function () {
+		lifeGrid.reset = function () {
 			for (var y = 0; y < lifeGrid.rows; y++) {
 				lifeGrid.grid[y] = [];
 
@@ -157,7 +151,7 @@ define([
 			}
 		};
 
-		this.drawShadowCells = function (context, cellWidth, cellHeight) {
+		lifeGrid.drawShadowCells = function (context, cellWidth, cellHeight) {
 			context.fillStyle = "rgba(125, 125, 125, 0.5)";
 
 			var shadowCells = lifeGrid.shadowCells;
@@ -170,7 +164,7 @@ define([
 			}
 		};
 
-		this.drawCell = function (cellAge, y, x, context, cellWidth, cellHeight) {
+		lifeGrid.drawCell = function (cellAge, y, x, context, cellWidth, cellHeight) {
 			if (cellAge > 0) {
 				var red = lifeGrid.birthColor.r;
 				var green = lifeGrid.birthColor.g;
@@ -208,7 +202,7 @@ define([
 			}
 		};
 
-		this.update = function (timeDiff) {
+		lifeGrid.update = function (timeDiff) {
 			lifeGrid.timeBuffer += timeDiff;
 
 			while (lifeGrid.timeInterval > 0 && lifeGrid.timeBuffer >= lifeGrid.timeInterval) {
@@ -227,7 +221,7 @@ define([
 			}
 		};
 
-		this.updateCellState = function (y, x, grid) {
+		lifeGrid.updateCellState = function (y, x, grid) {
 			var cellAge = grid[y][x];
 
 			if (lifeGrid.lifeSpan > 0 && cellAge >= lifeGrid.lifeSpan) {
@@ -257,7 +251,7 @@ define([
       return cellAge;
 		};
 
-		this.updateStatus = function (status) {
+		lifeGrid.updateStatus = function (status) {
 			lifeGrid.rows = status.rows;
 			lifeGrid.columns = status.columns;
 			lifeGrid.reset();
@@ -268,8 +262,8 @@ define([
 			lifeGrid.setDeathColor(status.deathColor || { r: 255, g: 0, b: 0, a: 1 });
 		};
 
-		this.canvasView.animator.addRenderFunction(this, this.update);
-		this.canvasView.fireResizeEvent();
-		this.reset();
+		lifeGrid.canvasView.animator.addRenderFunction(lifeGrid, lifeGrid.update);
+		lifeGrid.canvasView.fireResizeEvent();
+		lifeGrid.reset();
 	};
 });

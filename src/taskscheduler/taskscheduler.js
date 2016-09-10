@@ -22,6 +22,16 @@ define(function () {
 		taskScheduler.taskStartEvents = [];
 		taskScheduler.finishEvents = [];
 
+		taskScheduler.onTaskStart = function (taskStartEvent) {
+			taskStartEvent = taskStartEvent || function () {};
+			taskScheduler.taskStartEvents.push(taskStartEvent);
+		};
+
+		taskScheduler.onFinish = function (finishEvent) {
+			finishEvent = finishEvent || function () {};
+			taskScheduler.finishEvents.push(finishEvent);
+		};
+
 		taskScheduler.addTask = function (task) {
 			/* Create a new instance of the task. */
 			var newTask = {
@@ -118,16 +128,6 @@ define(function () {
 			taskScheduler.currentTask = null;
 			taskScheduler.updateStatus();
 			taskScheduler.requestCancel = false;
-		};
-
-		taskScheduler.onTaskStart = function (taskStartEvent) {
-			taskStartEvent = taskStartEvent || function () {};
-			taskScheduler.taskStartEvents.push(taskStartEvent);
-		};
-
-		taskScheduler.onFinish = function (finishEvent) {
-			finishEvent = finishEvent || function () {};
-			taskScheduler.finishEvents.push(finishEvent);
 		};
 	};
 });

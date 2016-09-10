@@ -20,46 +20,44 @@ define([
 		/* Apply the scene's styling onto the container. */
 		container.className = "matrixScene";
 
-		this.playButton = new DOMElement("div", { class: "matrixPlayButton" });
-		this.playButton.onMouseDown(function () {
+		scene.playButton = new DOMElement("div", { class: "matrixPlayButton" });
+		scene.playButton.onMouseClick(function () {
 			if (scene.playButton.hasClass("paused")) {
 				scene.video.play();
-				scene.canvasView.resume();
+				scene.codeRain.resume();
 			} else {
 				scene.video.pause();
-				scene.canvasView.pause();
+				scene.codeRain.pause();
 			}
 			scene.playButton.toggleClass("paused");
 		});
-		container.appendChild(this.playButton);
+		container.appendChild(scene.playButton);
 
-		this.requestCameraButton = new DOMElement("div", { class: "matrixRequestCameraButton" });
-		this.requestCameraButton.onMouseDown(function () {
+		scene.requestCameraButton = new DOMElement("div", { class: "matrixRequestCameraButton" });
+		scene.requestCameraButton.onMouseClick(function () {
 			scene.requestUserCamera();
 		});
-		container.appendChild(this.requestCameraButton);
+		container.appendChild(scene.requestCameraButton);
 
 		/* Create a video element for streaming. */
-		this.video = new DOMElement("video", { src: currentDirectory + "/videos/demo.ogv", loop: true, muted: true });
+		scene.video = new DOMElement("video", { src: currentDirectory + "/videos/demo.ogv", loop: true, muted: true });
 
 		/* Create a canvas view for capturing pixel colors. */
-		this.canvasView = new CanvasView(container);
-		this.canvasView.canvas.className = "invisible";
-
-		/* Create an asciifier for converting colors into ASCII. */
-		this.asciifier = new Asciifier(this.canvasView.canvas, { color: "green", invert: true }, this.canvasView.animator);
-
-		/* Rain object for rain effect. */
-		this.codeRain = new CodeRain(50, 0.3);
-
-		/* Hook up rendering methods to the canvas view. */
-		this.canvasView.setRender(function (context, width, height) {
+		scene.canvasView = new CanvasView(container);
+		scene.canvasView.canvas.className = "invisible";
+		scene.canvasView.setRender(function (context, width, height) {
 			context.clearRect(0, 0, width, height);
 			context.drawImage(scene.video, 0, 0, width, height);
 			scene.codeRain.draw(context, width, height, scene.asciifier.textWidth);
 		});
 
-		this.requestUserCamera = function () {
+		/* Create an asciifier for converting colors into ASCII. */
+		scene.asciifier = new Asciifier(scene.canvasView.canvas, { color: "green", invert: true }, scene.canvasView.animator);
+
+		/* Rain object for rain effect. */
+		scene.codeRain = new CodeRain(50, 0.3);
+
+		scene.requestUserCamera = function () {
 			UserMediaManager.requestUserMedia(function (stream) {
 				scene.video.src = window.URL.createObjectURL(stream);
 				scene.codeRain.stop();
@@ -70,7 +68,7 @@ define([
 			}, { video: true });
 		};
 
-		this.startScene = function () {
+		scene.startScene = function () {
 			scene.video.play();
 			scene.codeRain.start();
 			scene.canvasView.start();

@@ -4,15 +4,13 @@ define(function () {
 
 		var codeRain = this;
 
-		var rainDrops = [];
+		codeRain.rainDrops = [];
+		codeRain.interval = interval || 50;
+		codeRain.density = density || 0.3;
+		codeRain.pauseTime = -1;
 
-		this.interval = interval || 50;
-		this.density = density || 0.3;
-
-		this.start = function () {
-
+		codeRain.start = function () {
 			setTimeout(function () {
-
 				codeRain.createRainDrop();
 
 				if (codeRain.interval > 0) {
@@ -21,33 +19,37 @@ define(function () {
 			}, codeRain.interval);
 		};
 
-		this.stop = function () {
+		codeRain.pause = function () {
+			codeRain.pauseTime = new Date().getTime();
+		};
+
+		codeRain.resume = function () {
+			codeRain.pauseTime = -1;
+		};
+
+		codeRain.stop = function () {
 			codeRain.interval = 0;
 		};
 
-		this.createRainDrop = function () {
-			rainDrops.push({
+		codeRain.createRainDrop = function () {
+			codeRain.rainDrops.push({
 				startTime: new Date().getTime(),
 				location: Math.random(),
 				duration: 2000 + 4000 * Math.random()
 			});
 		};
 
-		this.draw = function (context, width, height, dropWidth) {
+		codeRain.draw = function (context, width, height, dropWidth) {
+			var nowTime = codeRain.pauseTime === -1 ? new Date().getTime() : codeRain.pauseTime;
 
-			var nowTime = new Date().getTime();
-
-			for (var i = rainDrops.length - 1; i >= 0; i--) {
-
-				var rainDrop = rainDrops[i];
+			for (var i = codeRain.rainDrops.length - 1; i >= 0; i--) {
+				var rainDrop = codeRain.rainDrops[i];
 				var duration = rainDrop.duration;
 				var dropTime = nowTime - rainDrop.startTime;
 
 				if (dropTime >= duration) {
-					rainDrops.splice(i, 1);
-				}
-				else {
-
+					codeRain.rainDrops.splice(i, 1);
+				} else {
 					var location = Math.round(rainDrop.location * width / dropWidth) * dropWidth;
 					var dropLength = height / duration * 4000;
 					var dropEnd = dropTime / duration * (height + dropLength);

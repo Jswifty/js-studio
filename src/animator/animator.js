@@ -92,6 +92,16 @@ define(function () {
 		animator.pauseEvents = [];
 		animator.resumeEvents = [];
 
+		animator.onPause = function (pauseEvent) {
+			pauseEvent = pauseEvent || function () {};
+			animator.pauseEvents.push(pauseEvent);
+		};
+
+		animator.onResume = function (resumeEvent) {
+			resumeEvent = resumeEvent || function () {};
+			animator.resumeEvents.push(resumeEvent);
+		};
+
 		/** Add a rendering function with the owner object which executes the function. Returns the rendering ID of this reference.
 			Returns a renderID for future reference. */
 		animator.addRenderFunction = function (renderingObject, renderingFunction) {
@@ -194,30 +204,6 @@ define(function () {
 			}
 		};
 
-		/** Perform action for pause event */
-		animator.firePauseEvent = function () {
-			for (var i = 0; i < animator.pauseEvents.length; i++) {
-				animator.pauseEvents[i]();
-			}
-		};
-
-		/** Perform action for resume event */
-		animator.fireResumeEvent = function () {
-			for (var i = 0; i < animator.resumeEvents.length; i++) {
-				animator.resumeEvents[i]();
-			}
-		};
-
-		animator.onPause = function (pauseEvent) {
-			pauseEvent = pauseEvent || function () {};
-			animator.pauseEvents.push(pauseEvent);
-		};
-
-		animator.onResume = function (resumeEvent) {
-			resumeEvent = resumeEvent || function () {};
-			animator.resumeEvents.push(resumeEvent);
-		};
-
 		/** Pause the animation loop. */
 		animator.pause = function (quietMode) {
 			if (quietMode !== true) {
@@ -246,6 +232,20 @@ define(function () {
 
 				/* Re-initiate the animation loop. */
 				animator.animate();
+			}
+		};
+
+		/** Perform action for pause event */
+		animator.firePauseEvent = function () {
+			for (var i = 0; i < animator.pauseEvents.length; i++) {
+				animator.pauseEvents[i]();
+			}
+		};
+
+		/** Perform action for resume event */
+		animator.fireResumeEvent = function () {
+			for (var i = 0; i < animator.resumeEvents.length; i++) {
+				animator.resumeEvents[i]();
 			}
 		};
 

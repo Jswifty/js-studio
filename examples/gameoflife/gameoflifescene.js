@@ -31,43 +31,38 @@ define([
 		};
 
 		/* Create a life grid with the given dimensions, which draws the grid and updates it. */
-		this.lifeGrid = new LifeGrid(container);
+		scene.lifeGrid = new LifeGrid(container);
 
 		/* Create a control menu, which displays the controls of the grid. */
-		this.controlMenu = new ControlMenu(container);
-		this.controlMenu.onSpeedChanged(function (speed) {
+		scene.controlMenu = new ControlMenu(container);
+		scene.controlMenu.onSpeedChanged(function (speed) {
 			scene.lifeGrid.setSpeed(speed);
 		});
-		this.controlMenu.onDrawModeChanged(function (drawMode) {
+		scene.controlMenu.onDrawModeChanged(function (drawMode) {
 			scene.lifeGrid.setDrawMode(drawMode);
 		});
-		this.controlMenu.onLifeSpanChanged(function (lifeSpan) {
+		scene.controlMenu.onLifeSpanChanged(function (lifeSpan) {
 			scene.lifeGrid.setLifeSpan(lifeSpan);
 		});
-		this.controlMenu.onBirthColorChanged(function (color) {
+		scene.controlMenu.onBirthColorChanged(function (color) {
 			scene.lifeGrid.setBirthColor(color);
 		});
-		this.controlMenu.onDeathColorChanged(function (color) {
+		scene.controlMenu.onDeathColorChanged(function (color) {
 			scene.lifeGrid.setDeathColor(color);
 		});
-		this.controlMenu.onCellShapeChanged(function (ambientGlow) {
+		scene.controlMenu.onCellShapeChanged(function (ambientGlow) {
 			scene.lifeGrid.setAmbientGlow(ambientGlow);
 		});
 
-
-		this.startScene = function () {
+		scene.startScene = function () {
 			scene.lifeGrid.start();
 		};
 
-		this.addMouseListener = function (container) {
-			scene.lifeGrid.setMouseListener(container);
-		};
-
-		this.setStatus = function (status) {
+		scene.setStatus = function (status) {
 			scene.lifeGrid.updateStatus(status);
 			scene.controlMenu.updateStatus(status);
 		};
 
-		this.setStatus(status);
+		scene.setStatus(status);
 	};
 });

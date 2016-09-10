@@ -39,6 +39,16 @@ define(function () {
 		keyboard.downEvents = [];
 		keyboard.upEvents = [];
 
+		keyboard.onKeyDown = function (downEvent) {
+			downEvent = downEvent || function () {};
+			keyboard.downEvents.push(downEvent);
+		};
+
+		keyboard.onKeyUp = function (upEvent) {
+			upEvent = upEvent || function () {};
+			keyboard.upEvents.push(upEvent);
+		};
+
     /** Perform action for key press event */
     keyboard.fireDownEvent = function (event) {
       for (var i = 0; i < keyboard.downEvents.length; i++) {
@@ -52,16 +62,6 @@ define(function () {
         keyboard.upEvents[i](event);
       }
     };
-
-		keyboard.onKeyDown = function (downEvent) {
-			downEvent = downEvent || function () {};
-			keyboard.downEvents.push(downEvent);
-		};
-
-		keyboard.onKeyUp = function (upEvent) {
-			upEvent = upEvent || function () {};
-			keyboard.upEvents.push(upEvent);
-		};
 
     /** When a key is pressed. */
 		keyboard.downEventMethod = function (event) {

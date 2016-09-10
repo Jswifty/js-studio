@@ -1,11 +1,10 @@
 define([
 	"module",
 	"js-studio/mouse/mouse",
-	"js-studio/mouse/mouselistener",
 	"js-studio/domelement/domelement",
 	"js-studio/cssloader/cssloader",
 	"js-studio/colorutils/colorutils"
-], function (Module, Mouse, MouseListener, DOMElement, CSSLoader, ColorUtils) {
+], function (Module, Mouse, DOMElement, CSSLoader, ColorUtils) {
 
 	var currentDirectory = Module.uri.replace("colorpicker.js", "");
 

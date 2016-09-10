@@ -1,9 +1,8 @@
 define([
   "js-studio/mouse/mouse",
-  "js-studio/mouse/mouselistener",
   "js-studio/keyboard/keyboard",
   "js-studio/classmanager/classmanager"
-], function (Mouse, MouseListener, Keyboard, ClassManager) {
+], function (Mouse, Keyboard, ClassManager) {
 
   var currentTabIndex = 1;
 
@@ -29,114 +28,70 @@ define([
       }
     }
 
-    function addMouseListener () {
+    function addMouse () {
       if (domElement.mouse === undefined) {
-        domElement.mouseDownListeners = [];
-        domElement.mouseUpListeners = [];
-        domElement.mouseMoveListeners = [];
-        domElement.mouseDragListeners = [];
-        domElement.mouseOutListeners = [];
-        domElement.mouseOverListeners = [];
-        domElement.mouseClickListeners = [];
-        domElement.mouseRightClickListeners = [];
-
         domElement.mouse = new Mouse(domElement);
-
-        domElement.mouseListener = new MouseListener();
-        domElement.mouseListener.onMouseDown(function (event) {
-          for (var i = 0; i < domElement.mouseDownListeners.length; i++) {
-            domElement.mouseDownListeners[i](event);
-          }
-        });
-        domElement.mouseListener.onMouseUp(function (event) {
-          for (var i = 0; i < domElement.mouseUpListeners.length; i++) {
-            domElement.mouseUpListeners[i](event);
-          }
-
-          if (event.mouse.isLeftButton === true) {
-            for (var i = 0; i < domElement.mouseClickListeners.length; i++) {
-              domElement.mouseClickListeners[i](event);
-            }
-          } else if (event.mouse.isRightButton === true) {
-            for (var i = 0; i < domElement.mouseRightClickListeners.length; i++) {
-              domElement.mouseRightClickListeners[i](event);
-            }
-          }
-        });
-        domElement.mouseListener.onMouseMove(function (event) {
-          for (var i = 0; i < domElement.mouseMoveListeners.length; i++) {
-            domElement.mouseMoveListeners[i](event);
-          }
-
-          if (event.mouse.isMouseDown === true) {
-            for (var j = 0; j < domElement.mouseDragListeners.length; j++) {
-              domElement.mouseDragListeners[j](event);
-            }
-          }
-        });
-        domElement.mouseListener.onMouseOut(function (event) {
-          for (var i = 0; i < domElement.mouseOutListeners.length; i++) {
-            domElement.mouseOutListeners[i](event);
-          }
-        });
-        domElement.mouseListener.onMouseOver(function (event) {
-          for (var i = 0; i < domElement.mouseOverListeners.length; i++) {
-            domElement.mouseOverListeners[i](event);
-          }
-        });
-
-        domElement.mouse.addMouseListener(domElement.mouseListener);
       }
     };
 
     function addKeyboard () {
       if (domElement.keyboard === undefined) {
-        domElement.tabIndex = currentTabIndex;
-        currentTabIndex++;
-
+        domElement.tabIndex = currentTabIndex++;
         domElement.keyboard = new Keyboard(domElement);
       }
     };
 
 		domElement.onMouseDown = function (mouseDown) {
-      addMouseListener();
-      domElement.mouseDownListeners.push(mouseDown);
+      addMouse();
+      domElement.mouse.onMouseDown(mouseDown);
       return domElement;
 		};
 
 		domElement.onMouseUp = function (mouseUp) {
-      addMouseListener();
-      domElement.mouseUpListeners.push(mouseUp);
+      addMouse();
+      domElement.mouse.onMouseUp(mouseUp);
       return domElement;
 		};
 
     domElement.onMouseMove = function (mouseMove) {
-      addMouseListener();
-      domElement.mouseMoveListeners.push(mouseMove);
+      addMouse();
+      domElement.mouse.onMouseMove(mouseMove);
       return domElement;
     };
 
     domElement.onMouseDrag = function (mouseDrag) {
-      addMouseListener();
-      domElement.mouseDragListeners.push(mouseDrag);
+      addMouse();
+      domElement.mouse.onMouseDrag(function (event) {
+        if (event.mouse.isLeftButton === true) {
+          mouseDrag(event);
+        }
+      });
       return domElement;
     };
 
     domElement.onMouseOut = function (mouseOut) {
-      addMouseListener();
-      domElement.mouseOutListeners.push(mouseOut);
+      addMouse();
+      domElement.mouse.onMouseOut(mouseOut);
       return domElement;
     };
 
     domElement.onMouseClick = function (mouseClick) {
-      addMouseListener();
-      domElement.mouseClickListeners.push(mouseClick);
+      addMouse();
+      domElement.mouse.onMouseClick(function (event) {
+        if (event.mouse.isLeftButton === true) {
+          mouseClick(event);
+        }
+      });
       return domElement;
     };
 
-    domElement.onMouseRightClick = function (mouseRightClick) {
-      addMouseListener();
-      domElement.mouseRightClickListeners.push(mouseRightClick);
+    domElement.onMouseRightClick = function (mouseClick) {
+      addMouse();
+      domElement.mouse.onMouseClick(function (event) {
+        if (event.mouse.isRightButton === true) {
+          mouseClick(event);
+        }
+      });
       return domElement;
     };
 

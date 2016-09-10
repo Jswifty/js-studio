@@ -39,67 +39,114 @@ define(function () {
 		var mouse = this;
 
 		/* Time delay determined to be a mouse click, by default is 0.15 second. */
-		this.CLICK_DELAY = 150;
+		mouse.CLICK_DELAY = 150;
 
 		/* The DOM element that this mouse is listening to. */
-		this.listenElement = null;
+		mouse.listenElement = null;
 
 		/* The thread for calling the mouse stop event function. */
-		this.stoppingThread = null;
+		mouse.stoppingThread = null;
 
 		/* Previous update time-stamp of all mouse actions. */
-		this.lastUpdateTime = 0;
+		mouse.lastUpdateTime = 0;
 
 		/* Whether the a mouse key is pressed down. */
-		this.isMouseDown = false;
+		mouse.isMouseDown = false;
 
 		/* Previous update time-stamp of a mouse down action. */
-		this.lastMouseDownTime = 0;
+		mouse.lastMouseDownTime = 0;
 
 		/* Whether the mouse is currently contacted by touch surface. */
-		this.isTouching = false;
+		mouse.isTouching = false;
 
 		/* Previous mouse position. */
-		this.previousPosition = null;
+		mouse.previousPosition = null;
 
 		/* Current mouse position. */
-		this.position = null;
+		mouse.position = null;
 
 		/* Current mouse direction. */
-		this.direction = 0;
+		mouse.direction = 0;
 
 		/* Current mouse moved distance. */
-		this.movedDistance = 0;
+		mouse.movedDistance = 0;
 
 		/* Current mouse moving speed. */
-		this.movingSpeed = 0;
+		mouse.movingSpeed = 0;
 
 		/* Whether the mouse skips the default behaviours upon the listen element. */
-		this.preventDefault = false;
+		mouse.preventDefault = false;
 
 		/* The list of listeners this mouse is appended to. Each mouse event will trigger the corresponding method of each listeners. */
-		this.listeners = [];
+		mouse.downEvents = [];
+		mouse.upEvents = [];
+		mouse.moveEvents = [];
+		mouse.dragEvents = [];
+		mouse.stopEvents = [];
+		mouse.outEvents = [];
+		mouse.overEvents = [];
+		mouse.clickEvents = [];
+
+		mouse.onMouseDown = function (downEvent) {
+			downEvent = downEvent || function () {};
+			mouse.downEvents.push(downEvent);
+		};
+
+		mouse.onMouseUp = function (upEvent) {
+			upEvent = upEvent || function () {};
+			mouse.upEvents.push(upEvent);
+		};
+
+		mouse.onMouseMove = function (moveEvent) {
+			moveEvent = moveEvent || function () {};
+			mouse.moveEvents.push(moveEvent);
+		};
+
+		mouse.onMouseDrag = function (dragEvent) {
+			dragEvent = dragEvent || function () {};
+			mouse.dragEvents.push(dragEvent);
+		};
+
+		mouse.onMouseStop = function (stopEvent) {
+			stopEvent = stopEvent || function () {};
+			mouse.stopEvents.push(stopEvent);
+		};
+
+		mouse.onMouseOut = function (outEvent) {
+			outEvent = outEvent || function () {};
+			mouse.outEvents.push(outEvent);
+		};
+
+		mouse.onMouseOver = function (overEvent) {
+			overEvent = overEvent || function () {};
+			mouse.overEvents.push(overEvent);
+		};
+
+		mouse.onMouseClick = function (clickEvent) {
+			clickEvent = clickEvent || function () {};
+			mouse.clickEvents.push(clickEvent);
+		};
 
 		/** Calculate the distance from the origin position to the destination position. */
-		this.getDistance = function (position1, position2) {
+		mouse.getDistance = function (position1, position2) {
 			var distance = { x: position2.x - position1.x, y: position2.y - position1.y };
 			return Math.sqrt(distance.x * distance.x + distance.y * distance.y);
 		};
 
 		/** Calculate the angle using trigonometry. Returns angle ranged from -180 to 180 degrees in radian. */
-		this.getAngle = function (x, y, z) {
+		mouse.getAngle = function (x, y, z) {
 			return x > 0 ? Math.asin(y / z) : (y > 0 ? Math.PI - Math.asin(y / z) : -Math.asin(y / z) - Math.PI);
 		};
 
 		/** Calculate the directional angle to the destination position in terms of the angle oriented from the East. */
-		this.getDirection = function (position1, position2) {
+		mouse.getDirection = function (position1, position2) {
 			var distance = { x: position2.x - position1.x, y: position2.y - position1.y };
 			var distanceMag = Math.sqrt(distance.x * distance.x + distance.y * distance.y);
 			return mouse.getAngle(distance.x, distance.y, distanceMag);
 		};
 
 		/** Update the Position of the mouse. */
-		this.updatePosition = function (newPosition) {
+		mouse.updatePosition = function (newPosition) {
 			/* Get the current time. */
 			var currentTime = Date.now();
 
@@ -122,56 +169,63 @@ define(function () {
 		};
 
 		/** Perform action for over event */
-		this.onMouseOver = function (event) {
-			for (var i = 0; i < mouse.listeners.length; i++) {
-				mouse.listeners[i].overEvent(event);
+		mouse.fireOverEvent = function (event) {
+			for (var i = 0; i < mouse.overEvents.length; i++) {
+				mouse.overEvents[i](event);
 			}
 		};
 
 		/** Perform action for out event */
-		this.onMouseOut = function (event) {
-			for (var i = 0; i < mouse.listeners.length; i++) {
-				mouse.listeners[i].outEvent(event);
+		mouse.fireOutEvent = function (event) {
+			for (var i = 0; i < mouse.outEvents.length; i++) {
+				mouse.outEvents[i](event);
 			}
 		};
 
 		/** Perform action for down event */
-		this.onMouseDown = function (event) {
-			for (var i = 0; i < mouse.listeners.length; i++) {
-				mouse.listeners[i].downEvent(event);
+		mouse.fireDownEvent = function (event) {
+			for (var i = 0; i < mouse.downEvents.length; i++) {
+				mouse.downEvents[i](event);
 			}
 		};
 
 		/** Perform action for up event */
-		this.onMouseUp = function (event) {
-			for (var i = 0; i < mouse.listeners.length; i++) {
-				mouse.listeners[i].upEvent(event);
+		mouse.fireUpEvent = function (event) {
+			for (var i = 0; i < mouse.upEvents.length; i++) {
+				mouse.upEvents[i](event);
 			}
 		};
 
 		/** Perform action for move event */
-		this.onMouseMove = function (event) {
-			for (var i = 0; i < mouse.listeners.length; i++) {
-				mouse.listeners[i].moveEvent(event);
+		mouse.fireMoveEvent = function (event) {
+			for (var i = 0; i < mouse.moveEvents.length; i++) {
+				mouse.moveEvents[i](event);
+			}
+		};
+
+		/** Perform action for drag event */
+		mouse.fireDragEvent = function (event) {
+			for (var i = 0; i < mouse.dragEvents.length; i++) {
+				mouse.dragEvents[i](event);
 			}
 		};
 
 		/** Perform action for stop event */
-		this.onMouseStop = function (event) {
-			for (var i = 0; i < mouse.listeners.length; i++) {
-				mouse.listeners[i].stopEvent(event);
+		mouse.fireStopEvent = function (event) {
+			for (var i = 0; i < mouse.stopEvents.length; i++) {
+				mouse.stopEvents[i](event);
 			}
 		};
 
 		/** Perform action for click event */
-		this.onMouseClick = function (event) {
-			for (var i = 0; i < mouse.listeners.length; i++) {
-				mouse.listeners[i].clickEvent(event);
+		mouse.fireClickEvent = function (event) {
+			for (var i = 0; i < mouse.clickEvents.length; i++) {
+				mouse.clickEvents[i](event);
 			}
 		};
 
 		/** When the mouse comes into the parent container. */
-		this.overEventMethod = function (event) {
+		mouse.overEventMethod = function (event) {
 			if (mouse.isTouching === false) {
 				/* Put mouse as a reference in the event. */
 				event.mouse = mouse;
@@ -185,12 +239,12 @@ define(function () {
 				mouse.updatePosition(null);
 
 				/* Perform action for over event */
-				mouse.onMouseOver(event);
+				mouse.fireOverEvent(event);
 			}
 		};
 
 		/** When the mouse moves out from the parent container. */
-		this.outEventMethod = function (event) {
+		mouse.outEventMethod = function (event) {
 			if (mouse.isTouching === false) {
 				/* Put mouse as a reference in the event. */
 				event.mouse = mouse;
@@ -204,12 +258,12 @@ define(function () {
 				mouse.updatePosition(null);
 
 				/* Perform action for out event */
-				mouse.onMouseOut(event);
+				mouse.fireOutEvent(event);
 			}
 		};
 
 		/** When the mouse is pressed. */
-		this.downEventMethod = function (event) {
+		mouse.downEventMethod = function (event) {
 			if (mouse.isTouching === false) {
 				/* Put mouse as a reference in the event. */
 				event.mouse = mouse;
@@ -233,14 +287,14 @@ define(function () {
 				mouse.lastMouseDownTime = mouse.lastUpdateTime;
 
 				/* Perform action for down event. */
-				mouse.onMouseDown(event);
+				mouse.fireDownEvent(event);
 
 				mouse.addDocumentMouseListener();
 			}
 		};
 
 		/** When the mouse's button is released. */
-		this.upEventMethod = function (event) {
+		mouse.upEventMethod = function (event) {
 			if (mouse.isTouching === false) {
 				/* Put mouse as a reference in the event. */
 				event.mouse = mouse;
@@ -267,14 +321,14 @@ define(function () {
 				}
 
 				/* Perform action for up event. */
-				mouse.onMouseUp(event);
+				mouse.fireUpEvent(event);
 
 				mouse.removeDocumentMouseListener();
 			}
 		};
 
 		/** When the mouse is moving. */
-		this.moveEventMethod = function (event) {
+		mouse.moveEventMethod = function (event) {
 			if (mouse.isTouching === false) {
 				/* Put mouse as a reference in the event. */
 				event.mouse = mouse;
@@ -292,13 +346,18 @@ define(function () {
 				clearTimeout(mouse.stoppingThread);
 				mouse.stoppingThread = setTimeout(function() { mouse.stopEventMethod(event); }, 50);
 
-				/* Perform action for move event */
-				mouse.onMouseMove(event);
+				/* Perform action for move event. */
+				mouse.fireMoveEvent(event);
+
+				if (mouse.isMouseDown === true) {
+					/* Perform action for drag event. */
+					mouse.fireDragEvent(event);
+				}
 			}
 		};
 
 		/** When the mouse has stop moving in the container. */
-		this.stopEventMethod = function (event) {
+		mouse.stopEventMethod = function (event) {
 			if (mouse.isTouching === false) {
 				/* Put mouse as a reference in the event. */
 				event.mouse = mouse;
@@ -307,13 +366,13 @@ define(function () {
 				var offsetPosition = getOffsetPosition(mouse.listenElement);
 				mouse.updatePosition({ x: event.clientX - offsetPosition.x, y: event.clientY - offsetPosition.y });
 
-				/* Perform action for stop event */
-				mouse.onMouseStop(event);
+				/* Perform action for stop event. */
+				mouse.fireStopEvent(event);
 			}
 		};
 
 		/** When the mouse clicks. */
-		this.clickEventMethod = function (event) {
+		mouse.clickEventMethod = function (event) {
 			if (mouse.isTouching === false) {
 				/* Put mouse as a reference in the event. */
 				event.mouse = mouse;
@@ -327,13 +386,13 @@ define(function () {
 				var offsetPosition = getOffsetPosition(mouse.listenElement);
 				mouse.updatePosition({ x: event.clientX - offsetPosition.x, y: event.clientY - offsetPosition.y });
 
-				/* Perform action for stop event */
-				mouse.onMouseClick(event);
+				/* Perform action for stop event. */
+				mouse.fireClickEvent(event);
 			}
 		};
 
 		/** When a contact is made on the touch surface. */
-		this.touchStartMethod = function (event) {
+		mouse.touchStartMethod = function (event) {
 			mouse.isTouching = true;
 
 			/* Put mouse as a reference in the event. */
@@ -353,11 +412,11 @@ define(function () {
 			mouse.lastMouseDownTime = mouse.lastUpdateTime;
 
 			/* Perform action for down event. */
-			mouse.onMouseDown(event);
+			mouse.fireDownEvent(event);
 		};
 
 		/** When a contact is remove on the touch surface. */
-		this.touchEndMethod = function (event) {
+		mouse.touchEndMethod = function (event) {
 			/* Put mouse as a reference in the event. */
 			event.mouse = mouse;
 
@@ -378,13 +437,13 @@ define(function () {
 			}
 
 			/* Perform action for up event. */
-			mouse.onMouseUp(event);
+			mouse.fireUpEvent(event);
 
 			setTimeout(function () { mouse.isTouching = false; }, 0);
 		};
 
 		/** When a touch point moves across the touch surface. */
-		this.touchMoveMethod = function (event) {
+		mouse.touchMoveMethod = function (event) {
 			mouse.isTouching = true;
 
 			/* Put mouse as a reference in the event. */
@@ -403,12 +462,17 @@ define(function () {
 			clearTimeout(mouse.stoppingThread);
 			mouse.stoppingThread = setTimeout(function() { mouse.stopEventMethod(event); }, 50);
 
-			/* Perform action for move event */
-			mouse.onMouseMove(event);
+			/* Perform action for move event. */
+			mouse.fireMoveEvent(event);
+
+			if (mouse.isMouseDown === true) {
+				/* Perform action for drag event. */
+				mouse.fireDragEvent(event);
+			}
 		};
 
 		/** When a contact enters the bound-to element on the touch surface. */
-		this.touchEnterMethod = function (event) {
+		mouse.touchEnterMethod = function (event) {
 			mouse.isTouching = true;
 
 			/* Put mouse as a reference in the event. */
@@ -423,11 +487,11 @@ define(function () {
 			mouse.updatePosition(null);
 
 			/* Perform action for over event */
-			mouse.onMouseOver(event);
+			mouse.fireOverEvent(event);
 		};
 
 		/** When a contact leaves the bound-to element on the touch surface. */
-		this.touchLeaveMethod = function (event) {
+		mouse.touchLeaveMethod = function (event) {
 			/* Put mouse as a reference in the event. */
 			event.mouse = mouse;
 
@@ -439,15 +503,15 @@ define(function () {
 			/* Update the mouse position with a null position to refresh the statistics. */
 			mouse.updatePosition(null);
 
-			/* Perform action for over event */
-			mouse.onMouseOut(event);
+			/* Perform action for over event. */
+			mouse.fireOutEvent(event);
 
 			setTimeout(function () { mouse.isTouching = false; }, 0);
 		};
 
 		/** When a contact gets cancelled. This can occur if the user has moved
 		 *	the touch point outside the browser UI or into a plugin or if an alert modal pops up. */
-		this.touchCancelMethod = function (event) {
+		mouse.touchCancelMethod = function (event) {
 			/* Put mouse as a reference in the event. */
 			event.mouse = mouse;
 
@@ -459,18 +523,18 @@ define(function () {
 			/* Update the mouse position with a null position to refresh the statistics. */
 			mouse.updatePosition(null);
 
-			/* Perform action for over event */
-			mouse.onMouseOut(event);
+			/* Perform action for over event. */
+			mouse.fireOutEvent(event);
 
 			setTimeout(function () { mouse.isTouching = false; }, 0);
 		};
 
-		this.addDocumentMouseListener = function () {
+		mouse.addDocumentMouseListener = function () {
 			mouse.documentMouseListener = { mouse: mouse, moveEvent: mouse.moveEventMethod, upEvent: mouse.upEventMethod };
 			documentMouseListeners.push(mouse.documentMouseListener);
 		};
 
-		this.removeDocumentMouseListener = function () {
+		mouse.removeDocumentMouseListener = function () {
 			for (var i = documentMouseListeners.length - 1; i >= 0; i--) {
 				if (documentMouseListeners[i] === mouse.documentMouseListener) {
 					documentMouseListeners.splice(i, 1);
@@ -478,32 +542,8 @@ define(function () {
 			}
 		};
 
-		/** Add a mouse listener to the mouse. */
-		this.addMouseListener = function (mouseListener) {
-			/* Check if the input object is an instance of MouseListener. */
-			if (mouseListener.overEvent && mouseListener.outEvent && mouseListener.downEvent && mouseListener.upEvent &&
-				mouseListener.moveEvent && mouseListener.stopEvent && mouseListener.clickEvent) {
-				mouse.listeners.push(mouseListener);
-			}
-		};
-
-		/** Remove a mouse listener from the mouse. */
-		this.removeMouseListener = function (mouseListener) {
-			/* Check if the input object is an instance of MouseListener. */
-			if (mouseListener.overEvent && mouseListener.outEvent && mouseListener.downEvent && mouseListener.upEvent &&
-				mouseListener.moveEvent && mouseListener.stopEvent && mouseListener.clickEvent) {
-
-				/* Attempt to find the index of the given listener and then remove it. */
-				for (var i = mouse.listeners.length - 1; i >= 0; i--) {
-					if (mouse.listeners[i] === mouseListener) {
-						mouse.listeners.splice(i, 1);
-					}
-				}
-			}
-		};
-
 		/** Append the mouse to the a DOM element and event functions to it. */
-		this.attachToElement = function (element) {
+		mouse.attachToElement = function (element) {
 			/* Store a reference of the DOM element. */
 			mouse.listenElement = element;
 
@@ -523,7 +563,7 @@ define(function () {
 		};
 
 		/** Disengage the mouse from DOM element and event functions from it. */
-		this.detachFromElement = function () {
+		mouse.detachFromElement = function () {
 			/* Disengage all the mouse events from each corresponding handler. */
 			if (mouse.listenElement !== null && mouse.listenElement !== undefined) {
 				mouse.listenElement.removeEventListener("mouseover", mouse.overEventMethod, false);
@@ -545,13 +585,13 @@ define(function () {
 		};
 
 		/** Toggle value for mouse prevent default on all events. */
-		this.setPreventDefault = function (preventDefault) {
+		mouse.setPreventDefault = function (preventDefault) {
 			mouse.preventDefault = preventDefault;
 		};
 
 		/* Append the canvas to the DIV container. */
 		if (container !== undefined) {
-			this.attachToElement(container);
+			mouse.attachToElement(container);
 		}
 	};
 });

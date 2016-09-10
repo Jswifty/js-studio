@@ -22,6 +22,21 @@ define([
 		canvasView.pauseEvents = [];
 		canvasView.resumeEvents = [];
 
+		canvasView.onResize = function (resizeEvent) {
+			resizeEvent = resizeEvent || function () {};
+			canvasView.resizeEvents.push(resizeEvent);
+		};
+
+		canvasView.onPause = function (pauseEvent) {
+			pauseEvent = pauseEvent || function () {};
+			canvasView.pauseEvents.push(pauseEvent);
+		};
+
+		canvasView.onResume = function (resumeEvent) {
+			resumeEvent = resumeEvent || function () {};
+			canvasView.resumeEvent.push(resumeEvent);
+		};
+
 		/** Canvas width getter. */
 		canvasView.getWidth = function () {
 			return canvasView.canvas.width;
@@ -92,21 +107,6 @@ define([
 			canvasView.renderID = canvasView.animator.addRenderFunction(canvasView, function () {
 				renderEvent(canvasView.getCanvas2DContext(), canvasView.getWidth(), canvasView.getHeight());
 			});
-		};
-
-		canvasView.onResize = function (resizeEvent) {
-			resizeEvent = resizeEvent || function () {};
-			canvasView.resizeEvents.push(resizeEvent);
-		};
-
-		canvasView.onPause = function (pauseEvent) {
-			pauseEvent = pauseEvent || function () {};
-			canvasView.pauseEvents.push(pauseEvent);
-		};
-
-		canvasView.onResume = function (resumeEvent) {
-			resumeEvent = resumeEvent || function () {};
-			canvasView.resumeEvent.push(resumeEvent);
 		};
 
 		/* Append the canvas to the DIV container. */

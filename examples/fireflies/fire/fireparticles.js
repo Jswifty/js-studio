@@ -61,14 +61,14 @@ define(function () {
 		fireParticle.radius = startRadius();
 
 		/* Position, initially using a fault position. */
-		fireParticle.position = { x: -10000, y: -10000 };
+		fireParticle.position = null;
 
 		/* Velocity in terms of pixels per second. */
 		fireParticle.velocity = velocity();
 
 		/* Lifespan and remaining life time in terms of seconds. */
 		fireParticle.lifespan = lifespan();
-		fireParticle.remainingLife = fireParticle.lifespan * Math.random();
+		fireParticle.remainingLife = 0;
 
 		/* Opacity. */
 		fireParticle.opacity = 1;
@@ -84,23 +84,23 @@ define(function () {
 			fireParticle.opacityString = fireParticle.opacity.toFixed(2);
 
 			/* Update the fire particle. If the remainingLife is over, reset properties of the fire particle. */
-			if (fireParticle.remainingLife <= 0 || fireParticle.radius <= 0) {
+			if ((fireParticle.remainingLife <= 0 || fireParticle.radius <= 0) && newPosition !== null && Math.random() > 0.7) {
 				fireParticle.color = startColor();
-
 				fireParticle.radius = startRadius();
-
 				fireParticle.position = { x: newPosition.x, y: newPosition.y };
-
 				fireParticle.lifespan = lifespan();
 				fireParticle.remainingLife = fireParticle.lifespan;
-			} else {
+			} else if (fireParticle.remainingLife > 0 && fireParticle.radius > 0) {
 				fireParticle.colorVar = colorVar();
 				fireParticle.color.r -= fireParticle.colorVar.r * timeDiff;
 				fireParticle.color.g -= fireParticle.colorVar.g * timeDiff;
 				fireParticle.color.b -= fireParticle.colorVar.b * timeDiff;
-
 				fireParticle.position.x += fireParticle.velocity.x * timeDiff;
 				fireParticle.position.y += fireParticle.velocity.y * timeDiff;
+			} else {
+				fireParticle.position = null;
+				fireParticle.remainingLife = 0;
+				fireParticle.radius = 0;
 			}
 
 			/* Update Color String. */

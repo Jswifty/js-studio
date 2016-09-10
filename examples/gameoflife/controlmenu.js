@@ -15,12 +15,12 @@ define([
 
 		var controlMenu = this;
 
-		this.speedChanged = function () {};
-		this.drawModeChanged = function () {};
-		this.lifeSpanChanged = function () {};
-		this.birthColorChanged = function () {};
-		this.deathColorChanged = function () {};
-		this.cellShapeChanged = function () {};
+		controlMenu.speedChanged = function () {};
+		controlMenu.drawModeChanged = function () {};
+		controlMenu.lifeSpanChanged = function () {};
+		controlMenu.birthColorChanged = function () {};
+		controlMenu.deathColorChanged = function () {};
+		controlMenu.cellShapeChanged = function () {};
 
 		var menuButton = new DOMElement("div", { id: "menuButton" });
 		menuButton.onMouseClick(function () {
@@ -158,7 +158,7 @@ define([
 		}});
 		cellShapeContainer.appendChild(ambientRadiusSlider);
 
-		this.setMenuOpened = function (opened) {
+		controlMenu.setMenuOpened = function (opened) {
 			menuButton.toggleClass("opened", opened);
 			menuContainer.toggleClass("expanded", opened);
 
@@ -166,31 +166,31 @@ define([
 			deathColor.showPanel(false);
 		};
 
-		this.onSpeedChanged = function (speedChanged) {
+		controlMenu.onSpeedChanged = function (speedChanged) {
 			controlMenu.speedChanged = speedChanged;
 		};
 
-		this.onDrawModeChanged = function (drawModeChanged) {
+		controlMenu.onDrawModeChanged = function (drawModeChanged) {
 			controlMenu.drawModeChanged = drawModeChanged;
 		};
 
-		this.onLifeSpanChanged = function (lifeSpanChanged) {
+		controlMenu.onLifeSpanChanged = function (lifeSpanChanged) {
 			controlMenu.lifeSpanChanged = lifeSpanChanged;
 		};
 
-		this.onBirthColorChanged = function (birthColorChanged) {
+		controlMenu.onBirthColorChanged = function (birthColorChanged) {
 			controlMenu.birthColorChanged = birthColorChanged;
 		};
 
-		this.onDeathColorChanged = function (deathColorChanged) {
+		controlMenu.onDeathColorChanged = function (deathColorChanged) {
 			controlMenu.deathColorChanged = deathColorChanged;
 		};
 
-		this.onCellShapeChanged = function (cellShapeChanged) {
+		controlMenu.onCellShapeChanged = function (cellShapeChanged) {
 			controlMenu.cellShapeChanged = cellShapeChanged;
 		};
 
-		this.updateStatus = function (status) {
+		controlMenu.updateStatus = function (status) {
 			playButton.toggleClass("paused", status.updating !== true);
 			playSpeed.toggleClass("disabled", status.updating !== true);
 			speedSlider.toggleClass("disabled", status.updating !== true);

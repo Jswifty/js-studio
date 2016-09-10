@@ -63,15 +63,15 @@ define(function () {
 		/* Radius. */
 		sparkParticle.radius = startRadius();
 
-		/* Position, initially using a fault position. */
-		sparkParticle.position = { x: -10000, y: -10000 };
+		/* Position, initially null. */
+		sparkParticle.position = null;
 
 		/* Velocity in terms of pixels per second. */
 		sparkParticle.velocity = velocity();
 
 		/* Lifespan and remaining life time in terms of seconds. */
 		sparkParticle.lifespan = lifespan();
-		sparkParticle.remainingLife = sparkParticle.lifespan;
+		sparkParticle.remainingLife = 0;
 
 		/* Opacity. */
 		sparkParticle.opacity = 1;
@@ -83,26 +83,25 @@ define(function () {
 			sparkParticle.radius -= radiusVar * timeDiff;
 
 			/* Update the spark particle. If the remainingLife is over, reset properties of the spark particle. */
-			if (sparkParticle.remainingLife <= 0 || sparkParticle.radius <= 0) {
+			if ((sparkParticle.remainingLife <= 0 || sparkParticle.radius <= 0) && newPosition !== null) {
 				sparkParticle.color = startColor();
-
 				sparkParticle.radius = startRadius();
-
 				sparkParticle.position = { x: newPosition.x, y: newPosition.y };
-
 				sparkParticle.velocity = velocity();
-
 				sparkParticle.lifespan = lifespan();
 				sparkParticle.remainingLife = sparkParticle.lifespan;
 			}
-			else {
+			else if (sparkParticle.remainingLife > 0 && sparkParticle.radius > 0) {
 				sparkParticle.colorVar = colorVar();
 				sparkParticle.color.r -= sparkParticle.colorVar.r * timeDiff;
 				sparkParticle.color.g -= sparkParticle.colorVar.g * timeDiff;
 				sparkParticle.color.b -= sparkParticle.colorVar.b * timeDiff;
-
 				sparkParticle.position.x += sparkParticle.velocity.x * timeDiff;
 				sparkParticle.position.y += sparkParticle.velocity.y * timeDiff;
+			} else {
+				sparkParticle.position = null;
+				sparkParticle.remainingLife = 0;
+				sparkParticle.radius = 0;
 			}
 
 			/* Update vertical velocity. */

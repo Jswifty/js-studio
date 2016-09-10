@@ -4,9 +4,8 @@ define([
  	"./fireflieslayer",
  	"js-studio/animator/animator",
  	"js-studio/mouse/mouse",
- 	"js-studio/mouse/mouselistener",
 	"js-studio/cssloader/cssloader"
-], function (Module, Fire, FirefliesLayer, Animator, Mouse, MouseListener, CSSLoader) {
+], function (Module, Fire, FirefliesLayer, Animator, Mouse, CSSLoader) {
 
 	var currentDirectory = Module.uri.replace("firefliesscene.js", "");
 
@@ -21,6 +20,68 @@ define([
 
 		/* Create an Animator. */
 		scene.animator = new Animator();
+
+		/* Create a Mouse. */
+		scene.mouse = new Mouse(container);
+		scene.mouse.onMouseOver(function (event) {
+			scene.fire.onMouseOver(event);
+
+			for (var i = 0; i < scene.firefliesLayers.length; i++) {
+				scene.firefliesLayers[i].onMouseOver(event);
+			}
+		});
+		scene.mouse.onMouseOut(function (event) {
+			scene.fire.onMouseOut(event);
+
+			for (var i = 0; i < scene.firefliesLayers.length; i++) {
+				scene.firefliesLayers[i].onMouseOut(event);
+			}
+		});
+		scene.mouse.onMouseMove(function (event) {
+			scene.fire.onMouseMove(event);
+
+			for (var i = 0; i < scene.firefliesLayers.length; i++) {
+				scene.firefliesLayers[i].onMouseMove(event);
+			}
+
+			if (event.mouse.isMouseDown === true) {
+				scene.checkFirefliesLayers();
+			}
+		});
+		scene.mouse.onMouseDown(function (event) {
+			if (event.mouse.isLeftButton === true || event.mouse.isTouching === true) {
+				scene.fire.onMouseDown(event);
+
+				for (var i = 0; i < scene.firefliesLayers.length; i++) {
+					scene.firefliesLayers[i].onMouseDown(event);
+				}
+
+				scene.checkFirefliesLayers();
+			}
+		});
+		scene.mouse.onMouseUp(function (event) {
+			scene.fire.onMouseUp(event);
+
+			for (var i = 0; i < scene.firefliesLayers.length; i++) {
+				scene.firefliesLayers[i].onMouseUp(event);
+			}
+
+			scene.checkFirefliesLayers(scene.performingTime);
+		});
+		scene.mouse.onMouseClick(function (event) {
+			scene.fire.onMouseClick(event);
+
+			for (var i = 0; i < scene.firefliesLayers.length; i++) {
+				scene.firefliesLayers[i].onMouseClick(event);
+			}
+		});
+		scene.mouse.onMouseStop(function (event) {
+			scene.fire.onMouseStop(event);
+
+			for (var i = 0; i < scene.firefliesLayers.length; i++) {
+				scene.firefliesLayers[i].onMouseStop(event);
+			}
+		});
 
 		/* Fire layer, which creates a canvas. */
 		scene.fire = new Fire(0, 50, container, scene.animator);
@@ -41,75 +102,9 @@ define([
 			scene.firefliesLayers[i].focusOnFire(scene.fire);
 		}
 
-		scene.addMouseListener = function (container) {
-			if (scene.mouse && scene.mouseListener) {
-				scene.mouse.removeMouseListener(scene.mouseListener);
-			}
-
-			scene.mouse = new Mouse(container);
-
-			scene.mouseListener = new MouseListener();
-			scene.mouseListener.onMouseOver(function (event) {
-				scene.fire.onMouseOver(event);
-
-				for (var i = 0; i < scene.firefliesLayers.length; i++) {
-					scene.firefliesLayers[i].onMouseOver(event);
-				}
-			});
-			scene.mouseListener.onMouseOut(function (event) {
-				scene.fire.onMouseOut(event);
-
-				for (var i = 0; i < scene.firefliesLayers.length; i++) {
-					scene.firefliesLayers[i].onMouseOut(event);
-				}
-			});
-			scene.mouseListener.onMouseMove(function (event) {
-				scene.fire.onMouseMove(event);
-
-				for (var i = 0; i < scene.firefliesLayers.length; i++) {
-					scene.firefliesLayers[i].onMouseMove(event);
-				}
-
-				if (event.mouse.isMouseDown === true) {
-					scene.checkFirefliesLayers();
-				}
-			});
-			scene.mouseListener.onMouseDown(function (event) {
-				if (event.mouse.isLeftButton === true || event.mouse.isTouching === true) {
-					scene.fire.onMouseDown(event);
-
-					for (var i = 0; i < scene.firefliesLayers.length; i++) {
-						scene.firefliesLayers[i].onMouseDown(event);
-					}
-
-					scene.checkFirefliesLayers();
-				}
-			});
-			scene.mouseListener.onMouseUp(function (event) {
-				scene.fire.onMouseUp(event);
-
-				for (var i = 0; i < scene.firefliesLayers.length; i++) {
-					scene.firefliesLayers[i].onMouseUp(event);
-				}
-
-				scene.checkFirefliesLayers(scene.performingTime);
-			});
-			scene.mouseListener.onMouseClick(function (event) {
-				scene.fire.onMouseClick(event);
-
-				for (var i = 0; i < scene.firefliesLayers.length; i++) {
-					scene.firefliesLayers[i].onMouseClick(event);
-				}
-			});
-			scene.mouseListener.onMouseStop(function (event) {
-				scene.fire.onMouseStop(event);
-
-				for (var i = 0; i < scene.firefliesLayers.length; i++) {
-					scene.firefliesLayers[i].onMouseStop(event);
-				}
-			});
-
-			scene.mouse.addMouseListener(scene.mouseListener);
+		scene.listenMouseEventsOn = function (element) {
+			scene.mouse.detachFromElement();
+			scene.mouse.attachToElement(element);
 		};
 
 		scene.startScene = function () {

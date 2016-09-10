@@ -33,18 +33,15 @@ define([
 			fire.sparkParticles[i] = new SparkParticle();
 		}
 
-		/* a void position. */
-		fire.faultPosition = { x : -10000, y : -10000 };
-
 		/* Fire Position. */
-		fire.firePosition = { x : -10000, y : -10000 };
+		fire.firePosition = null;
 
 		/* Whether the fire is lighted up. */
 		fire.fireOn = false;
 
 		/* Whether the fire is sparkling. */
 		fire.isSparkling = false;
-		fire.sparklePosition = { x : -10000, y : -10000 };
+		fire.sparklePosition = null;
 
 		/* The time spend to sparkle in terms of milli seconds. */
 		fire.sparklingTime = 120;
@@ -61,45 +58,59 @@ define([
 
 			/* Paint the fire. */
 			for (var i = 0; i < fire.fireParticles.length; i++) {
-				context.beginPath();
-
 				var fireParticle = fire.fireParticles[i];
-				var gradient = context.createRadialGradient(fireParticle.position.x, fireParticle.position.y, 0, fireParticle.position.x, fireParticle.position.y, fireParticle.radius);
-				gradient.addColorStop(0, "rgba(" + fireParticle.rgbString + ", " + fireParticle.opacityString + ")");
-				gradient.addColorStop(0.5, "rgba(" + fireParticle.rgbString + ", " + 0.5 * fireParticle.opacityString + ")");
-				gradient.addColorStop(1, "rgba(" + fireParticle.rgbString + ", 0)");
-				context.fillStyle = gradient;
-				context.arc(fireParticle.position.x, fireParticle.position.y, fireParticle.radius, 2 * Math.PI, false);
+				var position = fireParticle.position;
+				var radius = fireParticle.radius;
+				var rgbString = fireParticle.rgbString;
+				var opacity = fireParticle.opacityString;
 
-				context.closePath();
-				context.fill();
+				if (position !== null) {
+					context.beginPath();
+					
+					var gradient = context.createRadialGradient(position.x, position.y, 0, position.x, position.y, radius);
+					gradient.addColorStop(0, "rgba(" + rgbString + ", " + opacity + ")");
+					gradient.addColorStop(0.5, "rgba(" + rgbString + ", " + 0.5 * opacity + ")");
+					gradient.addColorStop(1, "rgba(" + rgbString + ", 0)");
+					context.fillStyle = gradient;
+					context.arc(position.x, position.y, radius, 2 * Math.PI, false);
+
+					context.closePath();
+					context.fill();
+				}
 			}
 
 			/* Paint the sparks. */
 			for (var i = 0; i < fire.sparkParticles.length; i++) {
-				context.beginPath();
-
 				var sparkParticle = fire.sparkParticles[i];
-				var gradient = context.createRadialGradient(sparkParticle.position.x, sparkParticle.position.y, 0, sparkParticle.position.x, sparkParticle.position.y, sparkParticle.radius);
-				gradient.addColorStop(0, "rgba(255, 255, 255, " + sparkParticle.opacityString + ")");
-				gradient.addColorStop(0.6, "rgba(" + sparkParticle.rgbString + ", " + 0.6 * sparkParticle.opacityString + ")");
-				gradient.addColorStop(1, "rgba(0, 0, 0, 0)");
-				context.fillStyle = gradient;
-				context.arc(sparkParticle.position.x, sparkParticle.position.y, sparkParticle.radius, 2 * Math.PI, false);
+				var position = sparkParticle.position;
+				var radius = sparkParticle.radius;
+				var rgbString = sparkParticle.rgbString;
+				var opacity = sparkParticle.opacityString;
 
-				context.closePath();
-				context.fill();
+				if (position !== null) {
+					context.beginPath();
+
+					var gradient = context.createRadialGradient(position.x, position.y, 0, position.x, position.y, radius);
+					gradient.addColorStop(0, "rgba(255, 255, 255, " + opacity + ")");
+					gradient.addColorStop(0.6, "rgba(" + rgbString + ", " + 0.6 * opacity + ")");
+					gradient.addColorStop(1, "rgba(0, 0, 0, 0)");
+					context.fillStyle = gradient;
+					context.arc(position.x, position.y, radius, 2 * Math.PI, false);
+
+					context.closePath();
+					context.fill();
+				}
 			}
 		});
 
 		fire.onMouseOver = function (event) {
 			if (fire.fireOn && event.mouse.position) {
-				fire.firePosition = { x : event.mouse.position.x, y : event.mouse.position.y }
+				fire.firePosition = { x : event.mouse.position.x, y : event.mouse.position.y };
 			}
 		};
 
 		fire.onMouseOut = function (event) {
-			fire.firePosition = { x : fire.faultPosition.x, y : fire.faultPosition.y }
+			fire.firePosition = null;
 		};
 
 		fire.onMouseMove = function (event) {
@@ -117,7 +128,7 @@ define([
 		};
 
 		fire.onMouseUp = function (event) {
-			fire.firePosition = { x : fire.faultPosition.x, y : fire.faultPosition.y }
+			fire.firePosition = null;
 			fire.fireOn = false;
 		};
 
@@ -136,7 +147,7 @@ define([
 				fire.isSparkling = true;
 				fire.sparklePosition = position;
 				/* switch it off after the sparkling time is spent. */
-				setTimeout(function () { fire.isSparkling = false; fire.sparklePosition = { x : fire.faultPosition.x, y : fire.faultPosition.y }; }, fire.sparklingTime);
+				setTimeout(function () { fire.isSparkling = false; fire.sparklePosition = null; }, fire.sparklingTime);
 			}
 
 			for (var i = 0; i < fire.sparkParticles.length; i++) {
