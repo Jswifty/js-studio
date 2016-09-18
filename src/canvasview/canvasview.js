@@ -25,6 +25,7 @@ define([
 		canvasView.onResize = function (resizeEvent) {
 			resizeEvent = resizeEvent || function () {};
 			canvasView.resizeEvents.push(resizeEvent);
+			canvasView.fireResizeEvent();
 		};
 
 		canvasView.onPause = function (pauseEvent) {

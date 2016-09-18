@@ -3,8 +3,9 @@ define([
 	"js-studio/mouse/mouse",
 	"js-studio/domelement/domelement",
 	"js-studio/cssloader/cssloader",
+	"js-studio/keyboard/keycodes",
 	"js-studio/colorutils/colorutils"
-], function (Module, Mouse, DOMElement, CSSLoader, ColorUtils) {
+], function (Module, Mouse, DOMElement, CSSLoader, Key, ColorUtils) {
 
 	var currentDirectory = Module.uri.replace("colorpicker.js", "");
 
@@ -48,16 +49,34 @@ define([
 
 		var colorBoardOverlay = new DOMElement("div", { class: "colorBoardOverlay" });
 		function colorBoardMouseEvent (event) {
-			if (event.which !== 1) {
-				return;
-			}
+			if (event.mouse.isLeftButton === true) {
+				var x = event.mouse.position.x;
+				var y = event.mouse.position.y;
+				var width = colorBoardOverlay.offsetWidth;
+				var height = colorBoardOverlay.offsetHeight;
+				var topPercentage = Math.max(0, Math.min(height, y)) / height * 100;
+				var leftPercentage = Math.max(0, Math.min(width, x)) / height * 100;
 
-			var x = event.mouse.position.x;
-			var y = event.mouse.position.y;
-			var width = colorBoardOverlay.offsetWidth;
-			var height = colorBoardOverlay.offsetHeight;
-			var topPercentage = Math.max(0, Math.min(height, y)) / height * 100;
-			var leftPercentage = Math.max(0, Math.min(width, x)) / height * 100;
+				colorBoardPointer.style.top = topPercentage + "%";
+				colorBoardPointer.style.left = leftPercentage + "%";
+
+				changeColor();
+			}
+		};
+		function colorBoardKeyEvent (event) {
+			var keyCode = event.keyboard.keyCode;
+			var topPercentage = parseFloat(colorBoardPointer.style.top);
+			var leftPercentage = parseFloat(colorBoardPointer.style.left);
+
+			if (keyCode === Key.UP) {
+				topPercentage = Math.max(0, Math.min(100, topPercentage - 1));
+			} else if (keyCode === Key.DOWN) {
+				topPercentage = Math.max(0, Math.min(100, topPercentage + 1));
+			} else if (keyCode === Key.LEFT) {
+				leftPercentage = Math.max(0, Math.min(100, leftPercentage - 1));
+			} else if (keyCode === Key.RIGHT) {
+				leftPercentage = Math.max(0, Math.min(100, leftPercentage + 1));
+			}
 
 			colorBoardPointer.style.top = topPercentage + "%";
 			colorBoardPointer.style.left = leftPercentage + "%";
@@ -66,6 +85,7 @@ define([
 		};
 		colorBoardOverlay.onMouseDrag(colorBoardMouseEvent);
 		colorBoardOverlay.onMouseDown(colorBoardMouseEvent);
+		colorBoardOverlay.onKeyDown(colorBoardKeyEvent);
 		colorBoard.appendChild(colorBoardOverlay);
 
 		var hueBanner = new DOMElement("div", { class: "hueBanner" });
@@ -80,25 +100,20 @@ define([
 			changeColor();
 		};
 		function hueMouseEvent (event) {
-			if (event.which !== 1) {
-				return;
+			if (event.mouse.isLeftButton === true) {
+				var bannerHeight = hueBanner.offsetHeight;
+				var position = event.mouse.position.y;
+				var percentage = position / bannerHeight * 100;
+
+				onHueChanged(percentage);
 			}
-
-			var bannerHeight = hueBanner.offsetHeight;
-			var position = event.mouse.position.y;
-			var percentage = position / bannerHeight * 100;
-
-			onHueChanged(percentage);
 		};
 		function hueKeyEvent (event) {
-			var keyCode = event.which || event.keyCode;
+			var keyCode = event.keyboard.keyCode;
 
-			/* up key is pressed */
-			if (keyCode === 38) {
+			if (keyCode === Key.UP) {
 				onHueChanged(parseInt(hueBannerThumb.style.top) - 1);
-			}
-			/* down key is pressed */
-			else if (keyCode === 40) {
+			} else if (keyCode === Key.DOWN) {
 				onHueChanged(parseInt(hueBannerThumb.style.top) + 1);
 			}
 	 	};
@@ -117,25 +132,20 @@ define([
 			changeColor();
 		};
 		function alphaMouseEvent (event) {
-			if (event.which !== 1) {
-				return;
+			if (event.mouse.isLeftButton === true) {
+				var bannerWidth = alphaBanner.offsetWidth;
+				var position = event.mouse.position.x;
+				var percentage = position / bannerWidth * 100;
+
+				onAlphaChanged(percentage);
 			}
-
-			var bannerWidth = alphaBanner.offsetWidth;
-			var position = event.mouse.position.x;
-			var percentage = position / bannerWidth * 100;
-
-			onAlphaChanged(percentage);
 		};
 		function alphaKeyEvent (event) {
-			var keyCode = event.which || event.keyCode;
+			var keyCode = event.keyboard.keyCode;
 
-			/* left key is pressed */
-			if (keyCode === 37) {
+			if (keyCode === Key.LEFT) {
 				onAlphaChanged(parseInt(alphaBannerThumb.style.left) - 1);
-			}
-			/* right key is pressed */
-			else if (keyCode === 39) {
+			} else if (keyCode === Key.RIGHT) {
 				onAlphaChanged(parseInt(alphaBannerThumb.style.left) + 1);
 			}
 		};

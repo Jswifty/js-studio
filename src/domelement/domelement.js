@@ -28,6 +28,12 @@ define([
       }
     }
 
+    function addTabIndex () {
+      if (domElement.tabIndex <= 0) {
+        domElement.tabIndex = currentTabIndex++;
+      }
+    };
+
     function addMouse () {
       if (domElement.mouse === undefined) {
         domElement.mouse = new Mouse(domElement);
@@ -35,8 +41,9 @@ define([
     };
 
     function addKeyboard () {
+      addTabIndex();
+
       if (domElement.keyboard === undefined) {
-        domElement.tabIndex = currentTabIndex++;
         domElement.keyboard = new Keyboard(domElement);
       }
     };
@@ -103,6 +110,18 @@ define([
     domElement.onKeyUp = function (keyUp) {
       addKeyboard();
       domElement.keyboard.onKeyUp(keyUp);
+      return domElement;
+    };
+
+    domElement.onFocusLost = function (focusLost) {
+      addTabIndex();
+      domElement.addEventListener("blur", focusLost, false);
+      return domElement;
+    };
+
+    domElement.onFocusGain = function (focusGain) {
+      addTabIndex();
+      domElement.addEventListener("focus", focusGain, false);
       return domElement;
     };
 

@@ -1,8 +1,9 @@
 define([
 	"module",
   "js-studio/cssloader/cssloader",
-	"js-studio/domelement/domelement"
-], function (Module, CSSLoader, DOMElement) {
+	"js-studio/domelement/domelement",
+	"js-studio/keyboard/keycodes"
+], function (Module, CSSLoader, DOMElement, Key) {
 
 	var currentDirectory = Module.uri.replace("slider.js", "");
 
@@ -47,29 +48,24 @@ define([
     slider.appendChild(sliderThumb);
 
     function sliderMouseEvent (event) {
-      if (event.which !== 1) {
-        return;
-      }
+      if (event.mouse.isLeftButton === true) {
+	      var length = slider.vertical ? slider.offsetHeight : slider.offsetWidth;
+	      var position = slider.vertical ? event.mouse.position.y : event.mouse.position.x;
 
-      var length = slider.vertical ? slider.offsetHeight : slider.offsetWidth;
-      var position = slider.vertical ? event.mouse.position.y : event.mouse.position.x;
+	      var value = slider.min + slider.range * Math.max(0, Math.min(1, position / length));
 
-      var value = slider.min + slider.range * Math.max(0, Math.min(1, position / length));
+	      value = Math.round(value / slider.step) * slider.step;
 
-      value = Math.round(value / slider.step) * slider.step;
-
-      slider.setValue(value);
+	      slider.setValue(value);
+			}
     };
 
    function sliderKeyEvent (event) {
-      var keyCode = event.which || event.keyCode;
+      var keyCode = event.keyboard.keyCode;
 
-      /* left key is pressed or up key is pressed */
-      if ((keyCode === 37 && slider.vertical !== true) || (keyCode === 38 && slider.vertical === true)) {
+      if ((keyCode === Key.LEFT && slider.vertical !== true) || (keyCode === Key.UP && slider.vertical === true)) {
         slider.setValue(slider.value - slider.step);
-      }
-      /* right key is pressed or down key is pressed */
-      else if ((keyCode === 39 && slider.vertical !== true) || (keyCode === 40 && slider.vertical === true)) {
+      } else if ((keyCode === Key.RIGHT && slider.vertical !== true) || (keyCode === Key.DOWN && slider.vertical === true)) {
         slider.setValue(slider.value + slider.step);
       }
     };

@@ -21,11 +21,6 @@ define(function () {
   return function (container) {
     var keyboard = this;
 
-		keyboard.UP = 38;
-		keyboard.DOWN = 40;
-		keyboard.LEFT = 37;
-		keyboard.RIGHT = 39;
-
     /* Whether the keyboard skips the default behaviours upon the listen element. */
 		keyboard.preventDefault = false;
 

@@ -263,7 +263,6 @@ define([
 		};
 
 		lifeGrid.canvasView.animator.addRenderFunction(lifeGrid, lifeGrid.update);
-		lifeGrid.canvasView.fireResizeEvent();
 		lifeGrid.reset();
 	};
 });
