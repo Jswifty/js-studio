@@ -102,6 +102,18 @@ define([
       return domElement;
     };
 
+    domElement.onDragOver = function (dragOver) {
+      addMouse();
+      domElement.mouse.onDragOver(dragOver);
+      return domElement;
+    };
+
+    domElement.onDrop = function (drop) {
+      addMouse();
+      domElement.mouse.onDrop(drop);
+      return domElement;
+    };
+
     domElement.onKeyDown = function (keyDown) {
       addKeyboard();
       domElement.keyboard.onKeyDown(keyDown);
