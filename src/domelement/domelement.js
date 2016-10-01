@@ -22,7 +22,7 @@ define([
           } else if (property === "html") {
             domElement.innerHTML = properties[property];
           } else {
-            domElement[property] = properties[property];
+            domElement.setAttribute(property, properties[property]);
           }
         }
       }
