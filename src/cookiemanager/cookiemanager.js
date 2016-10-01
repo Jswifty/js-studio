@@ -1,7 +1,6 @@
 define(function () {
 
 	return {
-
 		getCookie: function (name) {
 			var nameKey = name + "=";
 			var cookieArray = document.cookie.split(";");
