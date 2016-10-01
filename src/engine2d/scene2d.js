@@ -11,8 +11,8 @@ define([
     scene2D.accelY = 0;
     scene2D.xRange = 0;
     scene2D.yRange = 0;
-    scene2D.width = width;
-    scene2D.height = height;
+    scene2D.width = width || 0;
+    scene2D.height = height || 0;
     scene2D.canvasWidth = width;
     scene2D.canvasHeight = height;
     scene2D.zoom = 1;
@@ -120,6 +120,19 @@ define([
       zoomFactor = zoomFactor || 1.01;
       scene2D.setZoom(scene2D.zoom / zoomFactor);
   	};
+
+    scene2D.setDimension = function (width, height) {
+      scene2D.setWidth(width);
+      scene2D.setHeight(height);
+    };
+
+    scene2D.setWidth = function (width) {
+      scene2D.width = width || scene2D.width;
+    };
+
+    scene2D.setHeight = function (height) {
+      scene2D.height = height || scene2D.height;
+    };
 
   	scene2D.setShowGrid = function (showGrid, gridSize, gridColor) {
       scene2D.showGrid = showGrid === true;
