@@ -1,0 +1,32 @@
+.fileSelector {
+  position: relative;
+}
+
+.fileSelector .dropZone {
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  margin: 10px;
+  border: 2px dashed #B0B0B0;
+  border-radius: 5px;
+  overflow: hidden;
+  min-height: 30px;
+}
+
+.fileSelector .dropZone .hiddenFileInput {
+  display: none;
+}
+
+.fileSelector .dropZone .fileInputLabel {
+  display: block;
+  position: relative;
+  height: 30px;
+  top: 50%;
+  margin-top: -15px;
+  line-height: 30px;
+  text-align: center;
+  color: #B0B0B0;
+  cursor: pointer;
+}
