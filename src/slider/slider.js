@@ -13,7 +13,7 @@ define([
 	return function (options) {
     options = options || {};
 
-    var slider = new DOMElement("div", { id: options && options.id, class: "slider" });
+    var slider = new DOMElement("div", { id: options && options.id, class: "slider" + (options && options.class ? " " + options.class : "") });
     slider.step = options.step || 1;
     slider.min = options.min || 0;
     slider.max = options.max || 100;

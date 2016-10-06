@@ -11,25 +11,31 @@ define([
 
   var inputIndex = 1;
 
-  return function () {
-    var fileSelector = new DOMElement("div", { class: "fileSelector" });
+  return function (options) {
+    var fileSelector = new DOMElement("div", { id: options && options.id, class: "fileSelector" + (options && options.class ? " " + options.class : "") });
+    fileSelector.fileSelected = options.fileSelected || function () {};
 
+    var dropEffect = (options && options.dropEffect) || "copy";
     var dropZone = new DOMElement("div", { class: "dropZone" });
-    dropZone.onDrop(function (event) {
-      event.preventDefault();
-      console.log(event);
-    });
     dropZone.onDragOver(function (event) {
       event.preventDefault();
-      event.dataTransfer.dropEffect = "link";
-      console.log(event);
+      event.dataTransfer.dropEffect = "copy";
     });
+    dropZone.onDrop(function (event) {
+      event.preventDefault();
+      fileSelector.fileSelected(event.dataTransfer.files);
+    });
+
     fileSelector.appendChild(dropZone);
 
-    var hiddenFileInput = new DOMElement("input", { id: "input_" + inputIndex, class: "hiddenFileInput", type: "file", multiple: true });
+    var hiddenFileInput = new DOMElement("input", { id: "input_" + inputIndex, class: "hiddenFileInput", type: "file", multiple: options && options.multiple });
+    hiddenFileInput.onChange(function (event) {
+      fileSelector.fileSelected(hiddenFileInput.files);
+    });
     dropZone.appendChild(hiddenFileInput);
 
-    var fileInputLabel = new DOMElement("label", { class: "fileInputLabel", for: "input_" + inputIndex, html: "Choose or drop files here" });
+    var inputLabelHTML = (options && options.inputLabelHTML) || "Choose or drop files here";
+    var fileInputLabel = new DOMElement("label", { class: "fileInputLabel", for: "input_" + inputIndex, html: inputLabelHTML });
     dropZone.appendChild(fileInputLabel);
 
     inputIndex++;
