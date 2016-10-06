@@ -53,8 +53,11 @@ define(function () {
     /* Previous update time-stamp of all mouse actions. */
     mouse.lastUpdateTime = 0;
 
-    /* Whether the a mouse key is pressed down. */
+    /* Whether a mouse key is pressed down. */
     mouse.isMouseDown = false;
+
+    /* The delta value when the mouse scrolls. */
+    mouse.scrollDelta = 0;
 
     /* Previous update time-stamp of a mouse down action. */
     mouse.lastMouseDownTime = 0;
@@ -84,6 +87,7 @@ define(function () {
     mouse.downEvents = [];
     mouse.upEvents = [];
     mouse.moveEvents = [];
+    mouse.scrollEvents = [];
     mouse.dragEvents = [];
     mouse.dragOverEvents = [];
     mouse.dropEvents = [];
@@ -105,6 +109,11 @@ define(function () {
     mouse.onMouseMove = function (moveEvent) {
       moveEvent = moveEvent || function () {};
       mouse.moveEvents.push(moveEvent);
+    };
+
+    mouse.onMouseScroll = function (scrollEvent) {
+      scrollEvent = scrollEvent || function () {};
+      mouse.scrollEvents.push(scrollEvent);
     };
 
     mouse.onMouseDrag = function (dragEvent) {
@@ -227,6 +236,13 @@ define(function () {
     mouse.fireMoveEvent = function (event) {
       for (var i = 0; i < mouse.moveEvents.length; i++) {
         mouse.moveEvents[i](event);
+      }
+    };
+
+    /** Perform action for scroll event */
+    mouse.fireScrollEvent = function (event) {
+      for (var i = 0; i < mouse.scrollEvents.length; i++) {
+        mouse.scrollEvents[i](event);
       }
     };
 
@@ -405,6 +421,31 @@ define(function () {
           /* Perform action for drag event. */
           mouse.fireDragEvent(event);
         }
+      }
+    };
+
+    /** When the mouse is scrolling. */
+    mouse.scrollEventMethod = function (event) {
+      if (mouse.isTouching === false) {
+        /* Put mouse as a reference in the event. */
+        event.mouse = mouse;
+
+        /* Skip the default behaviours upon this event. */
+        if (mouse.preventDefault) {
+          event.preventDefault();
+        }
+
+        /* Update the mouse relative position. */
+        var offsetPosition = getOffsetPosition(mouse.listenElement);
+        mouse.updatePosition({
+          x: event.clientX - offsetPosition.x,
+          y: event.clientY - offsetPosition.y
+        });
+
+        mouse.scrollDelta = Math.max(-1, Math.min(1, (event.wheelDelta || -event.detail)));
+
+        /* Perform action for move event. */
+        mouse.fireScrollEvent(event);
       }
     };
 
@@ -674,6 +715,8 @@ define(function () {
       mouse.listenElement.addEventListener("mousedown", mouse.downEventMethod, false);
       mouse.listenElement.addEventListener("mouseup", mouse.upEventMethod, false);
       mouse.listenElement.addEventListener("mousemove", mouse.moveEventMethod, false);
+      mouse.listenElement.addEventListener("mousewheel", mouse.scrollEventMethod, false);
+      mouse.listenElement.addEventListener("DOMMouseScroll", mouse.scrollEventMethod, false);
       mouse.listenElement.addEventListener("dragover", mouse.dragOverEventMethod, false);
       mouse.listenElement.addEventListener("drop", mouse.dropEventMethod, false);
 
@@ -694,6 +737,8 @@ define(function () {
         mouse.listenElement.removeEventListener("mousedown", mouse.downEventMethod, false);
         mouse.listenElement.removeEventListener("mouseup", mouse.upEventMethod, false);
         mouse.listenElement.removeEventListener("mousemove", mouse.moveEventMethod, false);
+        mouse.listenElement.removeEventListener("mousewheel", mouse.scrollEventMethod, false);
+        mouse.listenElement.removeEventListener("DOMMouseScroll", mouse.scrollEventMethod, false);
         mouse.listenElement.removeEventListener("dragover", mouse.dragOverEventMethod, false);
         mouse.listenElement.removeEventListener("drop", mouse.dropEventMethod, false);
 

@@ -66,6 +66,12 @@ define([
       return domElement;
     };
 
+    domElement.onMouseScroll = function (mouseScroll) {
+      addMouse();
+      domElement.mouse.onMouseScroll(mouseScroll);
+      return domElement;
+    };
+
     domElement.onMouseDrag = function (mouseDrag) {
       addMouse();
       domElement.mouse.onMouseDrag(function (event) {
@@ -134,6 +140,11 @@ define([
     domElement.onFocusGain = function (focusGain) {
       addTabIndex();
       domElement.addEventListener("focus", focusGain, false);
+      return domElement;
+    };
+
+    domElement.onChange = function (change) {
+      domElement.addEventListener("change", change, false);
       return domElement;
     };
 
