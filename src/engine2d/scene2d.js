@@ -16,6 +16,8 @@ define([
     scene2D.canvasWidth = width;
     scene2D.canvasHeight = height;
     scene2D.zoom = 1;
+    scene2D.requestedZoom = 1;
+    scene2D.zoomSpeed = 0.5;
     scene2D.showGrid = true;
     scene2D.gridSize = 50;
     scene2D.gridColor = "rgba(0, 125, 0, 0.7)";
@@ -72,10 +74,12 @@ define([
       for (var x = 0; x <= width; x += scene2D.gridSize) {
       	context.fillRect(x - sceneX, -sceneY, 1, height);
       }
+      context.fillRect(width - sceneX, -sceneY, 1, height);
 
       for (var y = 0; y <= height; y += scene2D.gridSize) {
       	context.fillRect(-sceneX, y - sceneY, width, 1);
       }
+      context.fillRect(-sceneX, height - sceneY, width, 1);
   	};
 
   	scene2D.processKeyInputs = function () {
@@ -93,6 +97,13 @@ define([
       }
   	};
 
+    scene2D.processZoom = function () {
+      var zoom = scene2D.zoom + (scene2D.requestedZoom - scene2D.zoom) * scene2D.zoomSpeed;
+      var newZoom = zoom / scene2D.zoom;
+      scene2D.canvasView.getCanvas2DContext().scale(newZoom, newZoom);
+      scene2D.zoom = zoom;
+    };
+
     scene2D.add = function (object) {
       scene2D.objects.push(object);
     };
@@ -102,28 +113,23 @@ define([
       scene2D.accelY = accelY || scene2D.accelY;
   	};
 
-  	scene2D.setZoom = function (zoom) {
-      var newZoom = zoom / scene2D.zoom;
-      scene2D.canvasView.getCanvas2DContext().scale(newZoom, newZoom);
-
-      scene2D.zoom = zoom;
-
-      scene2D.adjustScenePosition();
+  	scene2D.zoomIn = function (zoomFactor, zoomSpeed) {
+      zoomFactor = zoomFactor || 1.05;
+      scene2D.zoomSpeed = zoomSpeed || scene2D.zoomSpeed;
+      scene2D.requestedZoom = scene2D.zoom * zoomFactor;
   	};
 
-  	scene2D.zoomIn = function (zoomFactor) {
-      zoomFactor = zoomFactor || 1.01;
-      scene2D.setZoom(scene2D.zoom * zoomFactor);
-  	};
-
-  	scene2D.zoomOut = function (zoomFactor) {
-      zoomFactor = zoomFactor || 1.01;
-      scene2D.setZoom(scene2D.zoom / zoomFactor);
+  	scene2D.zoomOut = function (zoomFactor, zoomSpeed) {
+      zoomFactor = zoomFactor || 1.05;
+      scene2D.zoomSpeed = zoomSpeed || scene2D.zoomSpeed;
+      scene2D.requestedZoom = scene2D.zoom / zoomFactor;
   	};
 
     scene2D.setDimension = function (width, height) {
       scene2D.setWidth(width);
       scene2D.setHeight(height);
+
+      scene2D.canvasView.fireResizeEvent();
     };
 
     scene2D.setWidth = function (width) {
@@ -169,15 +175,17 @@ define([
 
   	scene2D.update = function (timeDiff) {
       scene2D.processKeyInputs();
+      scene2D.processZoom();
+      scene2D.adjustScenePosition();
 
       for (var i = 0; i < scene2D.objects.length; i++) {
       	scene2D.objects[i].update(timeDiff, scene2D.width, scene2D.height, scene2D.accelX, scene2D.accelY);
       }
 
-      if (scene2D.followObjects.length > 0) {
-        var x = 0;
-        var y = 0;
+      var x = 0;
+      var y = 0;
 
+      if (scene2D.followObjects.length > 0) {
         for (var i = 0; i < scene2D.followObjects.length; i++) {
           var object = scene2D.followObjects[i];
 
@@ -187,12 +195,15 @@ define([
 
         x /= scene2D.followObjects.length;
         y /= scene2D.followObjects.length;
-
-      	x = scene2D.x + (x - scene2D.x) * scene2D.followSpeed;
-        y = scene2D.y + (y - scene2D.y) * scene2D.followSpeed;
-
-      	scene2D.setScenePosition(x, y);
+      } else {
+        x = (scene2D.width - scene2D.canvasWidth / scene2D.zoom) / 2;
+        y = (scene2D.height - scene2D.canvasHeight / scene2D.zoom) / 2;
       }
+
+      x = scene2D.x + (x - scene2D.x) * scene2D.followSpeed;
+      y = scene2D.y + (y - scene2D.y) * scene2D.followSpeed;
+
+    	scene2D.setScenePosition(x, y);
   	};
 
   	scene2D.canvasView.animator.addRenderFunction(scene2D, scene2D.update);
