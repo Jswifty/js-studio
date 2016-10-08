@@ -108,6 +108,15 @@ define([
       scene2D.objects.push(object);
     };
 
+    scene2D.remove = function (object) {
+      for(var i = scene2D.objects.length - 1; i >= 0; i--) {
+        if(scene2D.objects[i] === object) {
+          scene2D.objects.splice(i, 1);
+          break;
+        }
+      }
+    };
+
   	scene2D.setAcceleration = function (accelX, accelY) {
       scene2D.accelX = accelX || scene2D.accelX;
       scene2D.accelY = accelY || scene2D.accelY;
@@ -116,13 +125,13 @@ define([
   	scene2D.zoomIn = function (zoomFactor, zoomSpeed) {
       zoomFactor = zoomFactor || 1.05;
       scene2D.zoomSpeed = zoomSpeed || scene2D.zoomSpeed;
-      scene2D.requestedZoom = scene2D.zoom * zoomFactor;
+      scene2D.requestedZoom = scene2D.requestedZoom * zoomFactor;
   	};
 
   	scene2D.zoomOut = function (zoomFactor, zoomSpeed) {
       zoomFactor = zoomFactor || 1.05;
       scene2D.zoomSpeed = zoomSpeed || scene2D.zoomSpeed;
-      scene2D.requestedZoom = scene2D.zoom / zoomFactor;
+      scene2D.requestedZoom = scene2D.requestedZoom / zoomFactor;
   	};
 
     scene2D.setDimension = function (width, height) {
