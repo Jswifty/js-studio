@@ -172,6 +172,6 @@ define([
       domElement.leftButtonDragOnly = leftButtonDragOnly === true;
     };
 
-		return domElement;
-	};
+    return domElement;
+  };
 });
