@@ -288,7 +288,7 @@ define(function () {
         event.mouse = mouse;
 
         /* Skip the default behaviours upon this event. */
-        if (mouse.preventDefault) {
+        if (mouse.preventDefault === true) {
           event.preventDefault();
         }
 
@@ -307,7 +307,7 @@ define(function () {
         event.mouse = mouse;
 
         /* Skip the default behaviours upon this event. */
-        if (mouse.preventDefault) {
+        if (mouse.preventDefault === true) {
           event.preventDefault();
         }
 
@@ -331,7 +331,7 @@ define(function () {
         mouse.isRightButton = event.which === RIGHT_BUTTON;
 
         /* Skip the default behaviours upon this event. */
-        if (mouse.preventDefault) {
+        if (mouse.preventDefault === true) {
           event.preventDefault();
         }
 
@@ -365,7 +365,7 @@ define(function () {
         mouse.isRightButton = event.which === RIGHT_BUTTON;
 
         /* Skip the default behaviours upon this event. */
-        if (mouse.preventDefault) {
+        if (mouse.preventDefault === true) {
           event.preventDefault();
         }
 
@@ -397,7 +397,7 @@ define(function () {
         event.mouse = mouse;
 
         /* Skip the default behaviours upon this event. */
-        if (mouse.preventDefault) {
+        if (mouse.preventDefault === true) {
           event.preventDefault();
         }
 
@@ -431,7 +431,7 @@ define(function () {
         event.mouse = mouse;
 
         /* Skip the default behaviours upon this event. */
-        if (mouse.preventDefault) {
+        if (mouse.preventDefault === true) {
           event.preventDefault();
         }
 
@@ -455,7 +455,7 @@ define(function () {
       event.mouse = mouse;
 
       /* Skip the default behaviours upon this event. */
-      if (mouse.preventDefault) {
+      if (mouse.preventDefault === true) {
         event.preventDefault();
       }
 
@@ -476,7 +476,7 @@ define(function () {
       event.mouse = mouse;
 
       /* Skip the default behaviours upon this event. */
-      if (mouse.preventDefault) {
+      if (mouse.preventDefault === true) {
         event.preventDefault();
       }
 
@@ -540,7 +540,7 @@ define(function () {
       event.mouse = mouse;
 
       /* Skip the default behaviours upon this event. */
-      if (mouse.preventDefault) {
+      if (mouse.preventDefault === true) {
         event.preventDefault();
       }
 
@@ -565,7 +565,7 @@ define(function () {
       event.mouse = mouse;
 
       /* Skip the default behaviours upon this event. */
-      if (mouse.preventDefault) {
+      if (mouse.preventDefault === true) {
         event.preventDefault();
       }
 
@@ -599,7 +599,7 @@ define(function () {
       event.mouse = mouse;
 
       /* Skip the default behaviours upon this event. */
-      if (mouse.preventDefault) {
+      if (mouse.preventDefault === true) {
         event.preventDefault();
       }
 
@@ -633,7 +633,7 @@ define(function () {
       event.mouse = mouse;
 
       /* Skip the default behaviours upon this event. */
-      if (mouse.preventDefault) {
+      if (mouse.preventDefault === true) {
         event.preventDefault();
       }
 
@@ -650,7 +650,7 @@ define(function () {
       event.mouse = mouse;
 
       /* Skip the default behaviours upon this event. */
-      if (mouse.preventDefault) {
+      if (mouse.preventDefault === true) {
         event.preventDefault();
       }
 
@@ -672,7 +672,7 @@ define(function () {
       event.mouse = mouse;
 
       /* Skip the default behaviours upon this event. */
-      if (mouse.preventDefault) {
+      if (mouse.preventDefault === true) {
         event.preventDefault();
       }
 
@@ -756,7 +756,7 @@ define(function () {
 
     /** Toggle value for mouse prevent default on all events. */
     mouse.setPreventDefault = function (preventDefault) {
-      mouse.preventDefault = preventDefault;
+      mouse.preventDefault = preventDefault === true;
     };
 
     /* Append the canvas to the DIV container. */

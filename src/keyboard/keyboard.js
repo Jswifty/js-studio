@@ -1,19 +1,26 @@
 define(function () {
 
-	function addKeyCode (keyCodes, keyCode) {
+	function containsKeyCode (keyCodes, keyCode) {
 		for (var i = 0; i < keyCodes.length; i++) {
 			if (keyCodes[i] === keyCode) {
-				return;
+				return true;
 			}
 		}
 
-		keyCodes.push(keyCode);
+		return false;
+	};
+
+	function addKeyCode (keyCodes, keyCode) {
+		if (containsKeyCode(keyCodes, keyCode) === false) {
+			keyCodes.push(keyCode);
+		}
 	};
 
 	function removeKeyCode (keyCodes, keyCode) {
 		for (var i = keyCodes.length - 1; i >= 0; i--) {
 			if (keyCodes[i] === keyCode) {
 				keyCodes.splice(i, 1);
+				return;
 			}
 		}
 	};
@@ -83,7 +90,7 @@ define(function () {
     };
 
 		keyboard.hasKeyPressed = function (keyCode) {
-			return contains(keyboard.keyCodesPressed, keyCode);
+			return containsKeyCode(keyboard.keyCodesPressed, keyCode);
 		};
 
 		keyboard.getLastKeyPressed = function () {

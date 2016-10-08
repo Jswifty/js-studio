@@ -11,6 +11,7 @@ define([
     properties = properties || {};
 
 		var domElement = document.createElement(type);
+    domElement.leftButtonDragOnly = true;
 
     for (property in properties) {
       if (properties.hasOwnProperty(property)) {
@@ -75,7 +76,7 @@ define([
     domElement.onMouseDrag = function (mouseDrag) {
       addMouse();
       domElement.mouse.onMouseDrag(function (event) {
-        if (event.mouse.isLeftButton === true) {
+        if (domElement.leftButtonDragOnly === false || event.mouse.isLeftButton === true) {
           mouseDrag(event);
         }
       });
@@ -165,6 +166,10 @@ define([
     domElement.toggleClass = function (classname, toggleOn) {
       ClassManager.toggleClass(domElement, classname, toggleOn);
       return domElement;
+    };
+
+    domElement.setLeftButtonDragOnly = function (leftButtonDragOnly) {
+      domElement.leftButtonDragOnly = leftButtonDragOnly === true;
     };
 
 		return domElement;

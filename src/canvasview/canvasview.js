@@ -11,8 +11,8 @@ define([
 		canvasView.container = container;
 
 		/* Create the canvas. */
-		canvasView.canvas = new DOMElement("canvas", { html: "Your browser does not support HTML5 canvas." });
-		canvasView.canvas.style.position = "absolute";
+		canvasView.canvas = new DOMElement("canvas", { html: "Your browser does not support HTML5 canvas.", style: "position: absolute;" });
+		canvasView.canvas.setLeftButtonDragOnly(false);
 
 		/* Create an Animator instance. */
 		canvasView.animator = animator || new Animator();
