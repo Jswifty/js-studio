@@ -3,11 +3,10 @@ define([
   "js-studio/cssloader/cssloader",
   "js-studio/imagepreloader/imagepreloader",
   "js-studio/domelement/domelement",
-  "js-studio/keyboard/keycodes",
   "js-studio/file/fileselector",
   "js-studio/file/fileutils",
   "./imageview"
-], function (Module, CSSLoader, preloadImage, DOMElement, Key, FileSelector, FileUtils, ImageView) {
+], function (Module, CSSLoader, preloadImage, DOMElement, FileSelector, FileUtils, ImageView) {
 
   var currentDirectory = Module.uri.replace("imageviewer.js", "");
 
@@ -39,26 +38,16 @@ define([
     var imageViewer = new DOMElement("div", { id: options && options.id, class: "imageViewer" + (options && options.class ? " " + options.class : "") });
 
     imageViewer.imageView = new ImageView(imageViewer);
-    imageViewer.imageView.scene2D.canvasView.canvas.onMouseScroll(function (event) {
-      if (event.mouse.scrollDelta > 0) {
-        imageViewer.imageView.scene2D.zoomIn(1.1);
-      } else if (event.mouse.scrollDelta < 0) {
-        imageViewer.imageView.scene2D.zoomOut(1.1);
-      }
-    });
-    imageViewer.imageView.scene2D.setKeyInputs({
-      [Key.UP]: function () { },
-      [Key.DOWN]: function () { },
-      [Key.LEFT]: function () { },
-      [Key.RIGHT]: function () { }
-    });
 
     imageViewer.overlay = new FileSelector({
       class: "imageViewerOverlay",
       inputLabelHTML: "Choose or drop images here",
       fileSelected: function (files) {
-        fileSelectionHandler(files, function () {}, function (image) {
+        fileSelectionHandler(files, function () {
+          imageViewer.overlay.setLabelHTML("Loading image...");
+        }, function (image) {
           imageViewer.imageView.loadImage(image);
+          imageViewer.overlay.setLabelHTML("Choose or drop images here");
           imageViewer.overlay.addClass("hide");
         })
       }
