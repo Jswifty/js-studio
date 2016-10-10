@@ -122,17 +122,30 @@ define([
       scene2D.accelY = accelY || scene2D.accelY;
   	};
 
-  	scene2D.zoomIn = function (zoomFactor, zoomSpeed) {
-      zoomFactor = zoomFactor || 1.05;
+    scene2D.getZoom = function () {
+      return scene2D.zoom;
+    };
+
+    scene2D.setZoom = function (zoom, zoomSpeed) {
+      scene2D.requestedZoom = zoom || scene2D.requestedZoom;
       scene2D.zoomSpeed = zoomSpeed || scene2D.zoomSpeed;
-      scene2D.requestedZoom = scene2D.requestedZoom * zoomFactor;
+    };
+
+  	scene2D.zoomIn = function (zoomFactor, zoomSpeed) {
+      scene2D.setZoom(scene2D.requestedZoom * (zoomFactor || 1.05), zoomSpeed);
   	};
 
   	scene2D.zoomOut = function (zoomFactor, zoomSpeed) {
-      zoomFactor = zoomFactor || 1.05;
-      scene2D.zoomSpeed = zoomSpeed || scene2D.zoomSpeed;
-      scene2D.requestedZoom = scene2D.requestedZoom / zoomFactor;
+      scene2D.setZoom(scene2D.requestedZoom / (zoomFactor || 1.05), zoomSpeed);
   	};
+
+    scene2D.getNavigationRange = function () {
+      return { xRange: scene2D.xRange, yRange: scene2D.yRange };
+    };
+
+    scene2D.getDimension = function () {
+      return { width: scene2D.width, height: scene2D.height };
+    };
 
     scene2D.setDimension = function (width, height) {
       scene2D.setWidth(width);

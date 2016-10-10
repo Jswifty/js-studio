@@ -9,8 +9,6 @@ define([
   /* Insert the scene styling into the the header of the web page. */
 	CSSLoader.load(currentDirectory + "fileselector.css");
 
-  var inputIndex = 1;
-
   return function (options) {
     var fileSelector = new DOMElement("div", { id: options && options.id, class: "fileSelector" + (options && options.class ? " " + options.class : "") });
     fileSelector.fileSelected = options.fileSelected || function () {};
@@ -35,13 +33,15 @@ define([
     var inputLabel = new DOMElement("span", { class: "fileInputLabel", html: (options && options.inputLabelHTML) || "Choose or drop files here" });
     dropZone.appendChild(inputLabel);
 
-    var hiddenFileInput = new DOMElement("input", { id: "input_" + inputIndex, class: "hiddenFileInput", type: "file", multiple: options && options.multiple });
+    var hiddenFileInput = new DOMElement("input", { class: "hiddenFileInput", type: "file", multiple: options && options.multiple });
     hiddenFileInput.onChange(function (event) {
       fileSelector.fileSelected(hiddenFileInput.files);
     });
     dropZone.appendChild(hiddenFileInput);
 
-    inputIndex++;
+    fileSelector.setLabelHTML = function (html) {
+      inputLabel.innerHTML = html;
+    };
 
     return fileSelector;
   };
