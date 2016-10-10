@@ -68,6 +68,9 @@ define(function () {
     /* Previous mouse position. */
     mouse.previousPosition = null;
 
+    /* Previous mouse position when a mouse button was pressed. */
+    mouse.previousDownPosition = null;
+
     /* Current mouse position. */
     mouse.position = null;
 
@@ -342,6 +345,12 @@ define(function () {
           y: event.clientY - offsetPosition.y
         });
 
+        /* Update the mouse previous down position. */
+        mouse.previousDownPosition = mouse.position !== null ? {
+          x: mouse.position.x,
+          y: mouse.position.y
+        } : null;
+
         /* Update the mouse down flag and time-stamp. */
         mouse.isMouseDown = true;
         mouse.lastMouseDownTime = mouse.lastUpdateTime;
@@ -375,6 +384,9 @@ define(function () {
           x: event.clientX - offsetPosition.x,
           y: event.clientY - offsetPosition.y
         });
+
+        /* Remove the mouse previous down position. */
+        mouse.previousDownPosition = null;
 
         /* Update the mouse down flag. */
         mouse.isMouseDown = false;
