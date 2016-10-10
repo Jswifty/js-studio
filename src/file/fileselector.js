@@ -25,18 +25,21 @@ define([
       event.preventDefault();
       fileSelector.fileSelected(event.dataTransfer.files);
     });
-
+    dropZone.onMouseDown(function (event) {
+      if (event.mouse.isLeftButton === true) {
+        hiddenFileInput.click();
+      }
+    });
     fileSelector.appendChild(dropZone);
+
+    var inputLabel = new DOMElement("span", { class: "fileInputLabel", html: (options && options.inputLabelHTML) || "Choose or drop files here" });
+    dropZone.appendChild(inputLabel);
 
     var hiddenFileInput = new DOMElement("input", { id: "input_" + inputIndex, class: "hiddenFileInput", type: "file", multiple: options && options.multiple });
     hiddenFileInput.onChange(function (event) {
       fileSelector.fileSelected(hiddenFileInput.files);
     });
     dropZone.appendChild(hiddenFileInput);
-
-    var inputLabelHTML = (options && options.inputLabelHTML) || "Choose or drop files here";
-    var fileInputLabel = new DOMElement("label", { class: "fileInputLabel", for: "input_" + inputIndex, html: inputLabelHTML });
-    dropZone.appendChild(fileInputLabel);
 
     inputIndex++;
 
