@@ -22,6 +22,8 @@ define([
             domElement.className = properties[property];
           } else if (property === "html") {
             domElement.innerHTML = properties[property];
+          } else if (property === "muted") {
+            domElement[property] = properties[property];
           } else {
             domElement.setAttribute(property, properties[property]);
           }

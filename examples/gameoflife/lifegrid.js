@@ -29,10 +29,10 @@ define([
 
 		/* Create a CanvasView to draw the life grid. */
 		lifeGrid.canvasView = new CanvasView(container);
-		lifeGrid.canvasView.canvas.style.boxShadow = "0px 0px 5px 0px white";
+		lifeGrid.canvasView.style.boxShadow = "0px 0px 5px 0px white";
 		lifeGrid.canvasView.onResize(function (width, height) {
 			var length = Math.min(width, height) - 20;
-			var canvas = lifeGrid.canvasView.canvas;
+			var canvas = lifeGrid.canvasView;
 
 			canvas.width = length;
 			canvas.height = length;
@@ -59,7 +59,7 @@ define([
 		});
 
 		/* Create a Mouse and setup a mouse listener to map mouse behaviour to the life grid. */
-		lifeGrid.mouse = new Mouse(lifeGrid.canvasView.canvas);
+		lifeGrid.mouse = new Mouse(lifeGrid.canvasView);
 		function mouseEvent (event) {
 			var mouse = event.mouse;
 			var position = mouse.position;
@@ -67,8 +67,8 @@ define([
 			var shadawCells = [];
 
 			if (mouse.isLeftButton === true && position && position.x && position.y) {
-				var pointX = Math.floor(position.x / lifeGrid.canvasView.getWidth() * lifeGrid.columns);
-				var pointY = Math.floor(position.y / lifeGrid.canvasView.getHeight() * lifeGrid.rows);
+				var pointX = Math.floor(position.x / lifeGrid.canvasView.width * lifeGrid.columns);
+				var pointY = Math.floor(position.y / lifeGrid.canvasView.height * lifeGrid.rows);
 
 				if (mouse.isMouseDown === true) {
 					for (var y = Math.max(0, pointY - 1); y <= pointY + 1 && y < lifeGrid.rows; y++) {

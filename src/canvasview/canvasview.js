@@ -4,15 +4,12 @@ define([
 ], function (Animator, DOMElement) {
 
 	return function (container, animator) {
-
-		var canvasView = this;
+    /* Create the canvas. */
+		var canvasView = new DOMElement("canvas", { html: "Your browser does not support HTML5 canvas.", style: "position: absolute;" });
+    canvasView.setLeftButtonDragOnly(false);
 
 		/* Store the DIV container. */
 		canvasView.container = container;
-
-		/* Create the canvas. */
-		canvasView.canvas = new DOMElement("canvas", { html: "Your browser does not support HTML5 canvas.", style: "position: absolute;" });
-		canvasView.canvas.setLeftButtonDragOnly(false);
 
 		/* Create an Animator instance. */
 		canvasView.animator = animator || new Animator();
@@ -38,21 +35,6 @@ define([
 			canvasView.resumeEvent.push(resumeEvent);
 		};
 
-		/** Canvas width getter. */
-		canvasView.getWidth = function () {
-			return canvasView.canvas.width;
-		};
-
-		/** Canvas height getter. */
-		canvasView.getHeight = function () {
-			return canvasView.canvas.height;
-		};
-
-		/** Canvas context getter. */
-		canvasView.getCanvas2DContext = function () {
-			return canvasView.canvas.getContext("2d");
-		};
-
 		/** Start the canvas view animation from the animator. */
 		canvasView.start = function () {
 			canvasView.animator.start();
@@ -73,11 +55,11 @@ define([
 		canvasView.fireResizeEvent = function () {
 
 			/* Set canvas dimensions. */
-			canvasView.canvas.width = canvasView.container.offsetWidth;
-			canvasView.canvas.height = canvasView.container.offsetHeight;
+			canvasView.width = canvasView.container.offsetWidth;
+			canvasView.height = canvasView.container.offsetHeight;
 
 			for (var i = 0; i < canvasView.resizeEvents.length; i++) {
-				canvasView.resizeEvents[i](canvasView.canvas.width, canvasView.canvas.height);
+				canvasView.resizeEvents[i](canvasView.width, canvasView.height);
 			}
 		};
 
@@ -106,13 +88,13 @@ define([
 			}
 
 			canvasView.renderID = canvasView.animator.addRenderFunction(canvasView, function () {
-				renderEvent(canvasView.getCanvas2DContext(), canvasView.getWidth(), canvasView.getHeight());
+				renderEvent(canvasView.getContext("2d"), canvasView.width, canvasView.height);
 			});
 		};
 
 		/* Append the canvas to the DIV container. */
 		if (canvasView.container !== undefined) {
-			canvasView.container.appendChild(canvasView.canvas);
+			canvasView.container.appendChild(canvasView);
 
 			/* Fetch resize method of the DIV container and window. */
 			canvasView.container.addEventListener("resize", canvasView.fireResizeEvent, false);
@@ -124,5 +106,7 @@ define([
 
 		/* Update the canvas dimensions to fit the given container. */
 		canvasView.fireResizeEvent();
+
+    return canvasView;
 	};
 });

@@ -48,7 +48,7 @@ define([
 
 		/* Create the canvas. */
 		fire.canvasView = new CanvasView(container, animator);
-		fire.canvasView.canvas.style.zIndex = index.toString();
+		fire.canvasView.style.zIndex = index.toString();
 		fire.canvasView.setRender(function (context, width, height) {
 			/* Clear the canvas screen. */
 			context.clearRect(0, 0, width, height);
@@ -66,7 +66,7 @@ define([
 
 				if (position !== null) {
 					context.beginPath();
-					
+
 					var gradient = context.createRadialGradient(position.x, position.y, 0, position.x, position.y, radius);
 					gradient.addColorStop(0, "rgba(" + rgbString + ", " + opacity + ")");
 					gradient.addColorStop(0.5, "rgba(" + rgbString + ", " + 0.5 * opacity + ")");

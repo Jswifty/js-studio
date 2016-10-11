@@ -32,7 +32,7 @@ define([
 
 		/* Create the canvas. */
 		firefliesLayer.canvasView = new CanvasView(container, animator);
-		firefliesLayer.canvasView.canvas.style.zIndex = 0;
+		firefliesLayer.canvasView.style.zIndex = 0;
 		firefliesLayer.canvasView.setRender(function (context, width, height) {
 			/* Clear the canvas screen. */
 			context.clearRect(0, 0, width, height);
@@ -139,7 +139,7 @@ define([
 				fireflyState = FireflyState.getState(FireflyState.BEHAVIOUR.WANDER);
 			}
 
-			var sceneBoundingBox = { width: firefliesLayer.canvasView.canvas.width, height: firefliesLayer.canvasView.canvas.height };
+			var sceneBoundingBox = { width: firefliesLayer.canvasView.width, height: firefliesLayer.canvasView.height };
 
 			/* Update the fireflies' properties according to the new status. */
 			for(var i = 0; i < firefliesLayer.fireflies.length; i++) {

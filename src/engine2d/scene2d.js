@@ -33,7 +33,7 @@ define([
 
       scene2D.adjustScenePosition();
 
-      scene2D.canvasView.getCanvas2DContext().scale(scene2D.zoom, scene2D.zoom);
+      scene2D.canvasView.getContext("2d").scale(scene2D.zoom, scene2D.zoom);
     });
     scene2D.canvasView.setRender(function (context, width, height) {
       context.clearRect(0, 0, width / scene2D.zoom, height / scene2D.zoom);
@@ -100,7 +100,7 @@ define([
     scene2D.processZoom = function () {
       var zoom = scene2D.zoom + (scene2D.requestedZoom - scene2D.zoom) * scene2D.zoomSpeed;
       var newZoom = zoom / scene2D.zoom;
-      scene2D.canvasView.getCanvas2DContext().scale(newZoom, newZoom);
+      scene2D.canvasView.getContext("2d").scale(newZoom, newZoom);
       scene2D.zoom = zoom;
     };
 
@@ -170,8 +170,8 @@ define([
 
   	scene2D.setKeyInputs = function (keyInputs) {
       if (scene2D.keyboard === undefined) {
-      	scene2D.canvasView.canvas.onKeyDown();
-      	scene2D.keyboard = scene2D.canvasView.canvas.keyboard;
+      	scene2D.canvasView.onKeyDown();
+      	scene2D.keyboard = scene2D.canvasView.keyboard;
       }
 
       scene2D.keyInputs = keyInputs || {};

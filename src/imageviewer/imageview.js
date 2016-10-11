@@ -82,7 +82,7 @@ define([
       [Key.RIGHT]: function () { imageView.moveFocusPosition(imageView.moveSpeed, 0); }
     });
 
-    imageView.scene2D.canvasView.canvas
+    imageView.scene2D.canvasView
     .onMouseScroll(function (event) {
       if (event.mouse.scrollDelta > 0) {
         imageView.zoomIn();

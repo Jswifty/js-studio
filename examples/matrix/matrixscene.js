@@ -44,7 +44,7 @@ define([
 
 		/* Create a canvas view for capturing pixel colors. */
 		scene.canvasView = new CanvasView(container);
-		scene.canvasView.canvas.className = "invisible";
+		scene.canvasView.className = "invisible";
 		scene.canvasView.setRender(function (context, width, height) {
 			context.clearRect(0, 0, width, height);
 			context.drawImage(scene.video, 0, 0, width, height);
@@ -52,7 +52,7 @@ define([
 		});
 
 		/* Create an asciifier for converting colors into ASCII. */
-		scene.asciifier = new Asciifier(scene.canvasView.canvas, { color: "green", invert: true }, scene.canvasView.animator);
+		scene.asciifier = new Asciifier(scene.canvasView, { color: "green", invert: true }, scene.canvasView.animator);
 
 		/* Rain object for rain effect. */
 		scene.codeRain = new CodeRain(50, 0.3);
