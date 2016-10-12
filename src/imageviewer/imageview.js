@@ -2,8 +2,8 @@ define([
   "js-studio/domelement/domelement",
   "js-studio/engine2d/scene2d",
   "js-studio/engine2d/object2d",
-  "js-studio/keyboard/keycodes"
-], function (DOMElement, Scene2D, Object2D, Key) {
+  "./imageviewcontroller"
+], function (DOMElement, Scene2D, Object2D, ImageViewController) {
 
   function createImage2D (scene2D) {
     var image2D = new Object2D(0, 0, 0, 0);
@@ -58,12 +58,6 @@ define([
   return function (container) {
     var imageView = this;
 
-    imageView.zoomFactor = 1.1;
-
-    imageView.moveSpeed = 10;
-
-    imageView.previousFocusPosition = null;
-
     imageView.scene2D = new Scene2D(container);
     imageView.scene2D.start();
 
@@ -75,36 +69,9 @@ define([
 
     imageView.scene2D.setFollowObjects([imageView.focusPoint]);
 
-    imageView.scene2D.setKeyInputs({
-      [Key.UP]: function () { imageView.moveFocusPosition(0, -imageView.moveSpeed); },
-      [Key.DOWN]: function () { imageView.moveFocusPosition(0, imageView.moveSpeed); },
-      [Key.LEFT]: function () { imageView.moveFocusPosition(-imageView.moveSpeed, 0); },
-      [Key.RIGHT]: function () { imageView.moveFocusPosition(imageView.moveSpeed, 0); }
-    });
+    imageView.controller = new ImageViewController(imageView);
 
-    imageView.scene2D.canvasView
-    .onMouseScroll(function (event) {
-      if (event.mouse.scrollDelta > 0) {
-        imageView.zoomIn();
-      } else if (event.mouse.scrollDelta < 0) {
-        imageView.zoomOut();
-      }
-    }).onMouseDown(function (event) {
-      if (event.mouse.isLeftButton === true) {
-        imageView.previousFocusPosition = imageView.getFocusPosition();
-      }
-    }).onMouseDrag(function (event) {
-      if (event.mouse.isLeftButton === true && imageView.previousFocusPosition !== null) {
-        var previousDownPosition = event.mouse.previousDownPosition;
-        var mousePosition = event.mouse.position;
-        var previousFocusPosition = imageView.previousFocusPosition;
-        var zoom = imageView.scene2D.getZoom();
-        var movedDistance = { x: (previousDownPosition.x - mousePosition.x) / zoom, y: (previousDownPosition.y - mousePosition.y) / zoom };
-        imageView.setFocusPosition(previousFocusPosition.x + movedDistance.x, previousFocusPosition.y + movedDistance.y);
-      }
-    }).onMouseUp(function (event) {
-      imageView.previousFocusPosition = null;
-    });
+    imageView.toolbar = null;
 
     imageView.loadImage = function (image) {
       imageView.scene2D.setDimension(image.width, image.height);
@@ -122,12 +89,12 @@ define([
     };
 
   	imageView.zoomIn = function (zoomFactor, zoomSpeed) {
-      imageView.scene2D.zoomIn(zoomFactor || imageView.zoomFactor, zoomSpeed);
+      imageView.scene2D.zoomIn(zoomFactor, zoomSpeed);
       imageView.focusPoint.adjustPosition();
   	};
 
   	imageView.zoomOut = function (zoomFactor, zoomSpeed) {
-      imageView.scene2D.zoomOut(zoomFactor || imageView.zoomFactor, zoomSpeed);
+      imageView.scene2D.zoomOut(zoomFactor, zoomSpeed);
       imageView.focusPoint.adjustPosition();
   	};
 
