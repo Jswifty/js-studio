@@ -1,13 +1,48 @@
 .imageViewer {
-  position: absolute;
+  position: relative;
   width: 100%;
   height: 100%;
 }
 
+.imageViewer .imageView {
+  position: absolute;
+  top: 0px;
+  bottom: 40px;
+  width: 100%;
+}
+
+.imageViewer .imageView.hide {
+  display: none;
+}
+
+.imageViewer .imageViewToolbar {
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+  height: 40px;
+  background-color: rgba(0, 0, 0, 0.6);
+  border-top: 1px solid #B0B0B0;
+}
+
+.imageViewer .imageViewToolbar.hide {
+  display: none;
+}
+
+.imageViewer .imageViewToolbar .chooseImage {
+  display: inline-block;
+  height: 100%;
+  width: 130px;
+}
+
+.imageViewer .imageViewToolbar .chooseImage .dropZone {
+  margin: 5px;
+}
+
 .imageViewer .imageViewerOverlay {
   position: absolute;
+  top: 0px;
+  bottom: 40px;
   width: 100%;
-  height: 100%;
 }
 
 .imageViewer .imageViewerOverlay.hide {

@@ -1,9 +1,8 @@
 define([
   "js-studio/domelement/domelement",
   "js-studio/engine2d/scene2d",
-  "js-studio/engine2d/object2d",
-  "./imageviewcontroller"
-], function (DOMElement, Scene2D, Object2D, ImageViewController) {
+  "js-studio/engine2d/object2d"
+], function (DOMElement, Scene2D, Object2D) {
 
   function createImage2D (scene2D) {
     var image2D = new Object2D(0, 0, 0, 0);
@@ -55,10 +54,11 @@ define([
     return focusPoint;
   };
 
-  return function (container) {
-    var imageView = this;
+  return function (options) {
+    var imageView = new DOMElement("div", { id: options && options.id, class: "imageView" + (options && options.class ? " " + options.class : "") });
 
-    imageView.scene2D = new Scene2D(container);
+    imageView.scene2D = new Scene2D(imageView);
+    imageView.scene2D.setEnableImageSmoothing(false);
     imageView.scene2D.start();
 
     imageView.image2D = createImage2D(imageView.scene2D);
@@ -68,10 +68,6 @@ define([
     imageView.scene2D.add(imageView.focusPoint);
 
     imageView.scene2D.setFollowObjects([imageView.focusPoint]);
-
-    imageView.controller = new ImageViewController(imageView);
-
-    imageView.toolbar = null;
 
     imageView.loadImage = function (image) {
       imageView.scene2D.setDimension(image.width, image.height);
