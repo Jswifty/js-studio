@@ -24,6 +24,7 @@ define([
     scene2D.followObjects = [];
     scene2D.followSpeed = 1;
     scene2D.objects = [];
+    scene2D.enableSmoothing = true;
 
     /* Create a CanvasView to draw. */
     scene2D.canvasView = new CanvasView(container);
@@ -32,8 +33,7 @@ define([
       scene2D.canvasHeight = canvasHeight;
 
       scene2D.adjustScenePosition();
-
-      scene2D.canvasView.getContext("2d").scale(scene2D.zoom, scene2D.zoom);
+      scene2D.adjustCanvasContext();
     });
     scene2D.canvasView.setRender(function (context, width, height) {
       context.clearRect(0, 0, width / scene2D.zoom, height / scene2D.zoom);
@@ -46,6 +46,15 @@ define([
         scene2D.objects[i].render(context, scene2D.x, scene2D.y, scene2D.width, scene2D.height);
       }
     });
+
+    scene2D.adjustCanvasContext = function () {
+      var context = scene2D.canvasView.getContext("2d");
+      context.scale(scene2D.zoom, scene2D.zoom);
+      context.mozImageSmoothingEnabled = scene2D.enableSmoothing;
+      context.webkitImageSmoothingEnabled = scene2D.enableSmoothing;
+      context.msImageSmoothingEnabled = scene2D.enableSmoothing;
+      context.imageSmoothingEnabled = scene2D.enableSmoothing;
+    };
 
     scene2D.adjustScenePosition = function () {
       var widthDiff = scene2D.canvasWidth - scene2D.width * scene2D.zoom;
@@ -184,6 +193,10 @@ define([
       if (scene2D.yRange > 0) {
         scene2D.y = Math.max(0, Math.min(y, scene2D.yRange));
       }
+    };
+
+    scene2D.setEnableImageSmoothing = function (enableSmoothing) {
+      scene2D.enableSmoothing = enableSmoothing;
     };
 
   	scene2D.setFollowObjects = function (object2Ds, followSpeed) {
