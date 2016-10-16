@@ -12,14 +12,9 @@
   border: 2px dashed #B0B0B0;
   border-radius: 5px;
   overflow: hidden;
-  cursor: pointer;
 }
 
-.fileSelector .dropZone .hiddenFileInput {
-  display: none;
-}
-
-.fileSelector .dropZone .fileInputLabel {
+.fileSelector .dropZone .inputText {
   display: block;
   position: absolute;
   width: 100%;
@@ -29,4 +24,17 @@
   line-height: 30px;
   text-align: center;
   color: #B0B0B0;
+}
+
+.fileSelector .dropZone .inputLabel {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.fileSelector .dropZone .hiddenFileInput {
+  display: none;
 }

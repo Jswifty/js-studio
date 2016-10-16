@@ -41,11 +41,11 @@ define([
       loadImageFile(file, function () {
         imageViewer.imageView.addClass("hide");
         imageViewer.overlay.removeClass("hide");
-        imageViewer.overlay.setLabelHTML("Loading image...");
+        imageViewer.overlay.setText("Loading image...");
       }, function (image) {
         imageViewer.imageView.removeClass("hide");
         imageViewer.overlay.addClass("hide");
-        imageViewer.overlay.setLabelHTML("Choose or drop images here");
+        imageViewer.overlay.setText("Choose or drop images here");
         imageViewer.toolbar.removeClass("hide");
         imageViewer.imageView.loadImage(image);
       });

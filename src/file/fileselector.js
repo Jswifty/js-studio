@@ -6,6 +6,8 @@ define([
 
   var currentDirectory = Module.uri.replace("fileselector.js", "");
 
+  var fileSelectorIndex = 1;
+
   /* Insert the scene styling into the the header of the web page. */
 	CSSLoader.load(currentDirectory + "fileselector.css");
 
@@ -23,25 +25,28 @@ define([
       event.preventDefault();
       fileSelector.fileSelected(event.dataTransfer.files);
     });
-    dropZone.onMouseDown(function (event) {
-      if (event.mouse.isLeftButton === true) {
-        hiddenFileInput.click();
-      }
-    });
+
     fileSelector.appendChild(dropZone);
 
-    var inputLabel = new DOMElement("span", { class: "fileInputLabel", html: (options && options.inputLabelHTML) || "Choose or drop files here" });
+    var inputID = "fileSelector_" + fileSelectorIndex;
+
+    var inputText = new DOMElement("span", { class: "inputText", html: (options && options.inputLabelHTML) || "Choose or drop files here" });
+    dropZone.appendChild(inputText);
+
+    var inputLabel = new DOMElement("label", { class: "inputLabel", for: inputID });
     dropZone.appendChild(inputLabel);
 
-    var hiddenFileInput = new DOMElement("input", { class: "hiddenFileInput", type: "file", multiple: options && options.multiple });
+    var hiddenFileInput = new DOMElement("input", { id: inputID, class: "hiddenFileInput", type: "file", multiple: options && options.multiple });
     hiddenFileInput.onChange(function (event) {
       fileSelector.fileSelected(hiddenFileInput.files);
     });
     dropZone.appendChild(hiddenFileInput);
 
-    fileSelector.setLabelHTML = function (html) {
-      inputLabel.innerHTML = html;
+    fileSelector.setText = function (html) {
+      inputText.innerHTML = html;
     };
+
+    fileSelectorIndex++;
 
     return fileSelector;
   };
