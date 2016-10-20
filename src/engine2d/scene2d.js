@@ -140,6 +140,10 @@ define([
       scene2D.zoomSpeed = zoomSpeed || scene2D.zoomSpeed;
     };
 
+    scene2D.getRequestedZoom = function () {
+      return scene2D.requestedZoom;
+    };
+
   	scene2D.zoomIn = function (zoomFactor, zoomSpeed) {
       scene2D.setZoom(scene2D.requestedZoom * (zoomFactor || 1.05), zoomSpeed);
   	};
@@ -185,6 +189,10 @@ define([
 
       scene2D.keyInputs = keyInputs || {};
   	};
+
+    scene2D.getScenePosition = function () {
+      return { x: scene2D.x, y: scene2D.y };
+    };
 
     scene2D.setScenePosition = function (x, y) {
       if (scene2D.xRange > 0) {

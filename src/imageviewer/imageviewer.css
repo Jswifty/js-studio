@@ -20,22 +20,50 @@
   bottom: 0px;
   width: 100%;
   height: 40px;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(0, 0, 0, 0.8);
   border-top: 1px solid #B0B0B0;
+  font-weight: normal;
+  font-family: Arial;
+  color: #FFFFFF;
 }
 
 .imageViewer .imageViewToolbar.hide {
   display: none;
 }
 
-.imageViewer .imageViewToolbar .chooseImage {
+.imageViewer .imageViewToolbar .chooseImage,
+.imageViewer .imageViewToolbar .imageDimensionLabel,
+.imageViewer .imageViewToolbar .imageZoomLabel,
+.imageViewer .imageViewToolbar .imageLocationLabel {
   display: inline-block;
   height: 100%;
-  width: 130px;
+  width: 120px;
+  line-height: 40px;
+  vertical-align: top;
+  text-align: center;
+}
+
+.imageViewer .imageViewToolbar .imageDimensionLabel,
+.imageViewer .imageViewToolbar .imageZoomLabel,
+.imageViewer .imageViewToolbar .imageLocationLabel {
+  width: 90px;
 }
 
 .imageViewer .imageViewToolbar .chooseImage .dropZone {
   margin: 5px;
+  border: none;
+  border-radius: 0px;
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+.imageViewer .imageViewToolbar .chooseImage .dropZone .inputText {
+  color: #000000;
+}
+
+.imageViewer .imageViewToolbar .imageDimensionLabel,
+.imageViewer .imageViewToolbar .imageZoomLabel,
+.imageViewer .imageViewToolbar .imageLocationLabel {
+  font-size: 13px;
 }
 
 .imageViewer .imageViewerOverlay {

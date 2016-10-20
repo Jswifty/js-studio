@@ -76,7 +76,7 @@ define([
     };
 
     imageView.getZoom = function () {
-      return imageView.scene2D.getZoom();
+      return imageView.scene2D.getRequestedZoom();
     };
 
     imageView.setZoom = function (zoom, zoomSpeed) {

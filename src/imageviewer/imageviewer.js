@@ -21,10 +21,10 @@ define([
     imageViewer.appendChild(imageViewer.imageView);
 
     imageViewer.toolbar = new ImageViewToolbar({ class: "hide" });
-    imageViewer.toolbar.onLoadImage(loadImage);
+    imageViewer.toolbar.setLoadImage(loadImage);
     imageViewer.appendChild(imageViewer.toolbar);
 
-    imageViewer.controller = new ImageViewController(imageViewer.imageView);
+    imageViewer.controller = new ImageViewController(imageViewer.imageView, imageViewer.toolbar);
 
     imageViewer.overlay = new FileSelector({
       class: "imageViewerOverlay",
@@ -47,6 +47,7 @@ define([
         imageViewer.overlay.addClass("hide");
         imageViewer.overlay.setText("Choose or drop images here");
         imageViewer.toolbar.removeClass("hide");
+        imageViewer.toolbar.setImage(image);
         imageViewer.imageView.loadImage(image);
       });
     };
