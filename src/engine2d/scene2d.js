@@ -20,7 +20,8 @@ define([
     scene2D.zoomSpeed = 0.5;
     scene2D.showGrid = true;
     scene2D.gridSize = 50;
-    scene2D.gridColor = "rgba(0, 125, 0, 0.7)";
+    scene2D.gridColor1 = "rgba(150, 150, 150, 0.5)";
+    scene2D.gridColor2 = "rgba(200, 200, 200, 0.5)";
     scene2D.followObjects = [];
     scene2D.followSpeed = 1;
     scene2D.objects = [];
@@ -78,17 +79,12 @@ define([
     };
 
   	scene2D.drawGrid = function (context, sceneX, sceneY, width, height) {
-      context.fillStyle = scene2D.gridColor;
-
-      for (var x = 0; x <= width; x += scene2D.gridSize) {
-      	context.fillRect(x - sceneX, -sceneY, 1, height);
+      for (var x = 0, xIndex = 0; x <= width; x += scene2D.gridSize, xIndex++) {
+        for (var y = 0, yIndex = 0; y <= height; y += scene2D.gridSize, yIndex++) {
+          context.fillStyle = (xIndex + yIndex) % 2 === 0 ? scene2D.gridColor1 : scene2D.gridColor2;
+          context.fillRect(x - sceneX, y - sceneY, Math.min(width - x, scene2D.gridSize), Math.min(height - y, scene2D.gridSize));
+        }
       }
-      context.fillRect(width - sceneX, -sceneY, 1, height);
-
-      for (var y = 0; y <= height; y += scene2D.gridSize) {
-      	context.fillRect(-sceneX, y - sceneY, width, 1);
-      }
-      context.fillRect(-sceneX, height - sceneY, width, 1);
   	};
 
   	scene2D.processKeyInputs = function () {
@@ -175,10 +171,9 @@ define([
       scene2D.height = height || scene2D.height;
     };
 
-  	scene2D.setShowGrid = function (showGrid, gridSize, gridColor) {
+  	scene2D.setShowGrid = function (showGrid, gridSize) {
       scene2D.showGrid = showGrid === true;
       scene2D.gridSize = gridSize || scene2D.gridSize;
-      scene2D.gridColor = gridColor || scene2D.gridColor;
   	};
 
   	scene2D.setKeyInputs = function (keyInputs) {

@@ -1,129 +1,134 @@
 .colorPicker {
-	position: relative;
-	width: 20px;
-	height: 20px;
-	margin: 10px;
+  position: relative;
+  width: 20px;
+  height: 20px;
+  margin: 10px;
 }
 
 .colorPalette {
-	width: 20px;
-	height: 20px;
-	border: 1px solid;
-	box-shadow: 0px 0px 2px 0px white;
-	cursor: pointer;
+  width: 20px;
+  height: 20px;
+  border: 1px solid;
+  box-shadow: 0px 0px 2px 0px white;
+  cursor: pointer;
 }
 
 .colorPickerDialog {
-	position: absolute;
-	top: 100%;
-	left: 0%;
-	width: 0px;
-	height: 190px;
-	margin-top: 10px;
-	background-color: rgba(0, 0, 0, 0.8);
-	box-shadow: 0px 0px 5px 0px white;
-	overflow: hidden;
-	opacity: 0;
-	transition: 0.5s all;
-	z-index: 1;
+  position: absolute;
+  top: 100%;
+  left: 0%;
+  width: 0px;
+  height: 190px;
+  margin-top: 10px;
+  background-color: rgba(0, 0, 0, 0.8);
+  box-shadow: 0px 0px 5px 0px white;
+  overflow: hidden;
+  opacity: 0;
+  transition: 0.5s all;
+  z-index: 1;
 }
 
 .colorPickerDialog.show {
-	width: 200px;
-	opacity: 1;
+  width: 200px;
+  opacity: 1;
 }
 
 .colorPickerPanel {
-	width: 200px;
-	height: 190px;
+  width: 200px;
+  height: 190px;
 }
 
 .colorBoard {
-	position: relative;
-	width: 140px;
-	height: 140px;
-	margin: 10px;
-	float: left;
-	box-shadow: 0px 0px 2px 0px white;
-	cursor: crosshair;
+  position: relative;
+  width: 140px;
+  height: 140px;
+  margin: 10px;
+  float: left;
+  box-shadow: 0px 0px 2px 0px white;
+  cursor: crosshair;
 }
 
 .colorBoardGradient {
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	background: url("images/gradient.png") no-repeat center;
-	background-size: contain;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: url("images/gradient.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
 }
 
 .colorBoardPointer {
-	position: absolute;
-	width: 10px;
-	height: 10px;
-	border: 1px solid white;
-	border-radius: 10px;
-	box-shadow: 0px 0px 2px 0px black;
-	margin-top: -6px;
-	margin-left: -6px;
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border: 1px solid white;
+  border-radius: 10px;
+  box-shadow: 0px 0px 2px 0px black;
+  margin-top: -6px;
+  margin-left: -6px;
 }
 
 .colorBoardOverlay {
-	position: absolute;
-	width: 100%;
-	height: 100%;
+  position: absolute;
+  width: 100%;
+  height: 100%;
 }
 
 .hueBanner {
-	position: relative;
-	width: 20px;
-	height: 140px;
-	margin: 10px;
-	float: left;
-	box-shadow: 0px 0px 2px 0px white;
-	background: url("images/hue.png") repeat-x center;
-	background-size: contain;
-	cursor: pointer;
+  position: relative;
+  width: 20px;
+  height: 140px;
+  margin: 10px;
+  float: left;
+  box-shadow: 0px 0px 2px 0px white;
+  background-image: url("images/hue.png");
+  background-repeat: repeat-x;
+  background-position: center;
+  background-size: contain;
+  cursor: pointer;
 }
 
 .hueBanner .hueBannerThumb {
-	position: absolute;
-	right: -5px;
-	left: -5px;
-	width: auto;
-	height: 2px;
-	margin-top: -2px;
-	box-shadow: 0px 0px 2px 0px black;
-	border: 1px solid rgba(255, 255, 255, 0.8);
-	border-radius: 4px;
-	cursor: pointer;
+  position: absolute;
+  right: -5px;
+  left: -5px;
+  width: auto;
+  height: 2px;
+  margin-top: -2px;
+  box-shadow: 0px 0px 2px 0px black;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 4px;
+  cursor: pointer;
 }
 
 .alphaBanner {
-	position: relative;
-	width: 180px;
-	height: 10px;
-	margin: 10px;
-	float: left;
-	box-shadow: 0px 0px 2px 0px white;
-	cursor: pointer;
+  position: relative;
+  width: 180px;
+  height: 10px;
+  margin: 10px;
+  float: left;
+  box-shadow: 0px 0px 2px 0px white;
+  cursor: pointer;
 }
 
 .alphaBanner .alphaBannerOverlay {
-	width: 100%;
-	height: 100%;
-	background: url("images/alpha.png") center;
-	background-size: 100%;
+  width: 100%;
+  height: 100%;
+  background-image: url("images/alpha.png");
+  background-position: center;
+  background-size: 100%;
 }
 
 .alphaBanner .alphaBannerThumb {
-	position: absolute;
-	top: -5px;
-	bottom: -5px;
-	width: 2px;
-	height: auto;
-	margin-left: -2px;
-	box-shadow: 0px 0px 2px 0px black;
-	border: 1px solid rgba(255, 255, 255, 0.8);
-	border-radius: 4px;
-	cursor: pointer;
+  position: absolute;
+  top: -5px;
+  bottom: -5px;
+  width: 2px;
+  height: auto;
+  margin-left: -2px;
+  box-shadow: 0px 0px 2px 0px black;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 4px;
+  cursor: pointer;
 }

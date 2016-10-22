@@ -32,9 +32,11 @@
 }
 
 .imageViewer .imageViewToolbar .chooseImage,
-.imageViewer .imageViewToolbar .imageDimensionLabel,
+.imageViewer .imageViewToolbar .imageNameLabel,
 .imageViewer .imageViewToolbar .imageZoomLabel,
-.imageViewer .imageViewToolbar .imageLocationLabel {
+.imageViewer .imageViewToolbar .imageDimensionLabel,
+.imageViewer .imageViewToolbar .imageLocationLabel,
+.imageViewer .imageViewToolbar .imageGridButton {
   display: inline-block;
   height: 100%;
   width: 120px;
@@ -43,27 +45,43 @@
   text-align: center;
 }
 
-.imageViewer .imageViewToolbar .imageDimensionLabel,
+.imageViewer .imageViewToolbar .imageNameLabel,
 .imageViewer .imageViewToolbar .imageZoomLabel,
-.imageViewer .imageViewToolbar .imageLocationLabel {
+.imageViewer .imageViewToolbar .imageDimensionLabel,
+.imageViewer .imageViewToolbar .imageLocationLabel,
+.imageViewer .imageViewToolbar .imageGridButton {
   width: 90px;
+  font-size: 13px;
 }
 
-.imageViewer .imageViewToolbar .chooseImage .dropZone {
+.imageViewer .imageViewToolbar .chooseImage .dropZone,
+.imageViewer .imageViewToolbar .imageGridButton {
   margin: 5px;
   border: none;
   border-radius: 0px;
   background-color: rgba(255, 255, 255, 0.5);
 }
 
-.imageViewer .imageViewToolbar .chooseImage .dropZone .inputText {
+.imageViewer .imageViewToolbar .imageGridButton {
+  height: 30px;
+  text-align: left;
   color: #000000;
 }
 
-.imageViewer .imageViewToolbar .imageDimensionLabel,
-.imageViewer .imageViewToolbar .imageZoomLabel,
-.imageViewer .imageViewToolbar .imageLocationLabel {
-  font-size: 13px;
+.imageViewer .imageViewToolbar .imageGridButton:after {
+  content: "Grid: OFF";
+  position: absolute;
+  top: 0px;
+  width: 90px;
+  text-align: center;
+}
+
+.imageViewer .imageViewToolbar .imageGridButton.gridOn:after {
+  content: "Grid: ON";
+}
+
+.imageViewer .imageViewToolbar .chooseImage .dropZone .inputText {
+  color: #000000;
 }
 
 .imageViewer .imageViewerOverlay {

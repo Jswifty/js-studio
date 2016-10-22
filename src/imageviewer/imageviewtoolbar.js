@@ -7,6 +7,7 @@ define([
   return function (options) {
     var toolbar = new DOMElement("div", { id: options && options.id, class: "imageViewToolbar" + (options && options.class ? " " + options.class : "") });
     toolbar.loadImage = function () {};
+    toolbar.gridChanged = function () {};
 
     var fileSelector = new FileSelector({
       class: "chooseImage",
@@ -19,20 +20,31 @@ define([
     });
     toolbar.appendChild(fileSelector);
 
+    var imageNameLabel = new DOMElement("div", { class: "imageNameLabel" });
+    toolbar.appendChild(imageNameLabel);
+
+    var imageZoomLabel = new DOMElement("div", { class: "imageZoomLabel" });
+    toolbar.appendChild(imageZoomLabel);
+
     var imageDimensionLabel = new DOMElement("div", { class: "imageDimensionLabel" });
     toolbar.appendChild(imageDimensionLabel);
 
     var imageLocationLabel = new DOMElement("div", { class: "imageLocationLabel" });
     toolbar.appendChild(imageLocationLabel);
 
-    var imageZoomLabel = new DOMElement("div", { class: "imageZoomLabel" });
-    toolbar.appendChild(imageZoomLabel);
-    
+    var imageGridButton = new DOMElement("div", { class: "imageGridButton gridOn" });
+    imageGridButton.onMouseClick(function (event) {
+      imageGridButton.toggleClass("gridOn");
+      toolbar.gridChanged(imageGridButton.hasClass("gridOn"));
+    });
+    toolbar.appendChild(imageGridButton);
+
     toolbar.setLoadImage = function (loadImage) {
       toolbar.loadImage = loadImage;
     };
 
-    toolbar.setImage = function (image) {
+    toolbar.setImage = function (image, file) {
+      imageNameLabel.innerHTML = file.name.length > 11 ? file.name.substring(0, 8) + "..." : file.name;
       imageDimensionLabel.innerHTML = image.width + " x " + image.height;
       imageZoomLabel.innerHTML = imageZoomLabel.innerHTML || "100%";
     };
@@ -47,6 +59,10 @@ define([
       } else {
         imageLocationLabel.innerHTML = "";
       }
+    };
+
+    toolbar.onGridChanged = function (gridChanged) {
+      toolbar.gridChanged = gridChanged;
     };
 
     return toolbar;

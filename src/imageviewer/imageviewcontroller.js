@@ -1,14 +1,25 @@
 define([
-  "js-studio/keyboard/keycodes"
-], function (Key) {
+  "js-studio/keyboard/keycodes",
+  "./imagefileloader"
+], function (Key, loadImageFile) {
 
-  return function (imageView, toolbar) {
+  return function (imageView, toolbar, overlay) {
     var controller = this;
 
-    controller.previousFocusPosition = null;
-
     controller.imageView = imageView;
+
     controller.toolbar = toolbar;
+    controller.toolbar.setLoadImage(loadImage);
+    controller.toolbar.onGridChanged(gridChanged);
+
+    controller.overlay = overlay;
+    controller.overlay.onFileSelected(function (files) {
+      if (files !== undefined && files[0] !== undefined) {
+        loadImage(files[0]);
+      }
+    });
+
+    controller.previousFocusPosition = null;
 
     controller.zoomFactor = 1.1;
 
@@ -56,5 +67,24 @@ define([
     }).onMouseOut(function (event) {
       controller.toolbar.setPosition();
     });
+
+    function loadImage (file) {
+      loadImageFile(file, function () {
+        controller.imageView.addClass("hide");
+        controller.overlay.removeClass("hide");
+        controller.overlay.setText("Loading image...");
+      }, function (image) {
+        controller.imageView.removeClass("hide");
+        controller.overlay.addClass("hide");
+        controller.overlay.setText("Choose or drop images here");
+        controller.toolbar.removeClass("hide");
+        controller.toolbar.setImage(image, file);
+        controller.imageView.loadImage(image);
+      });
+    };
+
+    function gridChanged (showGrid) {
+      controller.imageView.scene2D.setShowGrid(showGrid);
+    };
   };
 });

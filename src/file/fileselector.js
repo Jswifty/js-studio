@@ -46,6 +46,10 @@ define([
       inputText.innerHTML = html;
     };
 
+    fileSelector.onFileSelected = function (fileSelected) {
+      fileSelector.fileSelected = fileSelected;
+    };
+
     fileSelectorIndex++;
 
     return fileSelector;
