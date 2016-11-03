@@ -27,6 +27,8 @@ define([
 
     imageViewer.controller = new ImageViewController(imageViewer.imageView, imageViewer.toolbar, imageViewer.overlay);
 
+    imageViewer.onImageLoaded = imageViewer.controller.onImageLoaded;
+
     return imageViewer;
   };
 });

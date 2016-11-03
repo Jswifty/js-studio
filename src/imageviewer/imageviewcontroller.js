@@ -6,6 +6,8 @@ define([
   return function (imageView, toolbar, overlay) {
     var controller = this;
 
+    controller.imageLoadedEvents = [];
+
     controller.imageView = imageView;
 
     controller.toolbar = toolbar;
@@ -68,6 +70,16 @@ define([
       controller.toolbar.setPosition();
     });
 
+    controller.onImageLoaded = function (imageLoaded) {
+      controller.imageLoadedEvents.push(imageLoaded);
+    };
+
+    controller.fireImageLoaded = function (image, file) {
+      for (var i = 0; i < controller.imageLoadedEvents.length; i++) {
+        controller.imageLoadedEvents[i](image, file);
+      }
+    };
+
     function loadImage (file) {
       loadImageFile(file, function () {
         controller.imageView.addClass("hide");
@@ -80,6 +92,7 @@ define([
         controller.toolbar.removeClass("hide");
         controller.toolbar.setImage(image, file);
         controller.imageView.loadImage(image);
+        controller.fireImageLoaded(image, file);
       });
     };
 

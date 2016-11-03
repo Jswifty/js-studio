@@ -19,9 +19,9 @@ define([
     scene2D.requestedZoom = 1;
     scene2D.zoomSpeed = 0.5;
     scene2D.showGrid = true;
-    scene2D.gridSize = 50;
-    scene2D.gridColor1 = "rgba(150, 150, 150, 0.5)";
-    scene2D.gridColor2 = "rgba(200, 200, 200, 0.5)";
+    scene2D.gridSize = 20;
+    scene2D.gridColor1 = "rgba(150, 150, 150, 0.7)";
+    scene2D.gridColor2 = "rgba(200, 200, 200, 0.7)";
     scene2D.followObjects = [];
     scene2D.followSpeed = 1;
     scene2D.objects = [];
