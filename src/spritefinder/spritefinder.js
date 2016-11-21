@@ -1,4 +1,6 @@
-define(function () {
+define([
+  "./sprite"
+], function (Sprite) {
 
   function getImagePixels (image) {
     var canvas = document.createElement("canvas");
@@ -13,52 +15,6 @@ define(function () {
     return imageData.data;
   };
 
-  function Sprite () {
-    var sprite = this;
-    sprite.points = [];
-    sprite.boundaries = { startX: null, startY: null, endX: null, endY: null };
-    sprite.currentPointRanges = [];
-    sprite.previousPointRanges = [];
-
-    sprite.isOverlapWithPreviousRanges = function (startPoint, endPoint) {
-      for (var i = 0; i < sprite.previousPointRanges.length; i++) {
-        var previouPointRange = sprite.previousPointRanges[i];
-        var previousStartPoint = previouPointRange.startPoint;
-        var previousEndPoint = previouPointRange.endPoint;
-
-        if (startPoint.y === previousStartPoint.y + 1 && startPoint.x <= previousEndPoint.x && endPoint.x >= previousStartPoint.x) {
-          return true;
-        }
-      }
-
-      return false;
-    };
-
-    sprite.hasPassedPreviousRange = function (startPoint) {
-      // TODO
-    };
-
-    sprite.addPointRange = function (startPoint, endPoint) {
-      sprite.currentPointRanges.push({ startPoint: startPoint, endPoint: endPoint });
-    };
-
-    sprite.processPointRanges = function () {
-      for (var i = 0; i < sprite.previousPointRanges.length; i++) {
-        var pointRange = sprite.previousPointRanges[i];
-        var startPoint = pointRange.startPoint;
-        var endPoint = pointRange.endPoint;
-
-        sprite.points.push(startPoint);
-        if (startPoint.x !== endPoint.x) {
-          sprite.points.push(endPoint);
-        }
-      }
-
-      sprite.previousPointRanges = sprite.currentPointRanges;
-      sprite.currentPointRanges = [];
-    };
-  };
-
   return function (image) {
     var pixels = getImagePixels(image);
 
@@ -71,10 +27,10 @@ define(function () {
 
     var updateSprites = function () {
       for (var i = openSprites.length - 1; i >= 0; i--) {
-        var sprite = openSprites[i];
+        var openSprite = openSprites[i];
 
-        if (sprite.isOverlapWithPreviousRanges(startPoint, endPoint)) {
-          sprite.addPointRange(startPoint, endPoint);
+        if (openSprite.isOverlapWithPreviousRanges(startPoint, endPoint)) {
+          openSprite.addPointRange(startPoint, endPoint);
           return;
         }
       }
@@ -85,8 +41,33 @@ define(function () {
     };
 
     var processSprites = function () {
-      // close up sprites
-      // or merge sprites
+      var openSpriteIndices = [];
+
+      for (var i = 0; i < openSprites.length; i++) {
+        openSpriteIndices.push(i);
+      }
+
+      for (var i = 0; i < openSprites.length; i++) {
+        for (var j = i + 1; j < openSprites.length; j++) {
+          if (openSprites[i].intersectsWith(openSprites[j])) {
+            openSprites[i].mergeWith(openSprites[j]);
+            openSpriteIndices[j] = i;
+          }
+        }
+      }
+
+      // TODO: extract unique open sprites.
+
+      for (var i = openSprites.length - 1; i >= 0; i--) {
+        var openSprite = openSprites[i];
+
+        openSprite.processPointRanges();
+
+        if (openSprite.isClosed()) {
+          sprites.push(openSprite);
+          openSprites.splice(i, 1);
+        }
+      }
     };
 
     var setStartPoint = function (x, y) {
