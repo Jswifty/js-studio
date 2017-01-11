@@ -20,11 +20,11 @@ define(function () {
 			return null;
 		},
 
-		setCookie: function (name, value, days) {
+		setCookie: function (name, value, duration) {
 			var expires = "";
 
-			if (days) {
-				expires = "; expires=" + new Date(new Date.getTime() + days * 24 * 60 * 60 * 1000).toGMTString();
+			if (duration) {
+				expires = "; expires=" + new Date(new Date().getTime() + duration).toGMTString();
 			}
 
 			document.cookie = name + "=" + value + expires + "; path=/";
